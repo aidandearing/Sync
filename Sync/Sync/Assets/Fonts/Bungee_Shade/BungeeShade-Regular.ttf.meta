@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 09a599aaeae76884a8c1f4fe6979bc2c
+timeCreated: 1487739926
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Bungee Shade
+  fontNames:
+  - Bungee Shade
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
