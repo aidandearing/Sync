@@ -36,40 +36,54 @@ public static class Literals
 
         public static class Blackboard
         {
-            public const string Synchroniser = "synchroniser";
-            public const string Controller = "controller";
-            public const string Player = "playerController";
-        }
+            public static class Synchronisation
+            {
+                public const string Synchroniser = "synchronisationSynchroniser";
+            }
 
-        public static class Movement
-        {
-            public const string CanWalkBackward = "canWalkBackward";
-            public const string SpeedForward = "speedForward";
-            public const string SpeedBackward = "speedBackward";
-            public const string SpeedSidestep = "speedSidestep";
-            public const string Height = "movementHeight";
-            public const string Vectoring = "movementVectoring";
-            public const string Count = "movementCount";
-            public const string InheritVelocity = "movementInheritVelocity";
-            public const string TeleportDistance = "movementTeleportDistance";
-            public const string TeleportThroughWalls = "movementTeleportThroughWalls";
-            public const string TeleportToTarget = "movementTeleportToTarget";
-            public const string TeleportTarget = "movementTeleportTarget";
-            public const string GlideDownToForward = "movementGlideDownToForward";
-            public const string ThrustSpeed = "movementThrustSpeed";
-            public const string ThrustSequencer = "movementThrustSequencer";
-            public const string ThrustCurve = "movementThrustCurve";
+            public static class Controllers
+            {
+                public const string Controller = "controllersController";
+                public const string Player = "controllersPlayerController";
+            }
+
+            public static class Movement
+            {
+                public const string Input = "movementInputVector";
+                public const string CanWalkBackward = "movementCanWalkBackward";
+                public const string SpeedForward = "movementSpeedForward";
+                public const string SpeedBackward = "movementSpeedBackward";
+                public const string SpeedSidestep = "movementSpeedSidestep";
+                public const string Height = "movementHeight";
+                public const string Vectoring = "movementVectoring";
+                public const string Count = "movementCount";
+                public const string InheritVelocity = "movementInheritVelocity";
+                public const string TeleportDistance = "movementTeleportDistance";
+                public const string TeleportThroughWalls = "movementTeleportThroughWalls";
+                public const string TeleportToTarget = "movementTeleportToTarget";
+                public const string TeleportTarget = "movementTeleportTarget";
+                public const string GlideDownToForward = "movementGlideDownToForward";
+                public const string ThrustSpeed = "movementThrustSpeed";
+                public const string ThrustSequencer = "movementThrustSequencer";
+                public const string ThrustCurve = "movementThrustCurve";
+            }
         }
 
         public static class Parameters
         {
             public static class Animation
             {
+                public const string IsOnGround = "isOnGround";
                 public const string IsMoving = "isMoving";
                 public const string WantsToMove = "wantsToMove";
                 public const string PlaySplash = "playSplash";
                 public const string SpeedMove = "speedMove";
                 public const string CycleMove = "cycleMove";
+                public const string IsJumping = "isJumping";
+                public const string WantsToJump = "wantsToJump";
+                public const string TouchedGround = "touchedGround";
+                public const string IsFalling = "isFalling";
+                public const string WantsToFall = "wantsToFall";
             }
         }
     }

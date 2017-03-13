@@ -27,62 +27,50 @@ public class PlayerController : Controller
         if (!isLocalPlayer)
             return;
 
-        HandleInput();
-
-        animator.SetFloat("speedMove", rigidbody.velocity.magnitude);
-
         base.FixedUpdate();
     }
 
-    void HandleInput()
+    protected override Vector3 HandleMovementInput()
     {
-        bool wantsToMove = animator.GetBool("wantsToMove");
+        Vector3 v = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Jump"), Input.GetAxis("Vertical"));
 
-        // Make a vector that has its left right axis set to the desired horizontal movement, its vertical axis set to 1 or 0 desired jump state, and its forward axis set to the desired forward movement
-        Vector3 input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Jump"), Input.GetAxis("Vertical"));
-
-        Vector3 movement = new Vector3(input.x * speedForward, 0, input.z * speedForward);
-
-        bool actuallyWantsToMove = (MathHelper.Vector.XZ(input).sqrMagnitude > 0);
-
-        if (animator.GetBool("isMoving"))
+        if (v.x > 0 || v.z > 0)
         {
-            if (rigidbody.velocity.sqrMagnitude < speedForward * speedForward)
-                rigidbody.AddForce(movement, ForceMode.Impulse);
-
-            if (movement.sqrMagnitude > 0)
-                rigidbody.MoveRotation(Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan2(rigidbody.velocity.x, rigidbody.velocity.z), 0));
-        }
-        else
-        {
-            if (input.sqrMagnitude > 0)
-                animator.SetBool("wantsToMove", actuallyWantsToMove);
-            else
-                animator.SetBool("wantsToMove", actuallyWantsToMove);
+            movement.actionPrimaryLastInputTime = Time.time;
+            movement.actionPrimaryLastInputVector = v;
         }
 
-        // Shooter Mode
-        if (canWalkBackward)
+        if (v.y > 0)
         {
-
-        }
-        // 360 Action Mode
-        else
-        {
-
+            movement.actionSecondaryLastInputTime = Time.time;
+            movement.actionSecondaryLastInputVector = v;
         }
 
-        if (input.y > 0)
-        {
-            Blackboard state = new Blackboard();
-            state[Literals.Strings.Blackboard.Controller] = new BlackboardValue() { Value = this };
-            state[Literals.Strings.Movement.Height] = new BlackboardValue() { Value = movementHeight };
-            state[Literals.Strings.Movement.Vectoring] = new BlackboardValue() { Value = movementVectoring };
-            state[Literals.Strings.Movement.Count] = new BlackboardValue() { Value = movementCount };
-            state[Literals.Strings.Movement.InheritVelocity] = new BlackboardValue() { Value = movementInheritVelocity };
+        return v;
+    }
 
-            movementActionInst = MovementAction.Factory(movementAction);
-            movementActionInst.Do(state);
+    protected override void MovementActionPrimaryCallback()
+    {
+        Vector3 input = HandleMovementInput();
+
+        // This checks to see if the time between an input was last recieved and if the time is shorter than a percentage of the synchronisers duration and this frame there is no input
+        if (Time.time - movement.actionPrimaryLastInputTime < movement.actionPrimarySynchroniser.Duration * MovementStatistics.FACTOR_OF_DURATION_AS_PADDING_ON_INPUT && input.sqrMagnitude < 1)
+        {
+            input = movement.actionPrimaryLastInputVector;
         }
+
+        MovementActions.Action(movement.actionPrimary, this, input);
+    }
+
+    protected override void MovementActionSecondaryCallback()
+    {
+        Vector3 input = HandleMovementInput();
+
+        if (Time.time - movement.actionSecondaryLastInputTime < movement.actionSecondarySynchroniser.Duration * MovementStatistics.FACTOR_OF_DURATION_AS_PADDING_ON_INPUT && input.y < 1)
+        {
+            input = movement.actionSecondaryLastInputVector;
+        }
+
+        MovementActions.Action(movement.actionSecondary, this, input);
     }
 }

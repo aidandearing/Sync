@@ -8,46 +8,8 @@ public class Controller : NetworkBehaviour
     new public Rigidbody rigidbody;
     public Animator animator;
 
-    [Header("Movement")]
-    [Range(0, 15)]
-    [Tooltip("The speed in m/s that this character will move forward")]
-    public float speedForward;
-    [Tooltip("By default the controller moves in a 360 direction, with independant camera control, with this true that changes to a camera controlled forward, strafing, and backstepping capable movement")]
-    public bool canWalkBackward = false;
-    [Range(0, 7)]
-    [Tooltip("The speed in m/s that this character will move backwards")]
-    public float speedBackward;
-    [Range(0, 15)]
-    [Tooltip("The speed in m/s that this character will move sideways")]
-    public float speedSidestep;
-    [Tooltip("The format for this characters movement")]
-    public MovementAction.Action movementAction = MovementAction.Action.Jump;
-    protected MovementAction movementActionInst;
-    [Tooltip("Establishes at what timing this character is allowed to perform their movement action, whether it be jumping, teleporting, or whatever it may be")]
-    public Synchronism.Synchronisations movementSync = Synchronism.Synchronisations.HALF_NOTE;
-    private Synchroniser movementSynchroniser;
-    // TELEPORT
-    [Range(-25, 25)]
-    public float movementTeleportDistance = 2.5f;
-    public bool movementTeleportThroughWalls = false;
-    public bool movementTeleportToTarget = true;
-    public Vector3 movementTeleportTarget = Vector3.zero;
-    // GLIDE
-    [Range(0, 10)]
-    public float movementGlideDownToForward = 0.9f;
-    // THRUST
-    public float movementThrustSpeed = 10.0f;
-    public SequencerGradient movementThrustSequencer;
-    public AnimationCurve movementThrustCurve = new AnimationCurve();
-    // JUMP and HOVER
-    [Range(0, 10)]
-    public float movementHeight = 2;
-    public bool movementVectoring = false;
-    // GENERAL
-    [Range(-1, 100)]
-    [Tooltip("The number of times this character is able to perform their movement action, -1 for infinite actions")]
-    public int movementCount = 1;
-    public bool movementInheritVelocity = true;
+    public MovementStatistics movement;
+    public Blackboard movementBoard;
 
     [SerializeField]
     private string _faction;
@@ -56,7 +18,11 @@ public class Controller : NetworkBehaviour
     // Use this for initialization
     protected virtual void Start()
     {
-        
+        movement.actionPrimarySynchroniser = (Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value as Synchronism).synchronisers[movement.actionPrimarySynchronisation];
+        movement.actionPrimarySynchroniser.RegisterCallback(this, MovementActionPrimaryCallback);
+
+        movement.actionSecondarySynchroniser = (Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value as Synchronism).synchronisers[movement.actionSecondarySynchronisation];
+        movement.actionSecondarySynchroniser.RegisterCallback(this, MovementActionSecondaryCallback);
     }
 
     // Update is called once per frame
@@ -68,6 +34,44 @@ public class Controller : NetworkBehaviour
     // Update is called once per frame
     protected virtual void FixedUpdate()
     {
+        if (rigidbody.velocity.y < 0 && !animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround))
+            animator.SetBool(Literals.Strings.Parameters.Animation.WantsToFall, true);
+        else
+            animator.SetBool(Literals.Strings.Parameters.Animation.WantsToFall, false);
 
+        HandleMovementInput();
+    }
+
+    protected virtual void MovementActionPrimaryCallback()
+    {
+        MovementActions.Action(movement.actionPrimary, this, HandleMovementInput());
+    }
+
+    protected virtual void MovementActionSecondaryCallback()
+    {
+        MovementActions.Action(movement.actionSecondary, this, HandleMovementInput());
+    }
+
+    protected virtual Vector3 HandleMovementInput()
+    {
+        return Vector3.zero;
+    }
+
+    protected virtual void OnCollisionEnter(Collision collision)
+    {
+        //if (collision.collider.gameObject.layer == Literals.Integers.Physics.Layers.Floors)
+        //    animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, true);
+    }
+
+    protected virtual void OnCollisionStay(Collision collision)
+    {
+        if (collision.collider.gameObject.layer == Literals.Integers.Physics.Layers.Floors)
+            animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, true);
+    }
+
+    protected virtual void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.gameObject.layer == Literals.Integers.Physics.Layers.Floors)
+            animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, false);
     }
 }

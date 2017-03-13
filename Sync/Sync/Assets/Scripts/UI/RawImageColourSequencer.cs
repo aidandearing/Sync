@@ -25,7 +25,7 @@ public class RawImageColourSequencer : MonoBehaviour
     {
         if (!isInitialised)
         {
-            if (((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchroniser].Value) != null)
+            if (((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value) != null)
             {
                 sequencer.Initialise();
                 sequencer.callback = Callback;

@@ -40,11 +40,11 @@ public class SequencerGradient
     {
         if (!isInitialised)
         {
-            if ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchroniser].Value != null)
+            if ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value != null)
             {
                 isInitialised = true;
 
-                synchroniser = ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchroniser].Value).synchronisers[synchronisation];
+                synchroniser = ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value).synchronisers[synchronisation];
                 synchroniser.RegisterCallback(this, Callback);
             }
         }

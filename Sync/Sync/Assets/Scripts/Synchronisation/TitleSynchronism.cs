@@ -12,26 +12,11 @@ public class TitleSynchronism : Synchronism
     protected override void Start()
     {
         Initialise();
-
-        synchronisers[Synchronisations.BAR_8].RegisterCallback(this, OnTimeBar8);
-        synchronisers[Synchronisations.BAR_4].RegisterCallback(this, OnTimeBar4);
-        synchronisers[Synchronisations.BAR_2].RegisterCallback(this, OnTimeBar2);
-        synchronisers[Synchronisations.BAR].RegisterCallback(this, OnTimeBar);
-        synchronisers[Synchronisations.WHOLE_NOTE].RegisterCallback(this, OnTimeWhole);
-        synchronisers[Synchronisations.HALF_NOTE].RegisterCallback(this, OnTimeHalf);
-        synchronisers[Synchronisations.QUARTER_NOTE].RegisterCallback(this, OnTimeQuarter);
-        synchronisers[Synchronisations.EIGHTH_NOTE].RegisterCallback(this, OnTimeEighth);
-        synchronisers[Synchronisations.SIXTEENTH_NOTE].RegisterCallback(this, OnTimeSixteenth);
-        synchronisers[Synchronisations.THIRTYSECOND_NOTE].RegisterCallback(this, OnTimeThirtySecond);
     }
 
-    protected override void Update()
+    protected override void FixedUpdate()
     {
-        // Updating all the note waves
-        foreach (KeyValuePair<Synchronisations, Synchroniser> synchs in synchronisers)
-        {
-            synchs.Value.Update();
-        }
+        base.FixedUpdate();
     }
 
     protected override void OnTimeBar8()
