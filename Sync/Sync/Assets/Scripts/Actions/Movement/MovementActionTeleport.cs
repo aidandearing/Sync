@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class MovementActionTeleport : BaseAction
+public class MovementActionTeleport : MovementAction
 {
     public override void Do(Blackboard state)
     {

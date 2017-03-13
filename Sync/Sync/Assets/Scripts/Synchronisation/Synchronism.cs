@@ -33,7 +33,7 @@ public class Synchronism : MonoBehaviour
         synchronisers.Add(Synchronisations.SIXTEENTH_NOTE, new Synchroniser(beat * 0.25));
         synchronisers.Add(Synchronisations.THIRTYSECOND_NOTE, new Synchroniser(beat * 0.125));
 
-        Blackboard.Global.Add(Literals.StringLiterals.Blackboard.Synchroniser, new BlackboardValue() { Value = this });
+        Blackboard.Global.Add(Literals.Strings.Blackboard.Synchroniser, new BlackboardValue() { Value = this });
     }
 
     protected virtual void Start()

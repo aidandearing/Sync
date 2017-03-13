@@ -9,7 +9,7 @@ public class StateMoveBehaviour : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetFloat("cycleMove", (Blackboard.Global[Literals.StringLiterals.Blackboard.Synchroniser].Value as Synchronism).synchronisers[synchronisation].Percent);
+        animator.SetFloat("cycleMove", (Blackboard.Global[Literals.Strings.Blackboard.Synchroniser].Value as Synchronism).synchronisers[synchronisation].Percent);
         animator.SetBool("isMoving", true);
     }
 

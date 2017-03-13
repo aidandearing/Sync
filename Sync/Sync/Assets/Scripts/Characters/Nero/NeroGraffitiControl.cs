@@ -40,11 +40,11 @@ public class NeroGraffitiControl : MonoBehaviour
     {
         Ray ray = new Ray(transform.position, transform.forward);
 
-        RaycastHit[] hits = Physics.SphereCastAll(ray, farDistance, farDistance);//, Literals.IntLiterals.Physics.Layers.graffiti);
+        RaycastHit[] hits = Physics.SphereCastAll(ray, farDistance, farDistance);//, Literals.Integers.Physics.Layers.graffiti);
 
         foreach(RaycastHit hit in hits)
         {
-            if (hit.collider.gameObject.tag == Literals.StringLiterals.Tags.NeroGraffiti)
+            if (hit.collider.gameObject.tag == Literals.Strings.Tags.NeroGraffiti)
             {
                 NeroGraffitiBehaviour graffiti = hit.collider.gameObject.GetComponent<NeroGraffitiBehaviour>();
                 graffiti.SetController(this);

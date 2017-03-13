@@ -65,7 +65,7 @@ public class ProjectileBehaviour : MonoBehaviour
             inst.BroadcastMessage("SetParent", parent);
         }
 
-        ((Synchronism)Blackboard.Global[Literals.StringLiterals.Blackboard.Synchroniser].Value).synchronisers[interval].RegisterCallback(this, Delegate_OnTime);
+        ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchroniser].Value).synchronisers[interval].RegisterCallback(this, Delegate_OnTime);
     }
 
     // Update is called once per frame
@@ -104,7 +104,7 @@ public class ProjectileBehaviour : MonoBehaviour
             inst.BroadcastMessage("SetParent", parent);
         }
 
-        ((Synchronism)Blackboard.Global[Literals.StringLiterals.Blackboard.Synchroniser].Value).synchronisers[interval].UnregisterCallback(this);
+        ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchroniser].Value).synchronisers[interval].UnregisterCallback(this);
 
         Destroy(gameObject);
     }

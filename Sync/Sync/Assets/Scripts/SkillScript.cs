@@ -46,7 +46,7 @@ public class SkillScript : MonoBehaviour
         skillCDCurrent = skillCDCounts / 2;
         stackCDCurrent = stackCDCounts / 2;
 
-        ((Synchronism)Blackboard.Global[Literals.StringLiterals.Blackboard.Synchroniser].Value).synchronisers[skillCooldown].RegisterCallback(this, Delegate_OnTime);
+        ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchroniser].Value).synchronisers[skillCooldown].RegisterCallback(this, Delegate_OnTime);
     }
 
     // Update is called once per frame

@@ -23,7 +23,7 @@ public class BeamToOrb : MonoBehaviour
     {
         SetColours();
 
-        ((Synchronism)Blackboard.Global[Literals.StringLiterals.Blackboard.Synchroniser].Value).synchronisers[ListenTo].RegisterCallback(this, SetColours);
+        ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchroniser].Value).synchronisers[ListenTo].RegisterCallback(this, SetColours);
     }
 
     // Update is called once per frame
@@ -36,7 +36,7 @@ public class BeamToOrb : MonoBehaviour
         Color.RGBToHSV(start, out startHSV.x, out startHSV.y, out startHSV.z);
         Color.RGBToHSV(goal, out endHSV.x, out endHSV.y, out endHSV.z);
 
-        currentHSV = Vector3.Lerp(startHSV, endHSV, ((Synchronism)Blackboard.Global[Literals.StringLiterals.Blackboard.Synchroniser].Value).synchronisers[ListenTo].Percent);
+        currentHSV = Vector3.Lerp(startHSV, endHSV, ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchroniser].Value).synchronisers[ListenTo].Percent);
         colour = Color.HSVToRGB(currentHSV.x, currentHSV.y, currentHSV.z);
 
         Renderer rend = GetComponent<Renderer>();

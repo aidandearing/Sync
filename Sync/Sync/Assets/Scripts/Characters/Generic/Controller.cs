@@ -21,10 +21,11 @@ public class Controller : NetworkBehaviour
     [Tooltip("The speed in m/s that this character will move sideways")]
     public float speedSidestep;
     [Tooltip("The format for this characters movement")]
-    public MovementAction movementAction;
+    public MovementAction.Action movementAction = MovementAction.Action.Jump;
+    protected MovementAction movementActionInst;
     [Tooltip("Establishes at what timing this character is allowed to perform their movement action, whether it be jumping, teleporting, or whatever it may be")]
     public Synchronism.Synchronisations movementSync = Synchronism.Synchronisations.HALF_NOTE;
-    public Synchroniser synchroniser;
+    private Synchroniser movementSynchroniser;
     // TELEPORT
     [Range(-25, 25)]
     public float movementTeleportDistance = 2.5f;
@@ -45,7 +46,7 @@ public class Controller : NetworkBehaviour
     // GENERAL
     [Range(-1, 100)]
     [Tooltip("The number of times this character is able to perform their movement action, -1 for infinite actions")]
-    public float movementCount = 1;
+    public int movementCount = 1;
     public bool movementInheritVelocity = true;
 
     [SerializeField]
@@ -55,7 +56,7 @@ public class Controller : NetworkBehaviour
     // Use this for initialization
     protected virtual void Start()
     {
-
+        
     }
 
     // Update is called once per frame

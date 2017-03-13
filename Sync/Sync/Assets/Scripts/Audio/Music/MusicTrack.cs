@@ -19,7 +19,7 @@ public class MusicTrack
     {
         if (!sequencer.isInitialised)
         {
-            if ((Synchronism)Blackboard.Global[Literals.StringLiterals.Blackboard.Synchroniser].Value != null)
+            if ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchroniser].Value != null)
             {
                 sequencer.Initialise();
                 

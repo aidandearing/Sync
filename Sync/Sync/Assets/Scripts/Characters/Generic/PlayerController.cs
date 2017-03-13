@@ -39,25 +39,23 @@ public class PlayerController : Controller
         bool wantsToMove = animator.GetBool("wantsToMove");
 
         // Make a vector that has its left right axis set to the desired horizontal movement, its vertical axis set to 1 or 0 desired jump state, and its forward axis set to the desired forward movement
-        Vector3 movement = new Vector3(Input.GetAxis("Horizontal") * speedForward, Input.GetAxis("Jump"), Input.GetAxis("Vertical") * speedForward);
+        Vector3 input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Jump"), Input.GetAxis("Vertical"));
 
-        bool actuallyWantsToMove = (MathHelper.Vector.XZ(movement).sqrMagnitude > 0);
+        Vector3 movement = new Vector3(input.x * speedForward, 0, input.z * speedForward);
 
-        //animator.SetFloat("cycleMove", (Blackboard.Global["Synchroniser"].Value as Synchronism).synchronisers[Synchronism.Synchronisations.QUARTER_NOTE].Percent);
+        bool actuallyWantsToMove = (MathHelper.Vector.XZ(input).sqrMagnitude > 0);
 
         if (animator.GetBool("isMoving"))
         {
-            //if (movement.sqrMagnitude <= 0 && wantsToMove)
-            //    movement = transform.forward;
-
-            rigidbody.AddForce(movement - rigidbody.velocity, ForceMode.Impulse);
+            if (rigidbody.velocity.sqrMagnitude < speedForward * speedForward)
+                rigidbody.AddForce(movement, ForceMode.Impulse);
 
             if (movement.sqrMagnitude > 0)
                 rigidbody.MoveRotation(Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan2(rigidbody.velocity.x, rigidbody.velocity.z), 0));
         }
         else
         {
-            if (movement.sqrMagnitude > 0)
+            if (input.sqrMagnitude > 0)
                 animator.SetBool("wantsToMove", actuallyWantsToMove);
             else
                 animator.SetBool("wantsToMove", actuallyWantsToMove);
@@ -72,6 +70,19 @@ public class PlayerController : Controller
         else
         {
 
+        }
+
+        if (input.y > 0)
+        {
+            Blackboard state = new Blackboard();
+            state[Literals.Strings.Blackboard.Controller] = new BlackboardValue() { Value = this };
+            state[Literals.Strings.Movement.Height] = new BlackboardValue() { Value = movementHeight };
+            state[Literals.Strings.Movement.Vectoring] = new BlackboardValue() { Value = movementVectoring };
+            state[Literals.Strings.Movement.Count] = new BlackboardValue() { Value = movementCount };
+            state[Literals.Strings.Movement.InheritVelocity] = new BlackboardValue() { Value = movementInheritVelocity };
+
+            movementActionInst = MovementAction.Factory(movementAction);
+            movementActionInst.Do(state);
         }
     }
 }
