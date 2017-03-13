@@ -35,8 +35,8 @@ public class MovementStatistics : Statistics
     [Range(0, 15)]
     [Tooltip("The speed in m/s that this character will move sideways")]
     public float speedSidestep = 3;
-    [Range(0, 360)]
-    public float speedTurn = 1;
+    [Range(0, 3600)]
+    public float speedTurn = 90;
     // TELEPORT
     [Range(-25, 25)]
     [Tooltip("The distance in metres that this character will teleport")]

@@ -43,7 +43,7 @@ public class MovementActions
     {
         if (self.movement.vectoring || self.animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround))
         {
-            Vector3 movement = new Vector3(input.x * self.movement.speedForward, 0, input.z * self.movement.speedForward);
+            //Vector3 movement = new Vector3(input.x * self.movement.speedForward, 0, input.z * self.movement.speedForward);
 
             bool actuallyWantsToMove = (MathHelper.Vector.XZ(input).sqrMagnitude > 0);
 
@@ -51,14 +51,21 @@ public class MovementActions
 
             if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsMoving))
             {
-                if (self.rigidbody.velocity.sqrMagnitude < self.movement.speedForward * self.movement.speedForward)
-                    self.rigidbody.AddForce(movement, ForceMode.VelocityChange);
-                else
-                    self.rigidbody.velocity = movement;
-
-                if (self.rigidbody.velocity.sqrMagnitude > 1)
+                if (actuallyWantsToMove)
                 {
-                    self.rigidbody.MoveRotation(Quaternion.RotateTowards(self.rigidbody.rotation, Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan2(self.rigidbody.velocity.x, self.rigidbody.velocity.z), 0), self.movement.speedTurn));
+                    if (self.rigidbody.velocity.sqrMagnitude < self.movement.speedForward * self.movement.speedForward)
+                        self.rigidbody.AddForce(self.transform.forward * self.movement.speedForward, ForceMode.VelocityChange);
+                    else
+                        self.rigidbody.velocity = self.transform.forward * self.movement.speedForward;
+                }
+
+                if (input.sqrMagnitude > 0)
+                {
+                    self.rigidbody.MoveRotation(Quaternion.RotateTowards(self.rigidbody.rotation, Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan2(input.x, input.z), 0), self.movement.speedTurn * Time.fixedDeltaTime));
+                }
+                else if (self.rigidbody.velocity.sqrMagnitude > 1)
+                {
+                    self.rigidbody.MoveRotation(Quaternion.RotateTowards(self.rigidbody.rotation, Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan2(self.rigidbody.velocity.x, self.rigidbody.velocity.z), 0), self.movement.speedTurn * Time.fixedDeltaTime));
                 }
             }
         }
