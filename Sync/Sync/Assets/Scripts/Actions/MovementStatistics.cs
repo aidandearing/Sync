@@ -10,7 +10,7 @@ public class MovementStatistics : Statistics
     /// <summary>
     /// This constant defines how much of the synchronisers duration will be used as the amount of time after an input was entered that it will still be considered valid when the action can actually occur
     /// </summary>
-    public const float FACTOR_OF_DURATION_AS_PADDING_ON_INPUT = 0.25f;
+    public const float FACTOR_OF_DURATION_AS_PADDING_ON_INPUT = 0.75f;
 
     [Tooltip("The format for this characters movement")]
     public MovementActions.Actions actionPrimary = MovementActions.Actions.MoveXZ360;
@@ -35,6 +35,8 @@ public class MovementStatistics : Statistics
     [Range(0, 15)]
     [Tooltip("The speed in m/s that this character will move sideways")]
     public float speedSidestep = 3;
+    [Range(0, 360)]
+    public float speedTurn = 1;
     // TELEPORT
     [Range(-25, 25)]
     [Tooltip("The distance in metres that this character will teleport")]

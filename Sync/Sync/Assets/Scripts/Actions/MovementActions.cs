@@ -41,21 +41,26 @@ public class MovementActions
     /// <param name="input">The input vector, each axis is treated as 0 no desire to move, to 1 complete desire to move</param>
     public static void MoveXZ360(Controller self, Vector3 input)
     {
-        Vector3 movement = new Vector3(input.x * self.movement.speedForward, 0, input.z * self.movement.speedForward);
-
-        bool actuallyWantsToMove = (MathHelper.Vector.XZ(input).sqrMagnitude > 0);
-
-        self.animator.SetBool(Literals.Strings.Parameters.Animation.WantsToMove, actuallyWantsToMove);
-
-        if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsMoving))
+        if (self.movement.vectoring || self.animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround))
         {
-            if (self.rigidbody.velocity.sqrMagnitude < self.movement.speedForward * self.movement.speedForward)
-                self.rigidbody.AddForce(movement, ForceMode.VelocityChange);
-            else
-                self.rigidbody.velocity = movement;
+            Vector3 movement = new Vector3(input.x * self.movement.speedForward, 0, input.z * self.movement.speedForward);
 
-            if (self.rigidbody.velocity.sqrMagnitude > 1)
-                self.rigidbody.MoveRotation(Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan2(self.rigidbody.velocity.x, self.rigidbody.velocity.z), 0));
+            bool actuallyWantsToMove = (MathHelper.Vector.XZ(input).sqrMagnitude > 0);
+
+            self.animator.SetBool(Literals.Strings.Parameters.Animation.WantsToMove, actuallyWantsToMove);
+
+            if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsMoving))
+            {
+                if (self.rigidbody.velocity.sqrMagnitude < self.movement.speedForward * self.movement.speedForward)
+                    self.rigidbody.AddForce(movement, ForceMode.VelocityChange);
+                else
+                    self.rigidbody.velocity = movement;
+
+                if (self.rigidbody.velocity.sqrMagnitude > 1)
+                {
+                    self.rigidbody.MoveRotation(Quaternion.RotateTowards(self.rigidbody.rotation, Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan2(self.rigidbody.velocity.x, self.rigidbody.velocity.z), 0), self.movement.speedTurn));
+                }
+            }
         }
 
         self.animator.SetFloat(Literals.Strings.Parameters.Animation.SpeedMove, self.rigidbody.velocity.magnitude);
@@ -71,10 +76,10 @@ public class MovementActions
 
         if (input.y > 0)
         {
-            if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsJumping))
-            {
+            //if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsJumping))
+            //{
                 self.rigidbody.AddForce(movement, ForceMode.Impulse);
-            }
+            //}
         }
     }
 }
