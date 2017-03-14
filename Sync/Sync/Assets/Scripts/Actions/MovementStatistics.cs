@@ -60,4 +60,5 @@ public class MovementStatistics
     public int count = 1;
     [NonSerialized] public int countCurrent = 1;
     public bool inheritVelocity = true;
+    public float height = 1.0f;
 }

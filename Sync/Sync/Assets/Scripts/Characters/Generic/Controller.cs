@@ -9,7 +9,7 @@ public class Controller : NetworkBehaviour
     public Animator animator;
 
     public MovementStatistics movement;
-    public Blackboard movementBoard;
+    public Statistics statistics;
 
     [SerializeField]
     private string _faction;
@@ -20,6 +20,8 @@ public class Controller : NetworkBehaviour
     // Use this for initialization
     protected virtual void Start()
     {
+        statistics[Literals.Strings.Blackboard.Movement.Count] = new Statistic() { Value = movement.count };
+
         movement.actionPrimarySynchroniser = (Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value as Synchronism).synchronisers[movement.actionPrimarySynchronisation];
         movement.actionPrimarySynchroniser.RegisterCallback(this, MovementActionPrimaryCallback);
 
@@ -42,7 +44,11 @@ public class Controller : NetworkBehaviour
             animator.SetBool(Literals.Strings.Parameters.Animation.WantsToFall, false);
 
         rayGroundCheck.origin = transform.position;
-        animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, Physics.Raycast(rayGroundCheck, transform.lossyScale.y, Literals.Integers.Physics.Layers.Floors));
+        //rayGroundCheck = new Ray(transform.position, new Vector3(0, -1, 0));
+
+        //Physics.Raycast(rayGroundCheck, movement.height, Literals.Integers.Physics.Layers.Floors)
+        bool onGround = Physics.Raycast(rayGroundCheck, movement.height);
+        animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, onGround);
 
         HandleMovementInput();
     }

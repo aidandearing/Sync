@@ -36,6 +36,9 @@ public static class Literals
 
         public static class Blackboard
         {
+            public const string Type = "type";
+            public const string Value = "value"; 
+
             public static class Synchronisation
             {
                 public const string Synchroniser = "synchronisationSynchroniser";
@@ -54,7 +57,7 @@ public static class Literals
                 public const string SpeedForward = "movementSpeedForward";
                 public const string SpeedBackward = "movementSpeedBackward";
                 public const string SpeedSidestep = "movementSpeedSidestep";
-                public const string Height = "movementHeight";
+                public const string Force = "movementForce";
                 public const string Vectoring = "movementVectoring";
                 public const string Count = "movementCount";
                 public const string InheritVelocity = "movementInheritVelocity";
@@ -63,7 +66,6 @@ public static class Literals
                 public const string TeleportToTarget = "movementTeleportToTarget";
                 public const string TeleportTarget = "movementTeleportTarget";
                 public const string GlideDownToForward = "movementGlideDownToForward";
-                public const string ThrustSpeed = "movementThrustSpeed";
                 public const string ThrustSequencer = "movementThrustSequencer";
                 public const string ThrustCurve = "movementThrustCurve";
             }

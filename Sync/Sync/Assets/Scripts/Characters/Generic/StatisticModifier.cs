@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-[Serializable]
 class StatisticModifier : BlackboardValue
 {
     public enum Modifier { Add, Subtract, Multiply, Divide };

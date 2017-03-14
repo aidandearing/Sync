@@ -7,6 +7,19 @@ using UnityEngine;
 [Serializable]
 public class Statistic : BlackboardValue
 {
+    protected string name = "";
+    public string Name
+    {
+        get
+        {
+            return name;
+        }
+        protected set
+        {
+            name = value;
+        }
+    }
+
     private List<StatisticModifier> modifiers = new List<StatisticModifier>();
 
     public override object Value

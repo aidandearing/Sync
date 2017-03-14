@@ -44,6 +44,7 @@ public class MovementActions
     {
         if (self.movement.vectoring || self.animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround))
         {
+            bool actuallyWantsToMove = (input.x != 0 || input.z != 0);
 
             self.animator.SetBool(Literals.Strings.Parameters.Animation.WantsToMove, actuallyWantsToMove);
 
@@ -73,15 +74,22 @@ public class MovementActions
 
     public static void Jump(Controller self, Vector3 input)
     {
-        Vector3 movement = input.normalized * self.movement.force;
+        bool wantsToJump = false;
 
-        bool wantsToJump = input.y > 0;
+        if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround) || self.movement.countCurrent > 0)
+        {
+            self.movement.countCurrent--;
+
+            Vector3 movement = input.normalized * self.movement.force;
+
+            wantsToJump = input.y > 0;
+
+            if (input.y > 0)
+            {
+                self.rigidbody.AddForce(movement, ForceMode.Impulse);
+            }
+        }
 
         self.animator.SetBool(Literals.Strings.Parameters.Animation.WantsToJump, wantsToJump);
-
-        if (input.y > 0)
-        {
-            self.rigidbody.AddForce(movement, ForceMode.Impulse);
-        }
     }
 }
