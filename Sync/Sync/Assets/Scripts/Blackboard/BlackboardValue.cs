@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 public class BlackboardValue
 {
-    private Type type;
+    protected Type type;
     public Type Type
     {
         get
@@ -18,8 +19,8 @@ public class BlackboardValue
         }
     }
 
-    private Object value;
-    public Object Value
+    protected object value;
+    public virtual object Value
     {
         get
         {

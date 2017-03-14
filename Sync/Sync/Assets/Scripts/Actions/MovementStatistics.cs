@@ -5,8 +5,8 @@ using System.Text;
 using UnityEngine;
 
 [Serializable]
-public class MovementStatistics : Statistics
-{
+public class MovementStatistics
+{    
     /// <summary>
     /// This constant defines how much of the synchronisers duration will be used as the amount of time after an input was entered that it will still be considered valid when the action can actually occur
     /// </summary>

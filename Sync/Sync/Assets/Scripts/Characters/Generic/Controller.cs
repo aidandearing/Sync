@@ -15,6 +15,8 @@ public class Controller : NetworkBehaviour
     private string _faction;
     public string Faction { get { return _faction; } set { _faction = value; } }
 
+    private Ray rayGroundCheck = new Ray(Vector3.zero, new Vector3(0,-1,0));
+
     // Use this for initialization
     protected virtual void Start()
     {
@@ -39,6 +41,9 @@ public class Controller : NetworkBehaviour
         else
             animator.SetBool(Literals.Strings.Parameters.Animation.WantsToFall, false);
 
+        rayGroundCheck.origin = transform.position;
+        animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, Physics.Raycast(rayGroundCheck, transform.lossyScale.y, Literals.Integers.Physics.Layers.Floors));
+
         HandleMovementInput();
     }
 
@@ -57,21 +62,21 @@ public class Controller : NetworkBehaviour
         return Vector3.zero;
     }
 
-    protected virtual void OnCollisionEnter(Collision collision)
-    {
-        //if (collision.collider.gameObject.layer == Literals.Integers.Physics.Layers.Floors)
-        //    animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, true);
-    }
+    //protected virtual void OnCollisionEnter(Collision collision)
+    //{
+    //    //if (collision.collider.gameObject.layer == Literals.Integers.Physics.Layers.Floors)
+    //    //    animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, true);
+    //}
 
-    protected virtual void OnCollisionStay(Collision collision)
-    {
-        if (collision.collider.gameObject.layer == Literals.Integers.Physics.Layers.Floors)
-            animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, true);
-    }
+    //protected virtual void OnCollisionStay(Collision collision)
+    //{
+    //    if (collision.collider.gameObject.layer == Literals.Integers.Physics.Layers.Floors)
+    //        animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, true);
+    //}
 
-    protected virtual void OnCollisionExit(Collision collision)
-    {
-        if (collision.collider.gameObject.layer == Literals.Integers.Physics.Layers.Floors)
-            animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, false);
-    }
+    //protected virtual void OnCollisionExit(Collision collision)
+    //{
+    //    if (collision.collider.gameObject.layer == Literals.Integers.Physics.Layers.Floors)
+    //        animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, false);
+    //}
 }

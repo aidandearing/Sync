@@ -11,6 +11,7 @@ public class MovementActions
     /// </summary>
     public enum Actions
     {
+        None,
         /// <summary>
         /// Limits all movement to the XZ plane, ignores all Y input
         /// </summary>
@@ -43,9 +44,6 @@ public class MovementActions
     {
         if (self.movement.vectoring || self.animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround))
         {
-            //Vector3 movement = new Vector3(input.x * self.movement.speedForward, 0, input.z * self.movement.speedForward);
-
-            bool actuallyWantsToMove = (MathHelper.Vector.XZ(input).sqrMagnitude > 0);
 
             self.animator.SetBool(Literals.Strings.Parameters.Animation.WantsToMove, actuallyWantsToMove);
 
@@ -83,10 +81,7 @@ public class MovementActions
 
         if (input.y > 0)
         {
-            //if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsJumping))
-            //{
-                self.rigidbody.AddForce(movement, ForceMode.Impulse);
-            //}
+            self.rigidbody.AddForce(movement, ForceMode.Impulse);
         }
     }
 }
