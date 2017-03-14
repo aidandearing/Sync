@@ -116,4 +116,9 @@ public class SequencerGradient
         if (callback != null)
             callback.Invoke();
     }
+
+    ~SequencerGradient()
+    {
+        synchroniser.UnregisterCallback(this);
+    }
 }

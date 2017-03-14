@@ -1,0 +1,61 @@
+﻿using UnityEngine;
+using UnityEditor;
+
+[CustomPropertyDrawer(typeof(BlackboardValue))]
+public class BlackboardValueDrawer : PropertyDrawer
+{
+    private static Vector2 positionType = new Vector2(0, 18);
+    private static Vector2 positionValue = new Vector2(0, 32);
+    private static float height = positionValue.y + 18;
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return height;
+    }
+
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        EditorGUI.BeginProperty(new Rect(positionType, new Vector2(position.width, height)), new GUIContent("Blackboard Value"), property);
+
+        Vector2 bounds = new Vector2(position.width, position.height);
+
+        position = EditorGUI.PrefixLabel(position, new GUIContent("Blackboard Value"));
+
+        SerializedProperty type = property.serializedObject.FindProperty(Literals.Strings.Blackboard.Type);
+        SerializedProperty value = property.serializedObject.FindProperty(Literals.Strings.Blackboard.Value);
+
+        EditorGUI.PropertyField(new Rect(positionType, bounds), type);
+
+        Rect propertyValueRect = new Rect(positionValue, bounds);
+
+        switch ((BlackboardValue.ValueType)type.enumValueIndex)
+        {
+            case BlackboardValue.ValueType.Integer:
+                value.intValue = EditorGUI.IntField(propertyValueRect, value.intValue);
+                break;
+            case BlackboardValue.ValueType.Float:
+                value.floatValue = EditorGUI.FloatField(propertyValueRect, value.floatValue);
+                break;
+            case BlackboardValue.ValueType.Double:
+                value.doubleValue = EditorGUI.DoubleField(propertyValueRect, value.doubleValue);
+                break;
+            case BlackboardValue.ValueType.Vector2:
+                value.vector2Value = EditorGUI.Vector2Field(propertyValueRect, new GUIContent("Vector 2"), value.vector2Value);
+                break;
+            case BlackboardValue.ValueType.Vector3:
+                value.vector3Value = EditorGUI.Vector3Field(propertyValueRect, new GUIContent("Vector 3"), value.vector3Value);
+                break;
+            case BlackboardValue.ValueType.Vector4:
+                value.vector4Value = EditorGUI.Vector4Field(propertyValueRect, new GUIContent("Vector 4"), value.vector4Value);
+                break;
+            case BlackboardValue.ValueType.String:
+                value.stringValue = EditorGUI.TextField(propertyValueRect, value.stringValue);
+                break;
+            default:
+                EditorGUILayout.ObjectField(value);
+                break;
+        }
+
+        EditorGUI.EndProperty();
+    }
+}
