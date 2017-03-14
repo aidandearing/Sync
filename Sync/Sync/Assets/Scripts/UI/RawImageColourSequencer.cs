@@ -36,12 +36,24 @@ public class RawImageColourSequencer : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!isInitialised)
             Initialise();
 
-        image.color = Color.Lerp(start, end, sequencer.Evaluate());
+        switch(animation)
+        {
+            case Animation.Lerp:
+                image.color = Color.Lerp(start, end, sequencer.Evaluate());
+                break;
+            case Animation.FadeTo:
+                image.color = Color.Lerp(start, end, sequencer.synchroniser.Percent);
+                break;
+            case Animation.FadeFrom:
+                image.color = Color.Lerp(start, end, sequencer.synchroniser.Percent);
+                break;
+        }
+        
     }
 
     void Callback()
