@@ -52,7 +52,7 @@ public class Synchronism : MonoBehaviour
         synchronisers[Synchronisations.THIRTYSECOND_NOTE].RegisterCallback(this, OnTimeThirtySecond);
     }
 
-    protected virtual void FixedUpdate()
+    protected virtual void Update()
     {
         // Updating all the note waves
         foreach (KeyValuePair<Synchronisations, Synchroniser> synchs in synchronisers)

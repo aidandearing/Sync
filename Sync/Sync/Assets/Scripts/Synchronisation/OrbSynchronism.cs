@@ -62,9 +62,9 @@ public class OrbSynchronism : Synchronism
     }
 
     // Update is called once per frame
-    protected override void FixedUpdate()
+    protected override void Update()
     {
-        base.FixedUpdate();
+        base.Update();
 
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();

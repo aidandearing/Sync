@@ -14,9 +14,9 @@ public class TitleSynchronism : Synchronism
         Initialise();
     }
 
-    protected override void FixedUpdate()
+    protected override void Update()
     {
-        base.FixedUpdate();
+        base.Update();
     }
 
     protected override void OnTimeBar8()

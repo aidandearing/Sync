@@ -36,7 +36,7 @@ public class MusicSource : MonoBehaviour
         }
     }
 
-    public void FixedUpdate()
+    public void Update()
     {
         if (!sequencer.isInitialised)
             Initialise();

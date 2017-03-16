@@ -35,7 +35,7 @@ public class Synchroniser
 
     public void Update()
     {
-        timer += Time.fixedDeltaTime;
+        timer += Time.deltaTime;
 
         if (timer >= goal)
         {

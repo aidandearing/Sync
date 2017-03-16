@@ -41,7 +41,18 @@ public class TextColourSequencer : MonoBehaviour
         if (!isInitialised)
             Initialise();
 
-        text.color = Color.Lerp(start, end, sequencer.Evaluate());
+        switch (animation)
+        {
+            case Animation.Lerp:
+                text.color = Color.Lerp(start, end, sequencer.Evaluate());
+                break;
+            case Animation.FadeTo:
+                text.color = Color.Lerp(start, end, sequencer.synchroniser.Percent);
+                break;
+            case Animation.FadeFrom:
+                text.color = Color.Lerp(start, end, sequencer.synchroniser.Percent);
+                break;
+        }
     }
 
     void Callback()

@@ -70,7 +70,7 @@ ModelImporter:
     4300000: knife
     4300002: spraycan
     4300004: nero
-    7400000: idle
+    7400000: Nero@Idle
     9500000: //RootNode
     13700000: knife
     13700002: nero
@@ -97,7 +97,7 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: idle
+      name: Nero@Idle
       takeName: Take 001
       firstFrame: 0
       lastFrame: 120

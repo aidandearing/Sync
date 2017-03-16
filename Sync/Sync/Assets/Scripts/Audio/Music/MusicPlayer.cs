@@ -8,7 +8,7 @@ public class MusicPlayer : MonoBehaviour
 {
     public MusicTrack[] tracks;
 
-    void FixedUpdate()
+    void Update()
     {
         foreach(MusicTrack track in tracks)
         {
