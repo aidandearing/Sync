@@ -47,6 +47,7 @@ public static class Literals
             public static class Controllers
             {
                 public const string Controller = "controllersController";
+                public const string Environment = "controllersEnvironmentController";
                 public const string Player = "controllersPlayerController";
             }
 
