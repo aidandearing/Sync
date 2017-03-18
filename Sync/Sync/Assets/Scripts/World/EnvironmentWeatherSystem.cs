@@ -135,7 +135,8 @@ public class EnvironmentWeatherSystem
                 float strata = (float)(i * cloudsStratification) / ((controller.clouds.Length - 1) / cloudsDensity);
                 Color colour = Color.Lerp(cloudLow, cloudHigh, strata);
                 colour.a = strata;
-                controller.clouds[i].SetColor("_TintColor", colour);
+                controller.clouds[i].SetColor("_Color", colour);
+                controller.clouds[i].SetColor("_Sun", controller.light.color);
             }
         }
         else

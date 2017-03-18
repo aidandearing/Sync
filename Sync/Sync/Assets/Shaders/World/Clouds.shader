@@ -1,10 +1,10 @@
 ﻿Shader "World/Clouds/Alpha" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
-		_MainTex ("Albedo (RGB)", 2D) = "white" {}
-		_Glossiness ("Smoothness", Range(0,1)) = 0.5
-		_Metallic ("Metallic", Range(0,1)) = 0.0
-
+		_Sun ("Sun", Color) = (1,1,1,1)
+		_MainTex ("Albedo (RGBA)", 2D) = "white" {}
+		_Scattering("Scattering", Float) = 1.0
+		_Density("Scattering Density", Float) = 1
 		// Alpha Mode properties
 		[KeywordEnum(Alpha, Stepped, HighPass, LowPass, Threshold, Range, RangeNormalized, Exponential)] _AlphaRangeMode("Alpha Mode", Float) = 0
 		[Toggle] _AlphaBlit("Alpha Blend", Float) = 1
@@ -12,38 +12,49 @@
 		_AlphaThreshold("Alpha Threshold", Float) = 0
 	}
 	SubShader {
-		Tags { "RenderType"="Transparent" }
+		Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
+
+		Blend SrcAlpha OneMinusSrcAlpha
+		//Cull Back
 		LOD 200
 		
 		CGPROGRAM
 		// Physically based Standard lighting model, and enable shadows on all light types
-		#pragma surface surf Standard fullforwardshadows
-
+		#pragma surface surf Lambert alpha
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
+
+		#include "UnityCG.cginc"
 
 		sampler2D _MainTex;
 
 		struct Input {
 			float2 uv_MainTex;
 		};
-
-		half _Glossiness;
-		half _Metallic;
 		fixed4 _Color;
+		fixed4 _Sun;
+
+		float _Scattering;
+
+		float _Density;
 
 		float _AlphaRangeMode;
 		float _AlphaBlit;
 		float _AlphaRange;
 		float _AlphaThreshold;
 
-		void surf (Input IN, inout SurfaceOutputStandard o) {
+		float random(float2 p) // Version 2
+		{
+			// e^pi (Gelfond's constant)
+			// 2^sqrt(2) (Gelfond–Schneider constant)
+			float2 r = float2(23.14069263277926, 2.665144142690225);
+			//return fract( cos( mod( 12345678., 256. * dot(p,r) ) ) ); // ver1
+			return frac(cos(dot(p, r)) * 123456.); // ver2
+		}
+
+		void surf (Input IN, inout SurfaceOutput o) {
 			// Albedo comes from a texture tinted by color
-			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
-			o.Albedo = c.rgb;
-			// Metallic and smoothness come from slider variables
-			o.Metallic = _Metallic;
-			o.Smoothness = _Glossiness;
+			fixed4 c = tex2D(_MainTex, IN.uv_MainTex + float2(random(IN.uv_MainTex), random(IN.uv_MainTex)) * _Scattering) * _Color;
 
 			float alpha = c.a;
 
@@ -105,9 +116,13 @@
 				alpha = pow(alpha, _AlphaRange);
 			}
 
+			float density = pow(1.0 - alpha, _Density);
+
+			o.Albedo = c.rgb;// _Sun.rgb;
+			o.Emission = (density * _Sun);
 			o.Alpha = alpha;
 		}
 		ENDCG
 	}
-	FallBack "Diffuse"
+	FallBack "Transparent"
 }
