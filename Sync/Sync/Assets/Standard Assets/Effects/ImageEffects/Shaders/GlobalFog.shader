@@ -1,6 +1,8 @@
 Shader "Hidden/GlobalFog" {
 Properties {
 	_MainTex ("Base (RGB)", 2D) = "black" {}
+	_Sun ("Sun", Color) = (1,1,1,1)
+	_Volume ("Atmospheric Volume", Float) = 100000000
 }
 
 CGINCLUDE
@@ -9,6 +11,10 @@ CGINCLUDE
 
 	uniform sampler2D _MainTex;
 	uniform sampler2D_float _CameraDepthTexture;
+
+	float _Volume;
+
+	half4 _Sun;
 	
 	// x = fog height
 	// y = FdotC (CameraY-FogHeight)
@@ -122,23 +128,111 @@ CGINCLUDE
 		return g;
 	}
 
-	half4 ComputeFog (v2f i, bool distance, bool height) : SV_Target
+	float4 permute(float4 x)
 	{
-		half4 sceneColor = tex2D(_MainTex, UnityStereoTransformScreenSpaceTex(i.uv));
+		return fmod(34.0 * pow(x, 2) + x, 289.0);
+	}
+
+	float2 fade(float2 t) 
+	{
+		return  t * t * t * (t * (t * 6 - 15) + 10);
+	}
+
+	float4 taylorInvSqrt(float4 r) 
+	{
+		return 1.79284291400159 - 0.85373472095314 * r;
+	}
+
+	#define DIV_289 0.00346020761245674740484429065744f
+
+	float mod289(float x) 
+	{
+		return x - floor(x * DIV_289) * 289.0;
+	}
+
+	float PerlinNoise2D(float2 P)
+	{
+		float4 Pi = floor(P.xyxy) + float4(0.0, 0.0, 1.0, 1.0);
+		float4 Pf = frac(P.xyxy) - float4(0.0, 0.0, 1.0, 1.0);
+
+		float4 ix = Pi.xzxz;
+		float4 iy = Pi.yyww;
+		float4 fx = Pf.xzxz;
+		float4 fy = Pf.yyww;
+
+		float4 i = permute(permute(ix) + iy);
+
+		float4 gx = frac(i / 41.0) * 2.0 - 1.0;
+		float4 gy = abs(gx) - 0.5;
+		float4 tx = floor(gx + 0.5);
+		gx = gx - tx;
+
+		float2 g00 = float2(gx.x, gy.x);
+		float2 g10 = float2(gx.y, gy.y);
+		float2 g01 = float2(gx.z, gy.z);
+		float2 g11 = float2(gx.w, gy.w);
+
+		float4 norm = taylorInvSqrt(float4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));
+		g00 *= norm.x;
+		g01 *= norm.y;
+		g10 *= norm.z;
+		g11 *= norm.w;
+
+		float n00 = dot(g00, float2(fx.x, fy.x));
+		float n10 = dot(g10, float2(fx.y, fy.y));
+		float n01 = dot(g01, float2(fx.z, fy.z));
+		float n11 = dot(g11, float2(fx.w, fy.w));
+
+		float2 fade_xy = fade(Pf.xy);
+		float2 n_x = lerp(float2(n00, n01), float2(n10, n11), fade_xy.x);
+		float n_xy = lerp(n_x.x, n_x.y, fade_xy.y);
+		return 2.3 * n_xy;
+	}
+
+	float random(float2 p) // Version 2
+	{
+		// e^pi (Gelfond's constant)
+		// 2^sqrt(2) (Gelfond–Schneider constant)
+		float2 r = float2(23.14069263277926, 2.665144142690225);
+		//return fract( cos( mod( 12345678., 256. * dot(p,r) ) ) ); // ver1
+		return frac(cos(dot(p, r)) * 123456.); // ver2
+	}
+
+	half4 ComputeFog (v2f IN, bool distance, bool height) : SV_Target
+	{
+		half4 sceneColor = tex2D(_MainTex, UnityStereoTransformScreenSpaceTex(IN.uv));
 		
 		// Reconstruct world space position & direction
 		// towards this screen pixel.
-		float rawDepth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, UnityStereoTransformScreenSpaceTex(i.uv_depth));
+		float rawDepth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, UnityStereoTransformScreenSpaceTex(IN.uv_depth));
 		float dpth = Linear01Depth(rawDepth);
-		float4 wsDir = dpth * i.interpolatedRay;
+		float4 wsDir = dpth * IN.interpolatedRay;
 		float4 wsPos = _CameraWS + wsDir;
+
+		float noise = 1;
 
 		// Compute fog distance
 		float g = _DistanceParams.x;
 		if (distance)
-			g += ComputeDistance (wsDir, dpth);
+		{
+			g += ComputeDistance(wsDir, dpth);
+		}
 		if (height)
-			g += ComputeHalfSpace (wsDir);
+		{
+			g += ComputeHalfSpace(wsDir);
+
+			noise = 0;
+
+			for (int i = 1; i <= 8; i++)
+			{
+				noise += PerlinNoise2D(IN.interpolatedRay.xy * pow(2,i) * 0.000002);
+			}
+
+			noise /= 8;
+
+			noise = noise * 0.5 + 0.5;
+			noise = min(1, max(noise, 0));
+		}
 
 		// Compute fog amount
 		half fogFac = ComputeFogFactor (max(0.0,g));
@@ -147,9 +241,31 @@ CGINCLUDE
 			fogFac = 1.0;
 		//return fogFac; // for debugging
 		
+		float intensity = dot(_Sun, half4(0.3, 0.6, 0.1, 1));
+
+		half4 colour;
+
+		float pos = wsPos.y / _Volume;
+
+		pos = min(1, max(pos, 0));
+
+		colour.r = (2 * 3.1415 * pos) / 0.7;
+		colour.g = (2 * 3.1415 * pos) / 0.51;
+		colour.b = (2 * 3.1415 * pos) / 0.45;
+		colour.a = 1;
+
+		//colour.rgb *= intensity;
+		
+		half4 sun = _Sun;
+		//sun.rgb *= fogFac;
+
+		colour = lerp(sun, colour, pos);
+
+		colour = lerp(colour, unity_FogColor, dot(colour, float4(0, 0, 0, 1) * pow(noise, 0.25)));
+
 		// Lerp between fog color & original scene color
 		// by fog amount
-		return lerp (unity_FogColor, sceneColor, fogFac);
+		return lerp (colour, sceneColor, fogFac);
 	}
 
 ENDCG

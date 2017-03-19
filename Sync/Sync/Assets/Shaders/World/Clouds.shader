@@ -7,7 +7,6 @@
 		_Density("Scattering Density", Float) = 1
 		// Alpha Mode properties
 		[KeywordEnum(Alpha, Stepped, HighPass, LowPass, Threshold, Range, RangeNormalized, Exponential)] _AlphaRangeMode("Alpha Mode", Float) = 0
-		[Toggle] _AlphaBlit("Alpha Blend", Float) = 1
 		_AlphaRange("Alpha Range", Float) = 1
 		_AlphaThreshold("Alpha Threshold", Float) = 0
 	}
@@ -28,9 +27,11 @@
 
 		sampler2D _MainTex;
 
-		struct Input {
+		struct Input 
+		{
 			float2 uv_MainTex;
 		};
+
 		fixed4 _Color;
 		fixed4 _Sun;
 
@@ -119,8 +120,8 @@
 			float density = pow(1.0 - alpha, _Density);
 
 			o.Albedo = c.rgb;// _Sun.rgb;
-			o.Emission = (density * _Sun);
-			o.Alpha = alpha;
+			o.Emission = (density * _Sun.rgb);
+			o.Alpha = max(min(alpha,1),0);
 		}
 		ENDCG
 	}

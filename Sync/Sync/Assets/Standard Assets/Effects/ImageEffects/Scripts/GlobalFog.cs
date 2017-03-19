@@ -8,6 +8,8 @@ namespace UnityStandardAssets.ImageEffects
     [AddComponentMenu ("Image Effects/Rendering/Global Fog")]
     class GlobalFog : PostEffectsBase
 	{
+        [Tooltip("The sun light, for fog colour")]
+        public Light sun;
 		[Tooltip("Apply distance-based fog?")]
         public bool  distanceFog = true;
 		[Tooltip("Exclude far plane pixels from distance-based fog? (Skybox or clear color)")]
@@ -18,14 +20,15 @@ namespace UnityStandardAssets.ImageEffects
 		public bool  heightFog = true;
 		[Tooltip("Fog top Y coordinate")]
         public float height = 1.0f;
-        [Range(0.001f,10.0f)]
+        [Range(0.0000001f,10.0f)]
         public float heightDensity = 2.0f;
 		[Tooltip("Push fog away from the camera by this amount")]
         public float startDistance = 0.0f;
-
+        [Tooltip("Define the atmospheric volume")]
+        [Range(0,10000000000)]
+        public float atmosphericVolume = 10000000;
         public Shader fogShader = null;
         private Material fogMaterial = null;
-
 
         public override bool CheckResources ()
 		{
@@ -71,6 +74,8 @@ namespace UnityStandardAssets.ImageEffects
             fogMaterial.SetVector("_CameraWS", camPos);
             fogMaterial.SetVector("_HeightParams", new Vector4(height, FdotC, paramK, heightDensity * 0.5f));
             fogMaterial.SetVector("_DistanceParams", new Vector4(-Mathf.Max(startDistance, 0.0f), excludeDepth, 0, 0));
+            fogMaterial.SetFloat("_Volume", atmosphericVolume);
+            fogMaterial.SetColor("_Sun", sun.color);
 
             var sceneMode = RenderSettings.fogMode;
             var sceneDensity = RenderSettings.fogDensity;
