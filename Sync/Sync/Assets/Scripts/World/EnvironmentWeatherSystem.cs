@@ -11,6 +11,7 @@ public class EnvironmentWeatherSystem
 
     [Header("Environmental")]
     public Gradient sunlight;
+    public Gradient ambient;
     public Gradient fog;
     public bool hasClouds = false;
     public Gradient clouds;
@@ -57,28 +58,29 @@ public class EnvironmentWeatherSystem
     public Synchronism.Synchronisations synchronisation = Synchronism.Synchronisations.BAR_8;
     private Synchroniser synchroniser;
 
-    private EnvironmentController controller;
+    //private EnvironmentController controller;
 
-    public void Update()
+    public void Update(EnvironmentController controller)
     {
-        if (controller == null)
-            controller = Blackboard.Global[Literals.Strings.Blackboard.Controllers.Environment].Value as EnvironmentController;
+        //if (controller == null)
+        //    controller = Blackboard.Global[Literals.Strings.Blackboard.Controllers.Environment].Value as EnvironmentController;
 
         float evaluate = controller.sequencer.Evaluate();
 
         controller.light.color = sunlight.Evaluate(evaluate);
+        RenderSettings.ambientLight = ambient.Evaluate(evaluate);
         RenderSettings.fogColor = fog.Evaluate(evaluate);
 
         if (evaluate >= transitionStart && evaluate <= transitionEnd)
         {
-            EvaluateTimeOfDay(evaluate);
+            EvaluateTimeOfDay(controller, evaluate);
         }
         else if (evaluate < 0.5)
         {
             // NIGHT
             if (controller.isDay == true)
             {
-                EvaluateTimeOfDay(0);
+                EvaluateTimeOfDay(controller, 0);
 
                 controller.isDay = false;
             }
@@ -88,17 +90,17 @@ public class EnvironmentWeatherSystem
             // DAY
             if (controller.isDay == false)
             {
-                EvaluateTimeOfDay(1);
+                EvaluateTimeOfDay(controller, 1);
 
                 controller.isDay = true;
             }
         }
 
         if (hasClouds)
-            EvaluateWind(evaluate);
+            EvaluateWind(controller, evaluate);
     }
 
-    public void EvaluateWind(float evaluate)
+    public void EvaluateWind(EnvironmentController controller, float evaluate)
     {
         float cloudsDensity = Mathf.Lerp(cloudsDensityNight, cloudsDensityDay, evaluate);
 
@@ -109,7 +111,7 @@ public class EnvironmentWeatherSystem
         }
     }
 
-    private void EvaluateTimeOfDay(float evaluate)
+    private void EvaluateTimeOfDay(EnvironmentController controller, float evaluate)
     {
         float range = (evaluate - transitionStart) / (transitionEnd - transitionStart);
 

@@ -25,6 +25,32 @@ public static class Literals
 
     public static class Strings
     {
+        public static class Input
+        {
+            public static class Controller
+            {
+                public const string ButtonA = "A";
+                public const string ButtonB = "B";
+                public const string ButtonX = "X";
+                public const string ButtonY = "Y";
+                public const string BumperLeft = "Left Bumper";
+                public const string BumperRight = "Right Bumper";
+                public const string ButtonView = "View";
+                public const string ButtonMenu = "Menu";
+                public const string StickLeftButton = "Left Stick Button";
+                public const string StickRightButton = "Right Stick Button";
+                public const string StickLeftHorizontal = "Left Stick - Horizontal";
+                public const string StickLeftVertical = "Left Stick - Vertical";
+                public const string StickRightHorizontal = "Right Stick - Horizontal";
+                public const string StickRightVertical = "Right Stick = Vertical";
+                public const string PadHorizontal = "DPAD - Horizontal";
+                public const string PadVertical = "DPAD - Vertical";
+                public const string TriggerLeft = "Left Trigger";
+                public const string TriggerRight = "Right Trigger";
+                public const string TriggerBoth = "Left Trigger Shared Axis";
+            }
+        }
+
         public static class Tags
         {
             public const string Floor = "floor";

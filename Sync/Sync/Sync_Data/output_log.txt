@@ -1,0 +1,266 @@
+Initialize engine version: 5.5.0f3 (38b4efef76f0)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 960M (ID=0x139b)
+    Vendor:   NVIDIA
+    VRAM:     4064 MB
+    Driver:   20.19.15.4531
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+- Completed reload, in  0.024 seconds
+Platform assembly: D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\_GameDev\Game_Capstone\Sync\Sync\Sync\Sync_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 59Hz; virtual: 3200x1080 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+Shader 'World/Clouds/Alpha': fallback shader 'Transparent' not found
+Shader 'World/Sky/Gradient': fallback shader 'Transparent' not found
+UnloadTime: 2.606180 ms
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 674 -> priority: 1 
+  Thread -> id: 3ae8 -> priority: 1 
+Joystick disconnected ("Controller (Xbox One For Windows)").
+ 
+(Filename:  Line: 1258)
+
+Joystick reconnected ("Controller (Xbox One For Windows)").
+ 
+(Filename:  Line: 1323)
+
+Joystick disconnected ("Controller (Xbox One For Windows)").
+ 
+(Filename:  Line: 1258)
+
+Joystick reconnected ("Controller (Xbox One For Windows)").
+ 
+(Filename:  Line: 1323)
+
+<RI.Hid> Failed to read input report:
+The I/O operation has been aborted because of either a thread exit or an application request.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+Joystick disconnected ("Controller (Xbox One For Windows)").
+ 
+(Filename:  Line: 1258)
+
+Joystick reconnected ("Controller (Xbox One For Windows)").
+ 
+(Filename:  Line: 1323)
+
+<RI.Hid> Failed to read input report:
+The I/O operation has been aborted because of either a thread exit or an application request.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+<RI.Hid> Failed to read input report:
+The requested resource is in use.
+
+ 
+(Filename:  Line: 685)
+
+Joystick disconnected ("Controller (Xbox One For Windows)").
+ 
+(Filename:  Line: 1258)
+

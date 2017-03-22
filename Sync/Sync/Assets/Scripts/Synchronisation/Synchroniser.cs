@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[AddComponentMenu("Scripts/Synchronisation/Synchroniser")]
 public class Synchroniser
 {
     public delegate void OnTime();

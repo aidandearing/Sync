@@ -32,9 +32,9 @@ public class PlayerController : Controller
 
     protected override Vector3 HandleMovementInput()
     {
-        Vector3 v = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Jump"), Input.GetAxis("Vertical"));
+        Vector3 v = new Vector3(Input.GetAxis(Literals.Strings.Input.Controller.StickLeftHorizontal), (Input.GetButton(Literals.Strings.Input.Controller.ButtonA) == true) ? 1 : 0, Input.GetAxis(Literals.Strings.Input.Controller.StickLeftVertical));
 
-        if (v.x > 0 || v.z > 0)
+        if (v.x != 0 || v.z != 0)
         {
             movement.actionPrimaryLastInputTime = Time.time;
             movement.actionPrimaryLastInputVector = v;
