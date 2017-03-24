@@ -12,7 +12,7 @@
 	}
 	SubShader {
 		Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
-
+		Fog { Mode Off }
 		Blend SrcAlpha OneMinusSrcAlpha
 		//Cull Back
 		LOD 200

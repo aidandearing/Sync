@@ -42,7 +42,7 @@ public static class Literals
                 public const string StickLeftHorizontal = "Left Stick - Horizontal";
                 public const string StickLeftVertical = "Left Stick - Vertical";
                 public const string StickRightHorizontal = "Right Stick - Horizontal";
-                public const string StickRightVertical = "Right Stick = Vertical";
+                public const string StickRightVertical = "Right Stick - Vertical";
                 public const string PadHorizontal = "DPAD - Horizontal";
                 public const string PadVertical = "DPAD - Vertical";
                 public const string TriggerLeft = "Left Trigger";

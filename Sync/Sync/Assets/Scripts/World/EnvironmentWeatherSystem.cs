@@ -14,25 +14,15 @@ public class EnvironmentWeatherSystem
     public Gradient ambient;
     public Gradient fog;
     public bool hasClouds = false;
-    public Gradient clouds;
-    [Range(0.0000001f, 100.0f)]
-    public float cloudsDensityDay = 0.01f;
-    [Range(0.0000001f, 100.0f)]
-    public float cloudsDensityNight = 0.1f;
-    [Range(0, 1)]
-    public float cloudsScatteringDensityDay = 0.001f;
-    [Range(0, 1)]
-    public float cloudsScatteringDensityNight = 0.001f;
-    public float cloudsAlphaRangeDay = 0.5f;
-    public float cloudsAlphaRangeNight = 0.5f;
-    public float cloudsAlphaThresholdDay = 0.5f;
-    public float cloudsAlphaThresholdNight = 0.5f;
+    public Gradient cloudsLow;
+    public Gradient cloudsHigh;
+    public AnimationCurve cloudDensity;
+    public AnimationCurve cloudScattering;
+    public AnimationCurve cloudAlphaRange;
+    public AnimationCurve cloudAlphaThreshold;
     public float cloudsStratification = 1.0f;
     public Vector3 windDirection = new Vector3(1.0f, 0.0f, 0.0f);
-    [Range(0.0000001f, 1.0f)]
-    public float fogDensityDay = 0.0005f;
-    [Range(0.0000001f, 1.0f)]
-    public float fogDensityNight = 0.001f;
+    public AnimationCurve fogDensity;
     [Header("Euler Rotations")]
     public Vector3 day;
     public Vector3 night;
@@ -102,7 +92,7 @@ public class EnvironmentWeatherSystem
 
     public void EvaluateWind(EnvironmentController controller, float evaluate)
     {
-        float cloudsDensity = Mathf.Lerp(cloudsDensityNight, cloudsDensityDay, evaluate);
+        float cloudsDensity = cloudDensity.Evaluate(evaluate);
 
         for (int i = 0; i < controller.clouds.Length; i++)
         {
@@ -116,7 +106,7 @@ public class EnvironmentWeatherSystem
         float range = (evaluate - transitionStart) / (transitionEnd - transitionStart);
 
         controller.light.transform.rotation = Quaternion.Euler(Vector3.Lerp(night, day, range));
-        RenderSettings.fogDensity = Mathf.Lerp(fogDensityNight, fogDensityDay, range);
+        RenderSettings.fogDensity = fogDensity.Evaluate(range);
         controller.cityLight.range = cityLightRange.Evaluate(range);
 
         controller.city.SetColor("_Color", cityDiffuse.Evaluate(range));
@@ -136,12 +126,12 @@ public class EnvironmentWeatherSystem
         {
             for (int i = 0; i < controller.clouds.Length; i++)
             {
-                controller.clouds[i].SetColor("_Color", clouds.Evaluate(range));
-                controller.clouds[i].SetColor("_Sun", controller.light.color);
-                controller.clouds[i].SetFloat("_Scattering", Mathf.Lerp(cloudsScatteringDensityNight, cloudsScatteringDensityDay, range));
-                controller.clouds[i].SetFloat("_Density", Mathf.Lerp(cloudsDensityNight, cloudsDensityDay, range));
-                controller.clouds[i].SetFloat("_AlphaRange", Mathf.Lerp(cloudsAlphaRangeNight, cloudsAlphaRangeDay, range));
-                controller.clouds[i].SetFloat("_AlphaThreshold", Mathf.Lerp(cloudsAlphaThresholdNight, cloudsAlphaThresholdDay, range));
+                controller.clouds[i].SetColor("_Color", cloudsLow.Evaluate(range));
+                controller.clouds[i].SetColor("_Sun", cloudsHigh.Evaluate(range));
+                controller.clouds[i].SetFloat("_Scattering", cloudScattering.Evaluate(range));
+                controller.clouds[i].SetFloat("_Density", cloudDensity.Evaluate(range));
+                controller.clouds[i].SetFloat("_AlphaRange", cloudAlphaRange.Evaluate(range));
+                controller.clouds[i].SetFloat("_AlphaThreshold", cloudAlphaThreshold.Evaluate(range));
             }
         }
         else

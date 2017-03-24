@@ -6,6 +6,10 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : Controller
 {
+    [Header("Camera")]
+    new public Camera camera;
+    public bool cameraOriented = true;
+
     // Use this for initialization
     protected override void Start()
     {
@@ -32,10 +36,26 @@ public class PlayerController : Controller
 
     protected override Vector3 HandleMovementInput()
     {
-        Vector3 v = new Vector3(Input.GetAxis(Literals.Strings.Input.Controller.StickLeftHorizontal), (Input.GetButton(Literals.Strings.Input.Controller.ButtonA) == true) ? 1 : 0, Input.GetAxis(Literals.Strings.Input.Controller.StickLeftVertical));
+        Vector3 v = new Vector3(-Input.GetAxis(Literals.Strings.Input.Controller.StickLeftHorizontal), 
+                (Input.GetButton(Literals.Strings.Input.Controller.ButtonA) == true) ? 1 : 0, 
+                Input.GetAxis(Literals.Strings.Input.Controller.StickLeftVertical));
 
         if (v.x != 0 || v.z != 0)
         {
+            // When camera orientated the input vector needs to be rotated so that its forward is pointing in the same way as the camera's forward (on the xz plane)
+            if (cameraOriented)
+            {
+                // This should be achievable by first generating a rotation from the input to the camera forward;
+                Quaternion rotation = Quaternion.FromToRotation(new Vector3(0,0,-1), camera.transform.forward);
+
+                float ty = v.y;
+
+                v = rotation * v;
+                v.Normalize();
+
+                v.Set(v.x, ty, v.z);
+            }
+
             movement.actionPrimaryLastInputTime = Time.time;
             movement.actionPrimaryLastInputVector = v;
         }
@@ -53,7 +73,7 @@ public class PlayerController : Controller
     {
         Vector3 input = HandleMovementInput();
 
-        // This checks to see if the time between an input was last recieved and if the time is shorter than a percentage of the synchronisers duration and this frame there is no input
+        // This checks to see if the time between an input was last recieved and if the time is shorter than a percentage of the synchronisers duration and this frame
         if (Time.time - movement.actionPrimaryLastInputTime < movement.actionPrimarySynchroniser.Duration * MovementStatistics.FACTOR_OF_DURATION_AS_PADDING_ON_INPUT && input.sqrMagnitude < 1)
         {
             input = movement.actionPrimaryLastInputVector;
