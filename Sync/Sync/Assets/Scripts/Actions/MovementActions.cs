@@ -86,7 +86,10 @@ public class MovementActions
 
             if (input.y > 0)
             {
-                self.rigidbody.AddForce(movement, ForceMode.Impulse);
+                //self.rigidbody.AddForce(movement, ForceMode.Impulse);
+                self.animator.SetFloat(Literals.Strings.Parameters.Animation.JumpX, movement.x);
+                self.animator.SetFloat(Literals.Strings.Parameters.Animation.JumpY, movement.y);
+                self.animator.SetFloat(Literals.Strings.Parameters.Animation.JumpZ, movement.z);
             }
         }
 

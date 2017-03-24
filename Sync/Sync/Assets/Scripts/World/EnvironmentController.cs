@@ -12,12 +12,14 @@ public class EnvironmentController : MonoBehaviour
     [Header("Weather")]
     public EnvironmentWeatherSystem[] weather;
     public int weatherIndex;
+    public Color cloudsHigh;
 
     [Header("References")]
     new public Light light;
     public Light cityLight;
     public ParticleSystem[] particles;
     public Material[] clouds;
+    public Transform[] cloudTransforms;
 
     [Header("City")]
     public Material city;
@@ -38,6 +40,8 @@ public class EnvironmentController : MonoBehaviour
             Blackboard.Global[Literals.Strings.Blackboard.Controllers.Environment].Value = this;
 
         sequencer.callback = Callback;
+
+        weather[0].Start(this);
     }
 
     void Update()

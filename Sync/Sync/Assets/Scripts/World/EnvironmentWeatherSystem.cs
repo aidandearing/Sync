@@ -16,6 +16,7 @@ public class EnvironmentWeatherSystem
     public bool hasClouds = false;
     public Gradient cloudsLow;
     public Gradient cloudsHigh;
+    public AnimationCurve cloudHeight;
     public AnimationCurve cloudDensity;
     public AnimationCurve cloudScattering;
     public AnimationCurve cloudAlphaRange;
@@ -49,6 +50,15 @@ public class EnvironmentWeatherSystem
     private Synchroniser synchroniser;
 
     //private EnvironmentController controller;
+
+    public void Start(EnvironmentController controller)
+    {
+        for(int i = 0; i < controller.cloudTransforms.Length; i++)
+        {
+            Vector3 scale = new Vector3(controller.cloudTransforms[i].transform.localScale.x, controller.cloudTransforms[i].transform.localScale.y, cloudHeight.Evaluate(1.0f - i / (controller.cloudTransforms.Length - 1.0f)));
+            controller.cloudTransforms[i].transform.localScale = scale;
+        }
+    }
 
     public void Update(EnvironmentController controller)
     {
@@ -142,5 +152,7 @@ public class EnvironmentWeatherSystem
                 controller.clouds[i].SetColor("_Sun", new Color(0,0,0,0));
             }
         }
+
+        controller.cloudsHigh = cloudsHigh.Evaluate(range);
     }
 }

@@ -91,7 +91,6 @@ public class FreeOrbit : MonoBehaviour
         float percentageAtLower = lower / orbitOffsetCount;
         float percentageAtUpper = upper / orbitOffsetCount;
         float percentageBetween = (orbitTransition - percentageAtLower) / (percentageAtUpper - percentageAtLower);
-        Debug.Log(percentageBetween);
 
         Vector3 orbitOffset = Vector3.Slerp(orbitOffsets[lower], orbitOffsets[upper], percentageBetween);
 

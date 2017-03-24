@@ -113,6 +113,9 @@ public static class Literals
                 public const string TouchedGround = "touchedGround";
                 public const string IsFalling = "isFalling";
                 public const string WantsToFall = "wantsToFall";
+                public const string JumpX = "jumpX";
+                public const string JumpY = "jumpY";
+                public const string JumpZ = "jumpZ";
             }
         }
     }

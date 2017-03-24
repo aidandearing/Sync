@@ -9,6 +9,8 @@ public class StateJumpBehaviour : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetBool(Literals.Strings.Parameters.Animation.IsJumping, true);
+
+        animator.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(animator.GetFloat(Literals.Strings.Parameters.Animation.JumpX), animator.GetFloat(Literals.Strings.Parameters.Animation.JumpY), animator.GetFloat(Literals.Strings.Parameters.Animation.JumpZ)), ForceMode.Impulse);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

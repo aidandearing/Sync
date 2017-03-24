@@ -11,22 +11,28 @@ namespace UnityStandardAssets.ImageEffects
         [Tooltip("The sun light, for fog colour")]
         public Light sun;
 		[Tooltip("Apply distance-based fog?")]
-        public bool  distanceFog = true;
+        public bool distanceFog = true;
 		[Tooltip("Exclude far plane pixels from distance-based fog? (Skybox or clear color)")]
-		public bool  excludeFarPixels = true;
+		public bool excludeFarPixels = true;
 		[Tooltip("Distance fog is based on radial distance from camera when checked")]
-		public bool  useRadialDistance = false;
+		public bool useRadialDistance = false;
 		[Tooltip("Apply height-based fog?")]
-		public bool  heightFog = true;
+		public bool heightFog = true;
 		[Tooltip("Fog top Y coordinate")]
         public float height = 1.0f;
         [Range(0.0000001f,10.0f)]
         public float heightDensity = 2.0f;
 		[Tooltip("Push fog away from the camera by this amount")]
         public float startDistance = 0.0f;
-        [Tooltip("Define the atmospheric volume")]
+        [Tooltip("Define radius of the atmosphere")]
         [Range(0,10000000000)]
-        public float atmosphericVolume = 10000000;
+        public float atmosphericVolume = 1000;
+        [Tooltip("The scattering factors for RGBA")]
+        public Vector4 scatteringFactor = new Vector4(0.5f, 0.75f, 1.0f, 0);
+        [Tooltip("The factor of an exponential curve for sun scattering")]
+        public float sunScatterFactor = 0.5f;
+        [Tooltip("The strength the skybox has over the depth fog (0 for sky colour being fog colour, 1 for sky colour being sky colour)")]
+        public float skyboxFactor = 0.25f;
         public Shader fogShader = null;
         private Material fogMaterial = null;
 
@@ -76,6 +82,10 @@ namespace UnityStandardAssets.ImageEffects
             fogMaterial.SetVector("_DistanceParams", new Vector4(-Mathf.Max(startDistance, 0.0f), excludeDepth, 0, 0));
             fogMaterial.SetFloat("_Volume", atmosphericVolume);
             fogMaterial.SetColor("_Sun", sun.color);
+            fogMaterial.SetVector("_SunDirection", sun.transform.forward);
+            fogMaterial.SetVector("_Scattering", scatteringFactor);
+            fogMaterial.SetFloat("_SkyboxExpression", skyboxFactor);
+            fogMaterial.SetFloat("_SunScatterFactor", sunScatterFactor);
 
             var sceneMode = RenderSettings.fogMode;
             var sceneDensity = RenderSettings.fogDensity;

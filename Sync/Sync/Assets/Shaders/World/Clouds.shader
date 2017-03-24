@@ -12,7 +12,6 @@
 	}
 	SubShader {
 		Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
-		Fog { Mode Off }
 		Blend SrcAlpha OneMinusSrcAlpha
 		//Cull Back
 		LOD 200
@@ -120,7 +119,12 @@
 			float density = pow(1.0 - alpha, _Density);
 
 			o.Albedo = c.rgb;// _Sun.rgb;
-			o.Emission = (density * _Sun.rgb);
+			fixed4 scatter;
+			scatter.r = _Sun.r * pow(1.0 - alpha, 0.5f);
+			scatter.g = _Sun.g * pow(1.0 - alpha, 0.75f);
+			scatter.b = _Sun.b * pow(1.0 - alpha, 1.0f);
+			scatter.a = _Sun.a;
+			o.Emission = scatter;
 			o.Alpha = max(min(alpha,1),0);
 		}
 		ENDCG

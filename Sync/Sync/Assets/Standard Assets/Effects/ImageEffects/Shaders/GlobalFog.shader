@@ -1,8 +1,12 @@
 Shader "Hidden/GlobalFog" {
 Properties {
 	_MainTex ("Base (RGB)", 2D) = "black" {}
-	_Sun ("Sun", Color) = (1,1,1,1)
-	_Volume ("Atmospheric Volume", Float) = 100000000
+	_Sun("Sun", Color) = (1,1,1,1)
+	_SunDirection("Sun Direction", Vector) = (0,0,1,0)
+	_Volume("Atmospheric Volume", Float) = 100000
+	_Scattering("Atmospheric Scatter (RGBA)", Vector) = (0.5,0.75,1.0,0)
+	_SkyboxExpression("Skybox Expression", Float) = 0.5
+	_SunScatterFactor("Sun Atmospheric Scattering", Float) = 0.5
 }
 
 CGINCLUDE
@@ -13,8 +17,12 @@ CGINCLUDE
 	uniform sampler2D_float _CameraDepthTexture;
 
 	float _Volume;
+	half4 _Scattering;
+	float _SkyboxExpression;
 
 	half4 _Sun;
+	float _SunScatterFactor;
+	float4 _SunDirection;
 	
 	// x = fog height
 	// y = FdotC (CameraY-FogHeight)
@@ -128,7 +136,7 @@ CGINCLUDE
 		return g;
 	}
 
-	float4 permute(float4 x)
+	/*float4 permute(float4 x)
 	{
 		return fmod(34.0 * pow(x, 2) + x, 289.0);
 	}
@@ -187,16 +195,7 @@ CGINCLUDE
 		float2 n_x = lerp(float2(n00, n01), float2(n10, n11), fade_xy.x);
 		float n_xy = lerp(n_x.x, n_x.y, fade_xy.y);
 		return 2.3 * n_xy;
-	}
-
-	float random(float2 p) // Version 2
-	{
-		// e^pi (Gelfond's constant)
-		// 2^sqrt(2) (Gelfond–Schneider constant)
-		float2 r = float2(23.14069263277926, 2.665144142690225);
-		//return fract( cos( mod( 12345678., 256. * dot(p,r) ) ) ); // ver1
-		return frac(cos(dot(p, r)) * 123456.); // ver2
-	}
+	}*/
 
 	half4 ComputeFog (v2f IN, bool distance, bool height) : SV_Target
 	{
@@ -221,7 +220,7 @@ CGINCLUDE
 		{
 			g += ComputeHalfSpace(wsDir);
 
-			noise = 0;
+			/*noise = 0;
 
 			for (int i = 1; i <= 8; i++)
 			{
@@ -231,37 +230,46 @@ CGINCLUDE
 			noise /= 8;
 
 			noise = noise * 0.5 + 0.5;
-			noise = min(1, max(noise, 0));
+			noise = min(1, max(noise, 0));*/
 		}
 
 		// Compute fog amount
 		half fogFac = ComputeFogFactor (max(0.0,g));
 		// Do not fog skybox
 		if (dpth == _DistanceParams.y)
-			fogFac = 1.0;
+			fogFac = _SkyboxExpression;
 		//return fogFac; // for debugging
 		
 		float intensity = dot(_Sun, half4(0.3, 0.6, 0.1, 1));
 
 		half4 colour;
 
-		float pos = wsPos.y / _Volume;
-
+		float pos = (dpth - wsPos.y) / _Volume;
 		pos = min(1, max(pos, 0));
 
-		colour.r = (2 * 3.1415 * pos) / 0.7;
-		colour.g = (2 * 3.1415 * pos) / 0.51;
-		colour.b = (2 * 3.1415 * pos) / 0.45;
-		colour.a = 1;
+		float posFactor = 1 - pos;
+		float sunFactor = pow((dot(normalize(wsDir), -_SunDirection) + 1) / 2, _SunScatterFactor);
 
+		fogFac = max(fogFac, 1 - sunFactor);
 		//colour.rgb *= intensity;
 		
-		half4 sun = _Sun;
+		half4 sun;
+		sun.r = _Sun.r * max(pow(sunFactor, _Scattering.x), pow(pos, _Scattering.x));
+		sun.g = _Sun.g * max(pow(sunFactor, _Scattering.y), pow(pos, _Scattering.y));
+		sun.b = _Sun.b * max(pow(sunFactor, _Scattering.z), pow(pos, _Scattering.z));
+		sun.a = _Sun.a * max(pow(sunFactor, _Scattering.w), pow(pos, _Scattering.w));
+		//sun.r = _Sun.r * pow(pos, _Scattering.x);
+		//sun.g = _Sun.g * pow(pos, _Scattering.y);
+		//sun.b = _Sun.b * pow(pos, _Scattering.z);
+		//sun.a = _Sun.a * pow(pos, _Scattering.w);
 		//sun.rgb *= fogFac;
 
-		colour = lerp(sun, colour, pos);
-
-		colour = lerp(colour, unity_FogColor, dot(colour, float4(0, 0, 0, 1) * pow(noise, 0.25)));
+		//colour = lerp(sun, unity_FogColor, 1 - dot(IN.interpolatedRay, -_SunDirection));
+		//colour = lerp(sun, unity_FogColor, (1 - pos);
+		colour = lerp(unity_FogColor, sun, lerp(posFactor, sunFactor, sunFactor));
+		//colour = lerp(sun, unity_FogColor, (dot(normalize(wsDir), -_SunDirection) + 1) / 2);
+		//colour = lerp(colour, unity_FogColor, dot(colour, fixed4(0.3, 0.6, 0.1, 1)));
+		//colour.rgba = dot(normalize(wsDir), -_SunDirection);
 
 		// Lerp between fog color & original scene color
 		// by fog amount
