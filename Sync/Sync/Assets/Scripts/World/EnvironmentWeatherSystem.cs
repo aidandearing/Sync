@@ -55,7 +55,8 @@ public class EnvironmentWeatherSystem
     {
         for(int i = 0; i < controller.cloudTransforms.Length; i++)
         {
-            Vector3 scale = new Vector3(controller.cloudTransforms[i].transform.localScale.x, controller.cloudTransforms[i].transform.localScale.y, cloudHeight.Evaluate(1.0f - i / (controller.cloudTransforms.Length - 1.0f)));
+            float s = cloudHeight.Evaluate(1.0f - i / (controller.cloudTransforms.Length - 1.0f));
+            Vector3 scale = new Vector3(s, s, s);
             controller.cloudTransforms[i].transform.localScale = scale;
         }
     }
@@ -142,6 +143,7 @@ public class EnvironmentWeatherSystem
                 controller.clouds[i].SetFloat("_Density", cloudDensity.Evaluate(range));
                 controller.clouds[i].SetFloat("_AlphaRange", cloudAlphaRange.Evaluate(range));
                 controller.clouds[i].SetFloat("_AlphaThreshold", cloudAlphaThreshold.Evaluate(range));
+                controller.clouds[i].SetColor("_RimColour", fog.Evaluate(range));
             }
         }
         else

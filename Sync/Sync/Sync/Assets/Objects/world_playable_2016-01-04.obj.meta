@@ -1,0 +1,139 @@
+fileFormatVersion: 2
+guid: 8d516c5acb8c95c43aea0dd82af6d00d
+timeCreated: 1451945152
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: GLOW
+    100002: GROUND
+    100004: Playable_east_tower_bottom
+    100006: Playable_ground
+    100008: Playable_ground_edit
+    100010: Playable_walkway_inner
+    100012: Playable_walkway_outer
+    100014: Playable_west_tower_bottom
+    100016: Synchronism_craddle_edit
+    100018: Synchronism_ring_e
+    100020: Synchronism_ring_w
+    100022: //RootNode
+    400000: GLOW
+    400002: GROUND
+    400004: Playable_east_tower_bottom
+    400006: Playable_ground
+    400008: Playable_ground_edit
+    400010: Playable_walkway_inner
+    400012: Playable_walkway_outer
+    400014: Playable_west_tower_bottom
+    400016: Synchronism_craddle_edit
+    400018: Synchronism_ring_e
+    400020: Synchronism_ring_w
+    400022: //RootNode
+    2300000: GLOW
+    2300002: GROUND
+    2300004: Playable_east_tower_bottom
+    2300006: Playable_ground
+    2300008: Playable_ground_edit
+    2300010: Playable_walkway_inner
+    2300012: Playable_walkway_outer
+    2300014: Playable_west_tower_bottom
+    2300016: Synchronism_craddle_edit
+    2300018: Synchronism_ring_e
+    2300020: Synchronism_ring_w
+    3300000: GLOW
+    3300002: GROUND
+    3300004: Playable_east_tower_bottom
+    3300006: Playable_ground
+    3300008: Playable_ground_edit
+    3300010: Playable_walkway_inner
+    3300012: Playable_walkway_outer
+    3300014: Playable_west_tower_bottom
+    3300016: Synchronism_craddle_edit
+    3300018: Synchronism_ring_e
+    3300020: Synchronism_ring_w
+    4300000: GLOW
+    4300002: GROUND
+    4300004: Playable_east_tower_bottom
+    4300006: Playable_ground
+    4300008: Playable_ground_edit
+    4300010: Playable_walkway_inner
+    4300012: Playable_walkway_outer
+    4300014: Playable_west_tower_bottom
+    4300016: Synchronism_craddle_edit
+    4300018: Synchronism_ring_e
+    4300020: Synchronism_ring_w
+    6400000: GLOW
+    6400002: GROUND
+    6400004: Playable_east_tower_bottom
+    6400006: Playable_ground
+    6400008: Playable_ground_edit
+    6400010: Playable_walkway_inner
+    6400012: Playable_walkway_outer
+    6400014: Playable_west_tower_bottom
+    6400016: Synchronism_craddle_edit
+    6400018: Synchronism_ring_e
+    6400020: Synchronism_ring_w
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,205 @@
+fileFormatVersion: 2
+guid: 8152164d216a90d4aafc3a1d0d8ed870
+timeCreated: 1452454665
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Arena
+    100002: Arena_glow
+    100004: Arena_surface
+    100006: Audience
+    100008: Audience_base
+    100010: Bridge
+    100012: City
+    100014: City_base
+    100016: Display_east
+    100018: Display_north
+    100020: Display_northeast
+    100022: Display_northwest
+    100024: Display_south
+    100026: Display_southeast
+    100028: Display_southwest
+    100030: Display_west
+    100032: Geosphere
+    100034: Geosphere_display
+    100036: Tower_east
+    100038: Tower_east_inside
+    100040: Tower_east_shielding
+    100042: Water
+    100044: //RootNode
+    400000: Arena
+    400002: Arena_glow
+    400004: Arena_surface
+    400006: Audience
+    400008: Audience_base
+    400010: Bridge
+    400012: City
+    400014: City_base
+    400016: Display_east
+    400018: Display_north
+    400020: Display_northeast
+    400022: Display_northwest
+    400024: Display_south
+    400026: Display_southeast
+    400028: Display_southwest
+    400030: Display_west
+    400032: Geosphere
+    400034: Geosphere_display
+    400036: Tower_east
+    400038: Tower_east_inside
+    400040: Tower_east_shielding
+    400042: Water
+    400044: //RootNode
+    2300000: Arena
+    2300002: Arena_glow
+    2300004: Arena_surface
+    2300006: Audience
+    2300008: Audience_base
+    2300010: Bridge
+    2300012: City
+    2300014: City_base
+    2300016: Display_east
+    2300018: Display_north
+    2300020: Display_northeast
+    2300022: Display_northwest
+    2300024: Display_south
+    2300026: Display_southeast
+    2300028: Display_southwest
+    2300030: Display_west
+    2300032: Geosphere
+    2300034: Geosphere_display
+    2300036: Tower_east
+    2300038: Tower_east_inside
+    2300040: Tower_east_shielding
+    2300042: Water
+    3300000: Arena
+    3300002: Arena_glow
+    3300004: Arena_surface
+    3300006: Audience
+    3300008: Audience_base
+    3300010: Bridge
+    3300012: City
+    3300014: City_base
+    3300016: Display_east
+    3300018: Display_north
+    3300020: Display_northeast
+    3300022: Display_northwest
+    3300024: Display_south
+    3300026: Display_southeast
+    3300028: Display_southwest
+    3300030: Display_west
+    3300032: Geosphere
+    3300034: Geosphere_display
+    3300036: Tower_east
+    3300038: Tower_east_inside
+    3300040: Tower_east_shielding
+    3300042: Water
+    4300000: Arena
+    4300002: Arena_glow
+    4300004: Arena_surface
+    4300006: Audience
+    4300008: Audience_base
+    4300010: Bridge
+    4300012: City
+    4300014: City_base
+    4300016: Display_east
+    4300018: Display_north
+    4300020: Display_northeast
+    4300022: Display_northwest
+    4300024: Display_south
+    4300026: Display_southeast
+    4300028: Display_southwest
+    4300030: Display_west
+    4300032: Geosphere
+    4300034: Geosphere_display
+    4300036: Tower_east
+    4300038: Tower_east_inside
+    4300040: Tower_east_shielding
+    4300042: Water
+    6400000: Arena
+    6400002: Arena_glow
+    6400004: Arena_surface
+    6400006: Audience
+    6400008: Audience_base
+    6400010: Bridge
+    6400012: City
+    6400014: City_base
+    6400016: Display_east
+    6400018: Display_north
+    6400020: Display_northeast
+    6400022: Display_northwest
+    6400024: Display_south
+    6400026: Display_southeast
+    6400028: Display_southwest
+    6400030: Display_west
+    6400032: Geosphere
+    6400034: Geosphere_display
+    6400036: Tower_east
+    6400038: Tower_east_inside
+    6400040: Tower_east_shielding
+    6400042: Water
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

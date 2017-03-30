@@ -9,9 +9,11 @@
 		[KeywordEnum(Alpha, Stepped, HighPass, LowPass, Threshold, Range, RangeNormalized, Exponential)] _AlphaRangeMode("Alpha Mode", Float) = 0
 		_AlphaRange("Alpha Range", Float) = 1
 		_AlphaThreshold("Alpha Threshold", Float) = 0
+		_RimColour("Rim Colour", Color) = (0.26,0.19,0.16,0.0)
+		_RimPower("Rim Power", Range(0.5,8.0)) = 3.0
 	}
 	SubShader {
-		Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
+		Tags { "Queue" = "Transparent" "RenderType" = "Transparent" "IgnoreProjector" = "True"}
 		Blend SrcAlpha OneMinusSrcAlpha
 		//Cull Back
 		LOD 200
@@ -21,6 +23,7 @@
 		#pragma surface surf Lambert alpha
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
+		#pragma multi_compile_fog
 
 		#include "UnityCG.cginc"
 
@@ -29,19 +32,21 @@
 		struct Input 
 		{
 			float2 uv_MainTex;
+			float3 viewDir;
 		};
 
 		fixed4 _Color;
 		fixed4 _Sun;
-
 		float _Scattering;
 
 		float _Density;
 
 		float _AlphaRangeMode;
-		float _AlphaBlit;
 		float _AlphaRange;
 		float _AlphaThreshold;
+
+		float4 _RimColour;
+		float _RimPower;
 
 		float random(float2 p) // Version 2
 		{
@@ -54,7 +59,8 @@
 
 		void surf (Input IN, inout SurfaceOutput o) {
 			// Albedo comes from a texture tinted by color
-			fixed4 c = tex2D(_MainTex, IN.uv_MainTex + float2(random(IN.uv_MainTex), random(IN.uv_MainTex)) * _Scattering) * _Color;
+			float2 uv = IN.uv_MainTex + float2(random(IN.uv_MainTex), random(IN.uv_MainTex)) * _Scattering;
+			fixed4 c = tex2D(_MainTex, uv) * _Color;
 
 			float alpha = c.a;
 
@@ -115,19 +121,26 @@
 			{
 				alpha = pow(alpha, _AlphaRange);
 			}
+			
+			//clip(alpha -0.001);
 
 			float density = pow(1.0 - alpha, _Density);
 
-			o.Albedo = c.rgb;// _Sun.rgb;
+			half rim = 1.0 - saturate(dot(normalize(IN.viewDir), o.Normal));
+
+			o.Albedo = lerp(c.rgb, _RimColour * rim, rim);// _Sun.rgb;
 			fixed4 scatter;
-			scatter.r = _Sun.r * pow(1.0 - alpha, 0.5f);
-			scatter.g = _Sun.g * pow(1.0 - alpha, 0.75f);
-			scatter.b = _Sun.b * pow(1.0 - alpha, 1.0f);
+			//scatter.r = _Sun.r * pow(1.0 - alpha, 0.75f);
+			//scatter.g = _Sun.g * pow(1.0 - alpha, 1.0f);
+			//scatter.b = _Sun.b * pow(1.0 - alpha, 0.5f);
+			scatter.r = _Sun.r * pow(density, 1.0f);
+			scatter.g = _Sun.g * pow(density, 1.0f);
+			scatter.b = _Sun.b * pow(density, 0.75f);
 			scatter.a = _Sun.a;
-			o.Emission = scatter;
-			o.Alpha = max(min(alpha,1),0);
+			o.Emission = lerp(scatter, _RimColour, pow(rim, 5));
+			o.Alpha = max(min(alpha, 1), 0);// lerp(max(min(alpha, 1), 0), 1, pow(rim, 15));
 		}
 		ENDCG
 	}
-	FallBack "Transparent"
+	FallBack "Transparent/VertexLit"
 }
