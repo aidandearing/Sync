@@ -32,7 +32,6 @@ public class Synchronism : MonoBehaviour
         synchronisers.Add(Synchronisations.EIGHTH_NOTE, new Synchroniser(beat * 0.5));
         synchronisers.Add(Synchronisations.SIXTEENTH_NOTE, new Synchroniser(beat * 0.25));
         synchronisers.Add(Synchronisations.THIRTYSECOND_NOTE, new Synchroniser(beat * 0.125));
-        synchronisers.Add(Synchronisations.NONE, new Synchroniser(0));
 
         if (!Blackboard.Global.ContainsKey(Literals.Strings.Blackboard.Synchronisation.Synchroniser))
             Blackboard.Global.Add(Literals.Strings.Blackboard.Synchronisation.Synchroniser, new BlackboardValue() { Value = this });
@@ -54,7 +53,6 @@ public class Synchronism : MonoBehaviour
         synchronisers[Synchronisations.EIGHTH_NOTE].RegisterCallback(this, OnTimeEighth);
         synchronisers[Synchronisations.SIXTEENTH_NOTE].RegisterCallback(this, OnTimeSixteenth);
         synchronisers[Synchronisations.THIRTYSECOND_NOTE].RegisterCallback(this, OnTimeThirtySecond);
-        synchronisers[Synchronisations.NONE].RegisterCallback(this, OnTimeNone);
     }
 
     protected virtual void Update()
@@ -112,11 +110,6 @@ public class Synchronism : MonoBehaviour
     }
 
     protected virtual void OnTimeThirtySecond()
-    {
-
-    }
-
-    protected virtual void OnTimeNone()
     {
 
     }

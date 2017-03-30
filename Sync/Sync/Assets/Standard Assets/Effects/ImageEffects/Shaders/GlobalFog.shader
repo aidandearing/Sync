@@ -3,7 +3,6 @@ Properties {
 	_MainTex ("Base (RGB)", 2D) = "black" {}
 	_Sun("Sun", Color) = (1,1,1,1)
 	_SunDirection("Sun Direction", Vector) = (0,0,1,0)
-	_SunDistance("Sun Distance", Float) = 149597871000
 	_Volume("Atmospheric Volume", Float) = 100000
 	_Scattering("Atmospheric Scatter (RGBA)", Vector) = (0.5,0.75,1.0,0)
 	_SkyboxExpression("Skybox Expression", Float) = 0.5
@@ -11,6 +10,7 @@ Properties {
 }
 
 CGINCLUDE
+
 	#include "UnityCG.cginc"
 
 	uniform sampler2D _MainTex;
@@ -23,7 +23,6 @@ CGINCLUDE
 	half4 _Sun;
 	float _SunScatterFactor;
 	float4 _SunDirection;
-	float _SunDistance;
 	
 	// x = fog height
 	// y = FdotC (CameraY-FogHeight)
@@ -137,6 +136,67 @@ CGINCLUDE
 		return g;
 	}
 
+	/*float4 permute(float4 x)
+	{
+		return fmod(34.0 * pow(x, 2) + x, 289.0);
+	}
+
+	float2 fade(float2 t) 
+	{
+		return  t * t * t * (t * (t * 6 - 15) + 10);
+	}
+
+	float4 taylorInvSqrt(float4 r) 
+	{
+		return 1.79284291400159 - 0.85373472095314 * r;
+	}
+
+	#define DIV_289 0.00346020761245674740484429065744f
+
+	float mod289(float x) 
+	{
+		return x - floor(x * DIV_289) * 289.0;
+	}
+
+	float PerlinNoise2D(float2 P)
+	{
+		float4 Pi = floor(P.xyxy) + float4(0.0, 0.0, 1.0, 1.0);
+		float4 Pf = frac(P.xyxy) - float4(0.0, 0.0, 1.0, 1.0);
+
+		float4 ix = Pi.xzxz;
+		float4 iy = Pi.yyww;
+		float4 fx = Pf.xzxz;
+		float4 fy = Pf.yyww;
+
+		float4 i = permute(permute(ix) + iy);
+
+		float4 gx = frac(i / 41.0) * 2.0 - 1.0;
+		float4 gy = abs(gx) - 0.5;
+		float4 tx = floor(gx + 0.5);
+		gx = gx - tx;
+
+		float2 g00 = float2(gx.x, gy.x);
+		float2 g10 = float2(gx.y, gy.y);
+		float2 g01 = float2(gx.z, gy.z);
+		float2 g11 = float2(gx.w, gy.w);
+
+		float4 norm = taylorInvSqrt(float4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));
+		g00 *= norm.x;
+		g01 *= norm.y;
+		g10 *= norm.z;
+		g11 *= norm.w;
+
+		float n00 = dot(g00, float2(fx.x, fy.x));
+		float n10 = dot(g10, float2(fx.y, fy.y));
+		float n01 = dot(g01, float2(fx.z, fy.z));
+		float n11 = dot(g11, float2(fx.w, fy.w));
+
+		float2 fade_xy = fade(Pf.xy);
+		float2 n_x = lerp(float2(n00, n01), float2(n10, n11), fade_xy.x);
+		float n_xy = lerp(n_x.x, n_x.y, fade_xy.y);
+		return 2.3 * n_xy;
+	}*/
+
 	half4 ComputeFog (v2f IN, bool distance, bool height) : SV_Target
 	{
 		half4 sceneColor = tex2D(_MainTex, UnityStereoTransformScreenSpaceTex(IN.uv));
@@ -148,142 +208,74 @@ CGINCLUDE
 		float4 wsDir = dpth * IN.interpolatedRay;
 		float4 wsPos = _CameraWS + wsDir;
 
-		// HEIGHT FACTOR
-		// Height factor is a representation of how high in the air the current pixel is in world coordinates
-		half heightFactor = max(0, min(wsPos.y / _HeightParams.x, 1));
-		//half heightFactor = 1;
-
-		// POSITION FACTOR
-		// Position factor is a representation of how deep into the atmospheric volume the current pixel is in world coordinates
-		//half posFactor = 1 - min(0, max(dpth / _Volume, 1));
-		half posFactor = 1;
-
-		// HALO FACTOR
-		// Halo factor is a representation of how directionally aligned the ray from camera to the pixel is with the sun's inverted direction, modified by Sun scatter factor
-		// Where 0 is no sun scatter present, and 1 is full sun scatter present (looking directly at the sun)
-		float sunDir = dot(normalize(wsDir), -_SunDirection);
-		half haloFactor = pow((sunDir + 1) / 2, _SunScatterFactor);
-
-		// DELTA
-		// Delta tells us how far through the atmosphere a given pixel of fog's light had to travel to get there, which determines how much scattering the light should recieve
-		//half delta = (length(-_SunDirection * _SunDistance - wsPos) * (1 - sunDir * sunDir)) / _Volume;
+		float noise = 1;
 
 		// Compute fog distance
 		float g = _DistanceParams.x;
 		if (distance)
 		{
-			posFactor = ComputeDistance(wsDir, dpth);
-			g += posFactor;
+			g += ComputeDistance(wsDir, dpth);
 		}
 		if (height)
 		{
-			//heightFactor = ;
 			g += ComputeHalfSpace(wsDir);
 
-			/*n = 0;
+			/*noise = 0;
 
 			for (int i = 1; i <= 8; i++)
 			{
-				n += PerlinNoise2D(IN.interpolatedRay.xy * pow(2,i) * 0.000002);
+				noise += PerlinNoise2D(IN.interpolatedRay.xy * pow(2,i) * 0.000002);
 			}
 
-			n /= 8;
+			noise /= 8;
 
-			n = n * 0.5 + 0.5;
-			n = min(1, max(n, 0));*/
+			noise = noise * 0.5 + 0.5;
+			noise = min(1, max(noise, 0));*/
 		}
 
+		// Compute fog amount
+		half fogFac = ComputeFogFactor (max(0.0,g));
+		// Do not fog skybox
+		if (dpth == _DistanceParams.y)
+			fogFac = _SkyboxExpression;
 		//return fogFac; // for debugging
 		
-		//float intensity = dot(_Sun, half4(0.3, 0.6, 0.1, 1));
+		float intensity = dot(_Sun, half4(0.3, 0.6, 0.1, 1));
 
 		half4 colour;
 
-		// FOG FACTOR
-		// Unity's default fog factor
-		// Compute fog amount
-		half fogFactor = ComputeFogFactor(max(0.0, g));
+		float pos = (dpth + wsPos.y) / _Volume;
+		pos = min(1, max(pos, 0));
 
-		// Fog wants to be placed such that it is the minimum of all factors
-		//fogFactor = min(heightFactor, min(posFactor, min(haloFactor, fogFactor)));
+		float posFactor = 1 - pos;
+		float sunFactor = pow((dot(normalize(wsDir), -_SunDirection) + 1) / 2, _SunScatterFactor);
 
-		//float pos = length(_SunDirection * _SunDistance - wsPos) / _Volume;
-		//pos = min(1, max(pos, 0));
-
-		//float posFactor = 1 - pos;
-
-		//if (!height)
-		//	fogFac = max(fogFactor, 1 - haloFactor);
-		//else
-		//	fogFac = max(fogFactor, posFactor);
+		fogFac = max(fogFac, 1 - sunFactor);
 		//colour.rgb *= intensity;
-
-		// Skybox Fog
-		if (dpth == _DistanceParams.y)
-		{
-			// SUN SCATTERING (Bloom around sun)
-			fogFactor = min(1, (1 - haloFactor * _SkyboxExpression));
-		}
-		else
-		{
-			fogFactor = max(fogFactor, heightFactor);
-		}
-		//{
-		//	if (height)
-		//		fogFactor = heightFactor;
-		//}
-		half factor = max(haloFactor, heightFactor);
-		half3 scatteringFactor;
-		scatteringFactor.r = pow(1.0 - pow(1.0 - factor, 2.0), 0.25);// pow(1.0 - pow(1.0 - factor, 2.0), 0.25);
-		scatteringFactor.g = pow(factor, 0.5) * 0.5 + pow(factor, 2.0) * 0.5;// factor;// pow(1.0 - pow(1.0 - factor, 0.5), 0.25);
-		scatteringFactor.b = max(pow(1.0 - (factor * factor), 0.5) * 0.25, 1.0 - pow(1.0 - (factor * factor), 0.5));// max(pow(1 - (factor * factor), 0.9) * 0.5, 1 - pow(1 - (factor * factor), 0.5));
-
-		half3 rayleighFactor;
-		rayleighFactor.r = 0.05;
-		rayleighFactor.g = 0.1;
-		rayleighFactor.b = 0.2;
-
+		
 		half4 sun;
-		sun.r = _Sun.r * scatteringFactor.r;
-		sun.g = _Sun.g * scatteringFactor.g;
-		sun.b = _Sun.b * scatteringFactor.b;
-		//sun.r = _Sun.r * pow(max(haloFactor, heightFactor), _Scattering.x);
-		//sun.g = _Sun.g * pow(max(haloFactor, heightFactor), _Scattering.y);
-		//sun.b = _Sun.b * pow(max(haloFactor, heightFactor), _Scattering.z);
-		sun.a = 1;// _Sun.a * pow(max(haloFactor, heightFactor), _Scattering.w);
-		/*if (!height)
-		{
-			sun.r = _Sun.r * max(pow(haloFactor, _Scattering.x), pow(posFactor, _Scattering.x));
-			sun.g = _Sun.g * max(pow(haloFactor, _Scattering.y), pow(posFactor, _Scattering.y));
-			sun.b = _Sun.b * max(pow(haloFactor, _Scattering.z), pow(posFactor, _Scattering.z));
-			sun.a = _Sun.a * max(pow(sunFactor, _Scattering.w), pow(posFactor, _Scattering.w));
-		}
-		else
-		{
-			sun.r = _Sun.r * pow(posFactor, _Scattering.x);
-			sun.g = _Sun.g * pow(posFactor, _Scattering.y);
-			sun.b = _Sun.b * pow(posFactor, _Scattering.z);
-			sun.a = _Sun.a * pow(posFactor, _Scattering.w);
-		}*/
+		sun.r = _Sun.r * max(pow(sunFactor, _Scattering.x), pow(pos, _Scattering.x));
+		sun.g = _Sun.g * max(pow(sunFactor, _Scattering.y), pow(pos, _Scattering.y));
+		sun.b = _Sun.b * max(pow(sunFactor, _Scattering.z), pow(pos, _Scattering.z));
+		sun.a = _Sun.a * max(pow(sunFactor, _Scattering.w), pow(pos, _Scattering.w));
 		//sun.r = _Sun.r * pow(pos, _Scattering.x);
 		//sun.g = _Sun.g * pow(pos, _Scattering.y);
 		//sun.b = _Sun.b * pow(pos, _Scattering.z);
 		//sun.a = _Sun.a * pow(pos, _Scattering.w);
-		//sun.rgb *= fogFactor;
+		//sun.rgb *= fogFac;
 
-		colour = lerp(unity_FogColor, sun, haloFactor);
-		//colour = lerp(unity_FogColor, sun, 1-fogFactor);
 		//colour = lerp(sun, unity_FogColor, 1 - dot(IN.interpolatedRay, -_SunDirection));
 		//colour = lerp(sun, unity_FogColor, (1 - pos);
-		//colour = lerp(unity_FogColor, sun, lerp(posFactor, haloFactor, haloFactor));
+		colour = lerp(unity_FogColor, sun, lerp(posFactor, sunFactor, sunFactor));
 		//colour = lerp(sun, unity_FogColor, (dot(normalize(wsDir), -_SunDirection) + 1) / 2);
 		//colour = lerp(colour, unity_FogColor, dot(colour, fixed4(0.3, 0.6, 0.1, 1)));
 		//colour.rgba = dot(normalize(wsDir), -_SunDirection);
 
 		// Lerp between fog color & original scene color
 		// by fog amount
-		return lerp (colour, sceneColor, fogFactor);
+		return lerp (colour, sceneColor, fogFac);
 	}
+
 ENDCG
 
 SubShader
