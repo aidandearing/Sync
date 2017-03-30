@@ -1,0 +1,193 @@
+fileFormatVersion: 2
+guid: f3fc958489e851e45bb9b556bb3a744e
+timeCreated: 1453336657
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Ceiling_2ndfloor
+    100002: Ceiling_2ndfloor_vault
+    100004: Counter
+    100006: Dancefloor
+    100008: Entrance
+    100010: Floor_1stfloor
+    100012: Floor_2ndfloor
+    100014: Path_1stTo2nd
+    100016: Room_side_ceiling_e
+    100018: Room_side_ceiling_w
+    100020: Room_side_floor_e
+    100022: Room_side_floor_w
+    100024: Room_side_walls_e
+    100026: Room_side_walls_w
+    100028: Wall_1stfloor_inner_e
+    100030: Wall_1stfloor_inner_w
+    100032: Wall_1stfloor_outer
+    100034: Wall_2ndfloor
+    100036: Wall_2ndfloor_vault
+    100038: Wall_dancefloor
+    100040: //RootNode
+    400000: Ceiling_2ndfloor
+    400002: Ceiling_2ndfloor_vault
+    400004: Counter
+    400006: Dancefloor
+    400008: Entrance
+    400010: Floor_1stfloor
+    400012: Floor_2ndfloor
+    400014: Path_1stTo2nd
+    400016: Room_side_ceiling_e
+    400018: Room_side_ceiling_w
+    400020: Room_side_floor_e
+    400022: Room_side_floor_w
+    400024: Room_side_walls_e
+    400026: Room_side_walls_w
+    400028: Wall_1stfloor_inner_e
+    400030: Wall_1stfloor_inner_w
+    400032: Wall_1stfloor_outer
+    400034: Wall_2ndfloor
+    400036: Wall_2ndfloor_vault
+    400038: Wall_dancefloor
+    400040: //RootNode
+    2300000: Ceiling_2ndfloor
+    2300002: Ceiling_2ndfloor_vault
+    2300004: Counter
+    2300006: Dancefloor
+    2300008: Entrance
+    2300010: Floor_1stfloor
+    2300012: Floor_2ndfloor
+    2300014: Path_1stTo2nd
+    2300016: Room_side_ceiling_e
+    2300018: Room_side_ceiling_w
+    2300020: Room_side_floor_e
+    2300022: Room_side_floor_w
+    2300024: Room_side_walls_e
+    2300026: Room_side_walls_w
+    2300028: Wall_1stfloor_inner_e
+    2300030: Wall_1stfloor_inner_w
+    2300032: Wall_1stfloor_outer
+    2300034: Wall_2ndfloor
+    2300036: Wall_2ndfloor_vault
+    2300038: Wall_dancefloor
+    3300000: Ceiling_2ndfloor
+    3300002: Ceiling_2ndfloor_vault
+    3300004: Counter
+    3300006: Dancefloor
+    3300008: Entrance
+    3300010: Floor_1stfloor
+    3300012: Floor_2ndfloor
+    3300014: Path_1stTo2nd
+    3300016: Room_side_ceiling_e
+    3300018: Room_side_ceiling_w
+    3300020: Room_side_floor_e
+    3300022: Room_side_floor_w
+    3300024: Room_side_walls_e
+    3300026: Room_side_walls_w
+    3300028: Wall_1stfloor_inner_e
+    3300030: Wall_1stfloor_inner_w
+    3300032: Wall_1stfloor_outer
+    3300034: Wall_2ndfloor
+    3300036: Wall_2ndfloor_vault
+    3300038: Wall_dancefloor
+    4300000: Ceiling_2ndfloor
+    4300002: Ceiling_2ndfloor_vault
+    4300004: Counter
+    4300006: Dancefloor
+    4300008: Entrance
+    4300010: Floor_1stfloor
+    4300012: Floor_2ndfloor
+    4300014: Path_1stTo2nd
+    4300016: Room_side_ceiling_e
+    4300018: Room_side_ceiling_w
+    4300020: Room_side_floor_e
+    4300022: Room_side_floor_w
+    4300024: Room_side_walls_e
+    4300026: Room_side_walls_w
+    4300028: Wall_1stfloor_inner_e
+    4300030: Wall_1stfloor_inner_w
+    4300032: Wall_1stfloor_outer
+    4300034: Wall_2ndfloor
+    4300036: Wall_2ndfloor_vault
+    4300038: Wall_dancefloor
+    6400000: Ceiling_2ndfloor
+    6400002: Ceiling_2ndfloor_vault
+    6400004: Counter
+    6400006: Dancefloor
+    6400008: Entrance
+    6400010: Floor_1stfloor
+    6400012: Floor_2ndfloor
+    6400014: Path_1stTo2nd
+    6400016: Room_side_ceiling_e
+    6400018: Room_side_ceiling_w
+    6400020: Room_side_floor_e
+    6400022: Room_side_floor_w
+    6400024: Room_side_walls_e
+    6400026: Room_side_walls_w
+    6400028: Wall_1stfloor_inner_e
+    6400030: Wall_1stfloor_inner_w
+    6400032: Wall_1stfloor_outer
+    6400034: Wall_2ndfloor
+    6400036: Wall_2ndfloor_vault
+    6400038: Wall_dancefloor
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

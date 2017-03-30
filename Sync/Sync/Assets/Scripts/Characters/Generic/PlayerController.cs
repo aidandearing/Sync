@@ -36,9 +36,9 @@ public class PlayerController : Controller
 
     protected override Vector3 HandleMovementInput()
     {
-        Vector3 v = new Vector3(-Input.GetAxis(Literals.Strings.Input.Controller.StickLeftHorizontal), 
+        Vector3 v = new Vector3(Input.GetAxis(Literals.Strings.Input.Controller.StickLeftHorizontal), 
                 (Input.GetButton(Literals.Strings.Input.Controller.ButtonA) == true) ? 1 : 0, 
-                Input.GetAxis(Literals.Strings.Input.Controller.StickLeftVertical));
+                -Input.GetAxis(Literals.Strings.Input.Controller.StickLeftVertical));
 
         if (v.x != 0 || v.z != 0)
         {
@@ -46,7 +46,17 @@ public class PlayerController : Controller
             if (cameraOriented)
             {
                 // This should be achievable by first generating a rotation from the input to the camera forward;
-                Quaternion rotation = Quaternion.FromToRotation(new Vector3(0,0,-1), camera.transform.forward);
+                float eulerY = camera.transform.rotation.eulerAngles.y;
+
+                Quaternion rotation = Quaternion.Euler(0, eulerY, 0);
+                //if (Vector3.Dot(-camera.transform.forward, new Vector3(0, 0, -1)) < 0.86f)
+                //    rotation = Quaternion.FromToRotation(new Vector3(0, 0, 1), -camera.transform.forward);
+                //else
+                //{
+                //    v.Set(-v.x, v.y, v.z);
+
+                //    rotation = Quaternion.FromToRotation(new Vector3(0, 0, -1), camera.transform.forward);
+                //}
 
                 float ty = v.y;
 

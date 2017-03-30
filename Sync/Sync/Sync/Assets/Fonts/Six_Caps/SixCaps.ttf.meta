@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: f14239d5b5cd43f469276c8e29e43b08
+timeCreated: 1487739928
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Six Caps
+  fontNames:
+  - Six Caps
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,136 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using UnityEditor.AnimatedValues;
+
+[CustomEditor(typeof(PlayerController)), CanEditMultipleObjects]
+public class PlayerControllerEditor : Editor
+{
+    AnimBool showMovementFields;
+    AnimBool showMovementBackwards;
+
+    public SerializedProperty
+        propertyRigidbody,
+        propertyAnimator,
+        propertyMovementSpeed,
+        propertyMovementCanBackward,
+        propertyMovementSpeedBackward,
+        propertyMovementSpeedSidestep,
+        propertyMovementState,
+        propertyMovementSync,
+        propertyMovementHeight,
+        propertyMovementVectoring,
+        propertyMovementCount,
+        propertyMovementInheritVelocity,
+        propertyMovementTeleportDistance,
+        propertyMovementTeleportThroughWalls,
+        propertyMovementTeleportToTarget,
+        propertyMovementTeleportTarget,
+        propertyMovementGlideDownToForward,
+        propertyMovementThrustSpeed,
+        propertyMovementThrustSequencer,
+        propertyMovementThrustCurve;
+
+    void OnEnable()
+    {
+        showMovementFields = new AnimBool(true);
+        //showMovementFields.valueChanged.AddListener(Repaint);
+
+        propertyRigidbody = serializedObject.FindProperty("rigidbody");
+        propertyAnimator = serializedObject.FindProperty("animator");
+        propertyMovementSpeed = serializedObject.FindProperty("speedForward");
+        propertyMovementCanBackward = serializedObject.FindProperty("canWalkBackward");
+        propertyMovementSpeedBackward = serializedObject.FindProperty("speedBackward");
+        propertyMovementSpeedSidestep = serializedObject.FindProperty("speedSidestep");
+        propertyMovementState = serializedObject.FindProperty("movementAction");
+        propertyMovementSync = serializedObject.FindProperty("movementSync");
+        propertyMovementHeight = serializedObject.FindProperty("movementHeight");
+        propertyMovementVectoring = serializedObject.FindProperty("movementVectoring");
+        propertyMovementCount = serializedObject.FindProperty("movementCount");
+        propertyMovementInheritVelocity = serializedObject.FindProperty("movementInheritVelocity");
+        propertyMovementTeleportDistance = serializedObject.FindProperty("movementTeleportDistance");
+        propertyMovementTeleportThroughWalls = serializedObject.FindProperty("movementTeleportThroughWalls");
+        propertyMovementTeleportToTarget = serializedObject.FindProperty("movementTeleportToTarget");
+        propertyMovementTeleportTarget = serializedObject.FindProperty("movementTeleportTarget");
+        propertyMovementGlideDownToForward = serializedObject.FindProperty("movementGlideDownToForward");
+        propertyMovementThrustSpeed = serializedObject.FindProperty("movementThrustSpeed");
+        propertyMovementThrustSequencer = serializedObject.FindProperty("movementThrustSequencer");
+        propertyMovementThrustCurve = serializedObject.FindProperty("movementThrustCurve");
+    }
+
+    public override void OnInspectorGUI()
+    {
+        serializedObject.Update();
+
+        EditorGUILayout.PropertyField(propertyRigidbody);
+        EditorGUILayout.PropertyField(propertyAnimator);
+
+        showMovementFields.target = EditorGUILayout.Foldout(showMovementFields.target, new GUIContent("Display Movement"));
+
+        if (showMovementFields.value && showMovementFields.faded >= 0)
+        {
+            EditorGUILayout.BeginFadeGroup(showMovementFields.faded);
+            EditorGUILayout.PropertyField(propertyMovementSpeed);
+            EditorGUILayout.PropertyField(propertyMovementCanBackward);
+            if (propertyMovementCanBackward.boolValue)
+            {
+                EditorGUILayout.PropertyField(propertyMovementSpeedBackward);
+                EditorGUILayout.PropertyField(propertyMovementSpeedSidestep);
+            }
+            EditorGUILayout.PropertyField(propertyMovementState);
+            EditorGUILayout.PropertyField(propertyMovementSync);
+
+            PlayerController.MovementAction action = (PlayerController.MovementAction)propertyMovementState.intValue;
+
+            switch (action)
+            {
+                case PlayerController.MovementAction.Jump:
+                    EditorGUILayout.PropertyField(propertyMovementHeight, new GUIContent("Height"));
+                    EditorGUILayout.PropertyField(propertyMovementVectoring, new GUIContent("Vectoring"));
+                    break;
+                case PlayerController.MovementAction.Teleport:
+                    EditorGUILayout.PropertyField(propertyMovementTeleportDistance, new GUIContent("Distance"));
+                    EditorGUILayout.PropertyField(propertyMovementTeleportThroughWalls, new GUIContent("Through Walls"));
+                    EditorGUILayout.PropertyField(propertyMovementTeleportToTarget, new GUIContent("Targeted"));
+                    EditorGUILayout.PropertyField(propertyMovementTeleportTarget, new GUIContent("Target"));
+                    break;
+                case PlayerController.MovementAction.Glide:
+                    EditorGUILayout.PropertyField(propertyMovementGlideDownToForward, new GUIContent("Down To Forward"));
+                    break;
+                case PlayerController.MovementAction.JumpGlide:
+                    EditorGUILayout.PropertyField(propertyMovementHeight, new GUIContent("Height"));
+                    EditorGUILayout.PropertyField(propertyMovementGlideDownToForward, new GUIContent("Down To Forward"));
+                    break;
+                case PlayerController.MovementAction.Hover:
+                    EditorGUILayout.PropertyField(propertyMovementHeight, new GUIContent("Height"));
+                    EditorGUILayout.PropertyField(propertyMovementVectoring, new GUIContent("Vectoring"));
+                    break;
+                case PlayerController.MovementAction.JumpHover:
+                    EditorGUILayout.PropertyField(propertyMovementHeight, new GUIContent("Height"));
+                    EditorGUILayout.PropertyField(propertyMovementVectoring, new GUIContent("Vectoring"));
+                    break;
+                case PlayerController.MovementAction.Thrust:
+                    EditorGUILayout.PropertyField(propertyMovementThrustSpeed, new GUIContent("Speed"));
+                    EditorGUILayout.PropertyField(propertyMovementThrustSequencer, new GUIContent("Sequencer"));
+                    EditorGUILayout.PropertyField(propertyMovementThrustCurve, new GUIContent("Velocity Curve"));
+                    break;
+                case PlayerController.MovementAction.JumpThrust:
+                    EditorGUILayout.PropertyField(propertyMovementHeight, new GUIContent("Height"));
+                    EditorGUILayout.PropertyField(propertyMovementThrustSpeed, new GUIContent("Speed"));
+                    EditorGUILayout.PropertyField(propertyMovementThrustSequencer, new GUIContent("Sequencer"));
+                    EditorGUILayout.PropertyField(propertyMovementThrustCurve, new GUIContent("Velocity Curve"));
+                    break;
+                case PlayerController.MovementAction.WallJump:
+                    EditorGUILayout.PropertyField(propertyMovementHeight, new GUIContent("Height"));
+                    EditorGUILayout.PropertyField(propertyMovementVectoring, new GUIContent("Vectoring"));
+                    break;
+            }
+
+            EditorGUILayout.PropertyField(propertyMovementCount);
+            EditorGUILayout.EndFadeGroup();
+        }
+
+        serializedObject.ApplyModifiedProperties();
+    }
+}

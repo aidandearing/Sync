@@ -1,0 +1,356 @@
+Button Layout:
+Shoot 		Right Trigger 	Left Mouse
+Grenade 	Right Bumper 	G
+Zoom		Left Trigger 	Right Mouse
+Skill 1		Left Bumper	Q
+Jump		A		Space
+Skill 2		B		E
+Skill 3		X		R
+Skill 4		Y		F
+Move		Left Analog	WASD
+Sprint		Left Analog	Left Shift
+Look		Right Analog	Mouse
+Flip Look Side	D-pad X		[]
+Menu		Start		Esc
+
+Weapons
+	Dub Cannon
+		Fires on the full note, powerful explosive projectile
+	Disco Ball
+		Fires on the eighth note, fires a spray of colourful beams
+	
+		Fires on the full2 note, the longer it is charged before firing the more damage it does, up to instant kill
+	
+		Fires on the sixteenth note
+	Wub Gun
+		Fires on the half note, as a wave
+	Hue Shifter
+		Fires on the quarter note, each shot shifts across the colour spectrum, dealing different effects
+		
+		Fires on the half note, arcing grenades that stick to surfaces, and explode on the next full4
+
+I need to decide if their is going to be any modularity to the characters skills. 
+I can't see it working, I built every character around their passive, which means you can't really switch skills, only complete versions.
+I think I am just going to build each character version as a specific 'class' you pick to use, this will make the code that much easier to do.
+Time to throw out the 'SkillManager' given each character is going to have a very unique 'Behaviour' script.
+
+I also need to build an 'effect' system, I think.
+It definitely makes handling effects easier.
+
+Harmonics
+	Tempo
+		The speed of a piece of music.
+			Momentum
+				Each kill increases movement speed for a short duration
+			Burst
+				Short boost of speed
+			Boost
+				Jump twice as high, and grant increased movement control until landed
+			Slow
+				Create a sphere of slowed time, all teammates move normally but all projectiles and enemies are slowed drastically
+			Rewind
+				Tempo steps back to its location 2 seconds earlier
+			Pause Grenade
+				On impact freezes any enemies and their projectiles caught in the blast radius for a short time
+			
+			VERSION 2----------------------------------------------------------------------------------------------------------------------------------------------
+			Inertia
+				Projectiles around Tempo are slowed the slower Tempo is moving, nearly pausing if Tempo isn't moving, but move faster if Tempo is moving quickly
+			Reverse
+				Projectiles near Tempo have their velocity flipped, traveling back the way they came
+			Stop
+				Tempo creates a wall that prevents projectiles from moving through it for some time
+			Blink
+				Tempo instantly travels forward several metres, disabling Inertia for several seconds
+			Pause
+				Tempo stops time for several seconds, preventing any action but movement from everyone
+			Inertia Trap
+				Throw a trap that creates a full power Inertia field around itself for several seconds
+			
+	Harmony
+		The use of simultaneous pitches, or chords.
+			Chords
+				Stores skill casts until 3 have been stored, releasing them as a unique skill, based on the combo
+					CEG || CGE || ECG || EGC || GCE || GEC
+						Knocks all enemies away and buffs teammate movement speed
+					ACE || AEC || CAE || CEA || EAC || ECA
+						Releases a chaotic nova of wandering homing projectiles, enemies are hurt, teammates are healed
+					ACG || AGC || CAG || CGA || GAC || GCA
+						Creates a series of shield panels that slowly rotate around a central point, each can take several hits
+					AEG || AGE || EAG || EGA || GAE || GEA
+						Creates a field that slows enemies and increases teammate regeneration
+			C
+				When Chords triggers a C will be part of the Chord
+			E
+				When Chords triggers an E will be part of the Chord
+			G
+				When Chords triggers a G will be part of the Chord
+			A
+				When Chords triggers an A will be part of the Chord
+			Music Box
+				Throw a trap that on impact plays the last chord repeating several times
+			
+			VERSION 2----------------------------------------------------------------------------------------------------------------------------------------------
+			Tension
+				When Harmony is Consonance skill casts buff teammate regeneration and movement
+				When Harmony is Dissonance skill casts burn enemies
+			Consonance / Dissonance
+				Harmony switches between Consonance and Dissonance, releases a more powerful variant of Tension right before the switch
+			Harmonic Field
+				Creates a field that lasts for several seconds
+					Consonance: Reduces damage teammates take
+					Dissonance: Increases damage enemies take
+			Chord
+				Releases a cone of projectiles
+					Consonance: The first projectile to hit an enemy causes all the others to home in on the same enemy
+					Dissonance: Each projectile on impact creates an explosion
+			Concord
+				Global effect
+					Consonance: Every teammate recieves a serious buff to regeneration for several seconds
+					Dissonance: Every teammate recieves a serious buff to damage reduction for several seconds
+			Tune Trap
+				Throw a trap that casts the inverse of Harmony's skills whenever Harmony uses a skill
+
+	Melody
+		A linear group of sounds.
+			Repetition
+				Every skill cast creates a clone of Melody, clones travel with Melody, and attack when Melody does, die instantly
+			Repeat
+				Melody creates a clone that starts where Melody was several seconds earlier, then attempts to join Melody
+			Predict
+				Melody creates a clone that travels towards where Melody was aiming (when used), for several seconds
+			Chorus
+				Melody creates a clone that shoots at where Melody is aiming, for several seconds
+			New Verse
+				All Melody's clones immediately join Melody, preventing Melody from taking damage per each clone removed
+			Trip Trap
+				Throw a grenade that on impact waits for an enemy to trigger it, stunning them and any other nearby enemies
+			
+			VERSION 2----------------------------------------------------------------------------------------------------------------------------------------------
+			Verse
+				Every 2 bars a clone of Melody is created that lasts for a bar and is autonomous
+			Phrase
+				Melody creates 2 clones one standing on either side, that mirror Melody's actions
+			Tune
+				Over the next second release a series of projectiles
+			Split
+				Melody flips positions with one clone at random
+			Pattern
+				From oldest clone through youngest, and then Melody a beam is created that deals high damage to enemies
+			Chorus Grenade
+				Throw a grenade that on impact creates a clone of Melody, the clone is autonomous
+
+	Pitch
+		The pitch of a note
+			Scales
+				On each full note Scales pitch is increased, if it reaches B it then falls back to C
+			Sonic Wave
+				Releases a wave in a 90° arc, the higher the pitch the shorter it travels but the greater the damage
+			Resonance
+				Releases a shockwave that detects enemies, the lower the frequency the farther the range, the higher the frequency the greater the detect duration
+			Frequency
+				Buffs Pitch's attacks, the lower the frequency the greater the damage, the higher the frequency the faster they travel, for a short time
+			Harmonics
+				Scales becomes every pitch simultaneously for a short time
+			Note Bomb
+				The higher the pitch the smaller the explosion radius but the greater the damage
+			
+			VERSION 2----------------------------------------------------------------------------------------------------------------------------------------------
+			Resonate
+				Everytime Pitch is shot gain a stack, skills are more powerful when stacks are present, stacks are lost over time
+			Tonal Blast
+				Releases a powerful blast forward that deals high damage and explodes on impact.
+					Blast size and explosion size increase with stacks
+			Vibrate
+				For the next 2 seconds Pitch rapidly shifts position, in a small radius, enemies caught between where Pitch is and was are damaged
+					frequency of position shifts increase as stacks do
+			Resonance Cavity
+				Pitch creates a circular barrier 20 metres radius, teammates have their movement and damage resistance buffed, enemies take constant light damage
+					stacks increase duration of the barrier
+			Charge
+				Pitch lunges forward, traveling at high speeds, with limited steering, enemies caught in the charge take high damage, immune to damage during charge
+					stacks increase speed and damage taken
+			Amp Grenade
+				Throw a grenade that on impact charges over the next full2 releasing a powerful explosion
+					Every 5 stacks of Resonate gained reward another Amp Grenade stack
+
+	Rhythm
+		Regular recurring motion
+			Beatkeeper
+				Uses the currently toggled skill every half note, except for Build
+			Kick
+				Passive: 
+				Attacks on every second full note are changed to special conic knockback attacks
+				Beatkeeper:
+				
+			Snare
+				Teammates recieve a boost to movement speed
+			Beat
+				Enemies are marked in a small radius
+			Build
+				Over the next 4 seconds Beatkeeper picks up speed, before releasing one final large range version of the current skill, Beatkeeper is then disabled for 4 seconds
+			Beatbox
+				Throw a grenade that Beatkeepers the current skill (when thrown) on impact for several seconds
+			
+			VERSION 2----------------------------------------------------------------------------------------------------------------------------------------------
+			Wub
+				Every full note if firing also releases a special wub attack
+			Rise
+				Release an explosion on the next full4, then full2, then full, then half, etc that deals increasing damage the closer enemies are
+			Metronome
+				Create a totem that releases an explosion every full note, harming enemies, and buffing teammate movement
+			Skip
+				Ready all other skills immediately, but not Drop
+			Drop
+				Charge over the next several beats, use again to release, the longer it is charged the larger the explosion, up to global, enemies are notified.
+			Dub Bomb
+				Throw a grenade that explodes on the next full4 in a powerful blast
+
+Prismatics
+	Hue
+		The value of red, green, or blue, of a colour.
+			Prism
+				Hue switches colours to the music granting different benefits to skills
+			Burst
+				Hue releases a short range burst that
+					Red: burns
+					Green: teammates regenerate
+					Blue: slows
+			Ricochet
+				Shoot an orb of colour at the nearest player that bounces, switching to the next colour until it has cycled across each of the primary colours
+				Cannot hit the same player twice, unless they are Hue, must have line of sight from each target to bounce
+					Red: enemy takes large amount of damage, teammate is protected from damage for next second
+					Green: enemy takes damage over time, teammate releases Burst, in Hue's current colour
+					Blue: enemy is frozen in place for a second, teammate recieves speed boost
+			Prismatic Beam
+				Next attack will shoot a beam with infinite range instead.
+					Red: creates a fire on impact site
+					Green: creates a swarm on impact site, heals teammates, hurts enemies
+					Blue: releases a shockwave on impact site, freezes enemies
+			Shift
+				Hue immediately switches colours to the next in sequence, and gains a buff based on what colour Hue left
+					Red: Hue's attacks ignite enemies for the next several seconds
+					Green: Hue regenerates rapidly for the next several seconds
+					Blue: Hue can't be disabled for the next several seconds
+			Colour Bomb
+				Throw a grenade that on impact explodes in a colour based effect
+					Red: enemies take a large amount of damage
+					Green: enemies take constant damage for a short time
+					Blue: enemies are frozen for a short time
+
+	Chroma
+		Colourfulness relative to brightness.
+			Intensity
+				On each skill use Chroma flips states, is either Colourful, or Bright
+			Burst
+				Release a mid range burst
+					Colourful: Applies a random buff to teammates (speed, regeneration, jump)
+					Bright: Blinds enemies
+			Sentinel
+				Creates a turret
+					Colourful: Attacks enemies with random effects (slow, poison, burn, explode, blind, beam)
+					Bright: Shoots a continuous beam of light at enemies
+			Radiate
+				Applies a short duration buff to Chroma
+					Colourful: Attacks take on random effects (slow, poison, burn, explode, blind, beam), nearby enemies recieve random debuffs
+					Bright: Attack becomes constant beam, enemies are blinded when they get too close
+			Mirror
+				Creates a clone of Chroma
+					Colourful: Chroma clone radiates colour
+					Bright: Chroma clone radiates bright
+			Radiate Grenade
+				Throw a grenade that on impact
+					Colourful: Applies random debuffs to enemies in range and deals damage
+					Bright: Instantly beams all enemies in range, dealing high damage
+
+	Shade
+		Colour with black.
+			Fade
+				When not taking any action Shade becomes very difficult to see
+			Flip
+				Faded: instantly teleport behind target looking at them
+				Visible: immediately fades, and stays faded for several seconds
+			Edge
+				Faded: instantly kill target enemy with a powerful melee
+				Visible: hurts all nearby enemies
+			Stalk
+				Target is marked for several seconds, Shade fades much faster when near, but can no longer fade when not near the target
+			Darken
+				For a short time Shade stays faded
+			Dark Grenade
+				Throw a grenade that on impact creates a field of pure black
+
+			VERSION 2----------------------------------------------------------------------------------------------------------------------------------------------
+			Shadow
+				Shade cannot jump, instead Shade can teleport forward several metres.
+			Darkness
+				Flip:
+					Fragments: Everything that dies around Shade comes back as a Fragment, Fragments are autonomous drones that shoot at nearby enemies, and stay around Shade
+					Absorb: Shade gains a stack for every death around him
+			Umbra Bolt
+				Release a bolt of pure black that blinds and damages enemies caught in its blast radius, explodes on impact
+			Sable Gate
+				Release an arcing bolt that on impact creates a gateway between Shade's current position and the point of impact
+			Pitch Dark
+				Release all stacks of Darkness in a powerful swarm of Fragments that home in on enemies, explode on contact
+			Umbra Grenade
+				Throw a grenade that after 2 full notes explodes, blinding and damaging enemies
+
+	Luminance
+		How bright something is.
+			Illuminate
+				When not using skills Luminance charges, becoming more and more easily seen, but increases the power of skills, when a skill is used all charges are lost
+			Pulse
+				Conic blast where Luminance is aiming, applies the flashbang effect for the current charge rate, enemies must be looking at Luminance to recieve the effect
+					0%: 5 metres
+					<50%: 10 metres
+					<100%: 20 metres
+					100%: 40 metres
+			Flare
+				Instantly charges Illuminate fully, but releases a flare that notifies everyone of Luminance's location
+			Ray
+				Luminance's next shot will be replaced with an instant beam, applies the flashbang effect for the current charge rate
+			Nova
+				An explosion centered on Luminance, applies the flashbang effect for the current charge rate
+					0%: 10 metres
+					<50%: 15 metres
+					<100%: 20 metres
+					100%: 50 metres
+			Flashbang
+				Throw a grenade that on impact releases a blinding burst of light, enemies can't see very well for several seconds
+					0%: 2 second duration
+					<50%: 3 second duration, deals small damage
+					<100%: 4 second duration, deals greater damage
+					100%: 5 second duration, instantly kills in close proximity
+
+			VERSION 2----------------------------------------------------------------------------------------------------------------------------------------------
+			Immolate
+				Every skill cast causes Luminance to flare brighter, lighting nearby enemies on fire
+			Flash
+				Luminance disappears in a flash of blinding light, descending upon the targeted position
+			Flicker
+				Luminance releases random bursts of light on the sixteenth for the next full2 in duration, blinding enemies
+			Pierce
+				Luminance releases a beam of piercing light, dealing high damage to enemies caught in the center of the beam, and lighting enemies on fire, in a larger radius
+			Solar
+				Create an orb of light that lights enemies on fire in a large radius, and releases bursts of blinding light on the full, for 16 seconds
+			Illuminating Grenade
+				Throw a grenade that on impact creates a field of revealing light, allowing teammates to see enemies, and lighting enemies on fire for a short time
+			
+	Saturate
+		How true to its hue a colour is.
+			Vivid
+				Every skill use increases a counter, as more stacks are present skills unlock more effects, at max stacks the skill consumes all stacks, max 10
+			Barrage
+				Fire randomly coloured arcing projectiles at target location
+					1 + stacks if stacks < 10, else 20
+					(burn, poison, slow, explode)
+			Boost
+				Gain a speed buff, lasting at least 2 seconds, plus 1 per Vivid stack
+			Purity
+				Creates small drones that follow Saturate, 1 per Vivid stack, creates at least 1, drones shoot when Saturate does, where Saturate is aiming
+			Saturation
+				Consume all counters to gain that many extra wandering projectiles per attack, for 10 attacks
+			Saturation Grenade
+				On impact explodes, then bounces per Vivid stack, exploding on each subsequent impact, doesn't reset Vivid stacks
+			

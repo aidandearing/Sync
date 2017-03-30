@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+using UnityEditor;
+using UnityEditor.AnimatedValues;
+
+[CustomPropertyDrawer(typeof(SequencerGradient))]
+public class SequencerGradientDrawer : PropertyDrawer
+{
+    static float scrollBarWidth = 20;
+
+    Rect fieldSynchronisation = new Rect(0, 20, EditorGUIUtility.currentViewWidth - scrollBarWidth, 40);
+    Rect fieldFormat = new Rect(0, 50, EditorGUIUtility.currentViewWidth - scrollBarWidth, 20);
+    Rect fieldDelay = new Rect(0, 80, EditorGUIUtility.currentViewWidth - scrollBarWidth, 20);
+    Rect fieldDuration = new Rect(0, 120, EditorGUIUtility.currentViewWidth - scrollBarWidth, 20);
+
+    bool foldout = false;
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        float height = 20;
+        if (foldout)
+            height = fieldSynchronisation.height + fieldFormat.height + fieldDelay.height + fieldDuration.height + fieldDuration.position.y / 2;
+        return height;
+    }
+
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        //Rect fieldSynchronisation = new Rect(position.x, position.y + position.height * 0.5f, position.width, position.height);
+        //Rect fieldFormat = new Rect(position.x, position.y + position.height * 1.5f, position.width, position.height);
+        //Rect fieldDelay = new Rect(position.x, position.y + position.height * 2.5f, position.width, position.height);
+        //Rect fieldDuration = new Rect(position.x, position.y + position.height * 3.5f, position.width, position.height);
+
+        position.height = position.height + fieldSynchronisation.height + fieldFormat.height + fieldDelay.height + fieldDuration.height;
+
+        EditorGUI.BeginProperty(position, null, property);
+        //foldout = EditorGUILayout.Foldout(foldout, new GUIContent("Sequencer"));
+        foldout = EditorGUI.Foldout(position, foldout, new GUIContent("Sequencer"), false);
+
+        if (foldout)
+        {
+            int indentLevel = EditorGUI.indentLevel;
+            EditorGUI.indentLevel = 0;
+
+            EditorGUI.PropertyField(AddPosition(position, fieldSynchronisation), property.FindPropertyRelative("synchronisation"));
+            EditorGUI.PropertyField(AddPosition(position, fieldFormat), property.FindPropertyRelative("format"));
+            EditorGUI.PropertyField(AddPosition(position, fieldDelay), property.FindPropertyRelative("delay"));
+            EditorGUI.PropertyField(AddPosition(position, fieldDuration), property.FindPropertyRelative("duration"));
+
+            EditorGUI.indentLevel = indentLevel;
+        }
+
+        EditorGUI.EndProperty();
+    }
+
+    Rect AddPosition(Rect position, Rect field)
+    {
+        return new Rect(field.x + position.x, field.y + position.y, field.width, field.height);
+    }
+}
