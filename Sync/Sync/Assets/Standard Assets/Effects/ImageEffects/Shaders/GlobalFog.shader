@@ -11,7 +11,6 @@ Properties {
 }
 
 CGINCLUDE
-
 	#include "UnityCG.cginc"
 
 	uniform sampler2D _MainTex;
@@ -138,67 +137,6 @@ CGINCLUDE
 		return g;
 	}
 
-	/*float4 permute(float4 x)
-	{
-		return fmod(34.0 * pow(x, 2) + x, 289.0);
-	}
-
-	float2 fade(float2 t) 
-	{
-		return  t * t * t * (t * (t * 6 - 15) + 10);
-	}
-
-	float4 taylorInvSqrt(float4 r) 
-	{
-		return 1.79284291400159 - 0.85373472095314 * r;
-	}
-
-	#define DIV_289 0.00346020761245674740484429065744f
-
-	float mod289(float x) 
-	{
-		return x - floor(x * DIV_289) * 289.0;
-	}
-
-	float PerlinNoise2D(float2 P)
-	{
-		float4 Pi = floor(P.xyxy) + float4(0.0, 0.0, 1.0, 1.0);
-		float4 Pf = frac(P.xyxy) - float4(0.0, 0.0, 1.0, 1.0);
-
-		float4 ix = Pi.xzxz;
-		float4 iy = Pi.yyww;
-		float4 fx = Pf.xzxz;
-		float4 fy = Pf.yyww;
-
-		float4 i = permute(permute(ix) + iy);
-
-		float4 gx = frac(i / 41.0) * 2.0 - 1.0;
-		float4 gy = abs(gx) - 0.5;
-		float4 tx = floor(gx + 0.5);
-		gx = gx - tx;
-
-		float2 g00 = float2(gx.x, gy.x);
-		float2 g10 = float2(gx.y, gy.y);
-		float2 g01 = float2(gx.z, gy.z);
-		float2 g11 = float2(gx.w, gy.w);
-
-		float4 norm = taylorInvSqrt(float4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));
-		g00 *= norm.x;
-		g01 *= norm.y;
-		g10 *= norm.z;
-		g11 *= norm.w;
-
-		float n00 = dot(g00, float2(fx.x, fy.x));
-		float n10 = dot(g10, float2(fx.y, fy.y));
-		float n01 = dot(g01, float2(fx.z, fy.z));
-		float n11 = dot(g11, float2(fx.w, fy.w));
-
-		float2 fade_xy = fade(Pf.xy);
-		float2 n_x = lerp(float2(n00, n01), float2(n10, n11), fade_xy.x);
-		float n_xy = lerp(n_x.x, n_x.y, fade_xy.y);
-		return 2.3 * n_xy;
-	}*/
-
 	half4 ComputeFog (v2f IN, bool distance, bool height) : SV_Target
 	{
 		half4 sceneColor = tex2D(_MainTex, UnityStereoTransformScreenSpaceTex(IN.uv));
@@ -209,8 +147,6 @@ CGINCLUDE
 		float dpth = Linear01Depth(rawDepth);
 		float4 wsDir = dpth * IN.interpolatedRay;
 		float4 wsPos = _CameraWS + wsDir;
-
-		float noise = 1;
 
 		// HEIGHT FACTOR
 		// Height factor is a representation of how high in the air the current pixel is in world coordinates
@@ -225,11 +161,12 @@ CGINCLUDE
 		// HALO FACTOR
 		// Halo factor is a representation of how directionally aligned the ray from camera to the pixel is with the sun's inverted direction, modified by Sun scatter factor
 		// Where 0 is no sun scatter present, and 1 is full sun scatter present (looking directly at the sun)
-		half haloFactor = pow((dot(normalize(wsDir), -_SunDirection) + 1) / 2, _SunScatterFactor);
+		float sunDir = dot(normalize(wsDir), -_SunDirection);
+		half haloFactor = pow((sunDir + 1) / 2, _SunScatterFactor);
 
 		// DELTA
 		// Delta tells us how far through the atmosphere a given pixel of fog's light had to travel to get there, which determines how much scattering the light should recieve
-		half delta = length(-_SunDirection * _SunDistance - wsPos);
+		//half delta = (length(-_SunDirection * _SunDistance - wsPos) * (1 - sunDir * sunDir)) / _Volume;
 
 		// Compute fog distance
 		float g = _DistanceParams.x;
@@ -243,17 +180,17 @@ CGINCLUDE
 			//heightFactor = ;
 			g += ComputeHalfSpace(wsDir);
 
-			/*noise = 0;
+			/*n = 0;
 
 			for (int i = 1; i <= 8; i++)
 			{
-				noise += PerlinNoise2D(IN.interpolatedRay.xy * pow(2,i) * 0.000002);
+				n += PerlinNoise2D(IN.interpolatedRay.xy * pow(2,i) * 0.000002);
 			}
 
-			noise /= 8;
+			n /= 8;
 
-			noise = noise * 0.5 + 0.5;
-			noise = min(1, max(noise, 0));*/
+			n = n * 0.5 + 0.5;
+			n = min(1, max(n, 0));*/
 		}
 
 		//return fogFac; // for debugging
@@ -283,9 +220,14 @@ CGINCLUDE
 
 		// Skybox Fog
 		if (dpth == _DistanceParams.y)
+		{
+			// SUN SCATTERING (Bloom around sun)
 			fogFactor = min(1, (1 - haloFactor * _SkyboxExpression));
+		}
 		else
+		{
 			fogFactor = max(fogFactor, heightFactor);
+		}
 		//{
 		//	if (height)
 		//		fogFactor = heightFactor;
@@ -342,7 +284,6 @@ CGINCLUDE
 		// by fog amount
 		return lerp (colour, sceneColor, fogFactor);
 	}
-
 ENDCG
 
 SubShader
