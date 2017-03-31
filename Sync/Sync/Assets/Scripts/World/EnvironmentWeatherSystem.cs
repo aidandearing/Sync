@@ -107,7 +107,7 @@ public class EnvironmentWeatherSystem
 
         for (int i = 0; i < controller.clouds.Length; i++)
         {
-            float strata = (float)(i * cloudsStratification) / ((controller.clouds.Length - 1) / cloudsDensity);
+            //float strata = (float)(i * cloudsStratification) / ((controller.clouds.Length - 1) / cloudsDensity);
             controller.clouds[i].SetTextureOffset("_MainTex", windDirection * Time.time);
         }
     }
@@ -130,7 +130,15 @@ public class EnvironmentWeatherSystem
         for (int i = 0; i < controller.particles.Length; i++)
         {
             ParticleSystem.EmissionModule module = controller.particles[i].emission;
-            module.rateOverTime = controller.particleEmitRate[i].Evaluate(range);
+            float rate = controller.particleEmitRate[i].Evaluate(range);
+            if (rate <= 0)
+                controller.particles[i].gameObject.SetActive(false);
+            else
+            {
+                if (!controller.particles[i].gameObject.activeSelf)
+                    controller.particles[i].gameObject.SetActive(true);
+                module.rateOverTime = rate;
+            }
         }
 
         if (hasClouds)

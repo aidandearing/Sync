@@ -54,7 +54,7 @@ public class SequencerGradient
     {
         if (delayCurrent < delay)
             return 0;
-
+        
         switch (format)
         {
             case Format.Linear:
