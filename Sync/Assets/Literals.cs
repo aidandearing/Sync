@@ -14,7 +14,7 @@ public static class Literals
                 public const int Floors = 8;
                 public const int walls = 9;
                 public const int obstacles = 10;
-                public static int entities = 11;
+                public const int entities = 11;
                 public const int players = 12;
                 public const int projectiles = 13;
                 public const int particles = 14;
@@ -59,6 +59,21 @@ public static class Literals
             public const string Cube = "cube";
             public const string NeroGraffitiController = "nero";
             public const string NeroGraffiti = "nero graffiti";
+        }
+
+        public static class Physics
+        {
+            public static class Layers
+            {
+                public const string Floors = "Floors";
+                public const string walls = "Walls";
+                public const string obstacles = "Obstacles";
+                public const string entities = "Entities";
+                public const string players = "Players";
+                public const string projectiles = "Projectiles";
+                public const string particles = "Particles";
+                public const string graffiti = "Graffiti";
+            }
         }
 
         public static class Blackboard

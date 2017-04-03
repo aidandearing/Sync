@@ -20,6 +20,7 @@ public class AIFlockBehaviour : MonoBehaviour
     public float seperationForce = 10.0f;
     public ForceMode seperationForceMode = ForceMode.Force;
 
+    [Header("Management")]
     public float checkCooldown = 1.0f;
     private float checkCooldownCurrent = 1.0f;
     public float checkCooldownDelta = 0.5f;
@@ -89,36 +90,52 @@ public class AIFlockBehaviour : MonoBehaviour
             // Go through the flockA list, which contains all the flock transforms that are within the alignment distance
             // And calculate the average alignment of all flock members
             // then apply some factor of the average alignment of all flock members alignments
-            Vector3 flockAlignment = transform.forward;
-
-            foreach(Transform member in flockA)
+            if (flockA.Count > 0)
             {
-                flockAlignment += member.forward;
-            }
-            flockAlignment /= flockA.Count + 1;
+                Vector3 flockAlignment = transform.forward;
 
-            transform.forward = Vector3.Lerp(transform.forward, flockAlignment, alignmentFactor);
+                foreach (Transform member in flockA)
+                {
+                    flockAlignment += member.forward;
+                }
+                flockAlignment /= flockA.Count + 1;
+
+                controller.rigidbody.MoveRotation(Quaternion.LookRotation(Vector3.Lerp(transform.forward, flockAlignment, alignmentFactor)));
+
+                Debug.DrawRay(transform.position, transform.forward, new Color(1, 1, 1));
+                Debug.DrawRay(transform.position, flockAlignment, new Color(0, 0, 1));
+            }
 
             // Cohesion Logic
             // Go through the flockC list, which contains all the flock transforms that are within the alignment distance
             // And calculate the center of mass of all flock members
             // then apply a force towards the center of mass of all flock members
-            Vector3 com = transform.position;
-
-            foreach(Transform member in flockC)
+            if (flockC.Count > 0)
             {
-                com += member.position;
-            }
-            com /= flockC.Count + 1;
+                Vector3 com = transform.position;
 
-            controller.rigidbody.AddForce((transform.position - com).normalized * cohesionForce, cohesionForceMode);
+                foreach (Transform member in flockC)
+                {
+                    com += member.position;
+                }
+                com /= flockC.Count + 1;
+
+                Vector3 cohesiveForce = (com - transform.position).normalized * cohesionForce;
+                controller.rigidbody.AddForce(cohesiveForce, cohesionForceMode);
+                Debug.DrawRay(transform.position, cohesiveForce, new Color(0, 1, 0));
+            }
 
             // Seperation Logic
             // Go through the flockS list, which contains all the flock transforms that are within the seperation distance
             // And apply a force away from each flock member
-            foreach(Transform member in flockS)
+            if (flockS.Count > 0)
             {
-                controller.rigidbody.AddForce((transform.position - member.position).normalized * seperationForce, seperationForceMode);
+                foreach (Transform member in flockS)
+                {
+                    Vector3 seperativeForce = (transform.position - member.position).normalized * seperationForce;
+                    controller.rigidbody.AddForce(seperativeForce, seperationForceMode);
+                    Debug.DrawRay(transform.position, seperativeForce, new Color(0, 1, 0));
+                }
             }
         }
     }

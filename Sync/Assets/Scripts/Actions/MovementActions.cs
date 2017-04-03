@@ -147,22 +147,25 @@ public class MovementActions
 
     public static void Fly(Controller self, Vector3 input)
     {
-        // If not already moving at full speed begin moving at full speed
-        if (self.rigidbody.velocity.sqrMagnitude < self.movement.speedForward * self.movement.speedForward)
-            self.rigidbody.AddForce(self.transform.forward * self.movement.speedForward * self.rigidbody.mass, ForceMode.Force);
-        // If moving at full speed continue to do so, but based on the forward
-        //else
-        //    self.rigidbody.velocity = self.transform.forward * self.movement.speedForward;
-
-        // If any input is being recieved then the controller should be rotated towards the input
         if (input.sqrMagnitude > 0)
         {
-            self.rigidbody.MoveRotation(Quaternion.RotateTowards(self.rigidbody.rotation, Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan2(input.x, input.z), 0), self.movement.speedTurn * Time.fixedDeltaTime));
-        }
-        // Else the controller should be rotated towards their velocity's direction
-        else if (self.rigidbody.velocity.sqrMagnitude > 1)
-        {
-            self.rigidbody.MoveRotation(Quaternion.RotateTowards(self.rigidbody.rotation, Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan2(self.rigidbody.velocity.x, self.rigidbody.velocity.z), 0), self.movement.speedTurn * Time.fixedDeltaTime));
+            // If not already moving at full speed begin moving at full speed
+            if (self.rigidbody.velocity.sqrMagnitude < self.movement.speedForward * self.movement.speedForward)
+                self.rigidbody.AddForce(self.transform.forward * self.movement.speedForward * self.rigidbody.mass, ForceMode.Force);
+            // If moving at full speed continue to do so, but based on the forward
+            //else
+            //    self.rigidbody.velocity = self.transform.forward * self.movement.speedForward;
+
+            // If any input is being recieved then the controller should be rotated towards the input
+            if (input.sqrMagnitude > 0)
+            {
+                self.rigidbody.MoveRotation(Quaternion.RotateTowards(self.rigidbody.rotation, Quaternion.LookRotation(input), self.movement.speedTurn * Time.fixedDeltaTime));
+            }
+            // Else the controller should be rotated towards their velocity's direction
+            else if (self.rigidbody.velocity.sqrMagnitude > 1)
+            {
+                self.rigidbody.MoveRotation(Quaternion.RotateTowards(self.rigidbody.rotation, Quaternion.LookRotation(self.rigidbody.velocity), self.movement.speedTurn * Time.fixedDeltaTime));
+            }
         }
     }
 }

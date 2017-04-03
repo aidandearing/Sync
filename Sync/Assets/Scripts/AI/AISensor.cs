@@ -27,4 +27,6 @@ public abstract class AISensor : MonoBehaviour
     }
 
     public abstract Transform Sense();
+
+    public abstract Transform[] SenseAll();
 }

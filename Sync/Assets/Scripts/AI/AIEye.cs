@@ -45,4 +45,44 @@ public class AIEye : AISensor
 
         return null;
     }
+
+    public override Transform[] SenseAll()
+    {
+        if (CanSense())
+        {
+            // Quickest way to do this is just to shoot a sphere cast, get all the hits, and then check their dot product against view angle, which makes a spherical sector of possible hits
+            // then fire a ray at each one and add each that hits to a list
+            // https://en.wikipedia.org/wiki/Spherical_sector
+            RaycastHit[] hits = Physics.SphereCastAll(transform.position, sightDistance, transform.forward);
+
+            float angle = Mathf.Sin(Mathf.Deg2Rad * sightAngle / 2);
+
+            List<Transform> transforms = new List<Transform>();
+
+            foreach (RaycastHit hit in hits)
+            {
+                // If they pass the tag criteria
+                if (hit.collider.gameObject.tag == sightCriteriaTag)
+                {
+                    // If they pass the dot check
+                    if (Vector3.Dot(hit.collider.transform.position, transform.position) > angle)
+                    {
+                        // Now we shoot a ray at them, and see if it hits them
+                        RaycastHit sightHit;
+
+                        Physics.Raycast(new Ray(transform.position, hit.collider.transform.position), out sightHit);
+
+                        if (sightHit.collider.gameObject.tag == sightCriteriaTag)
+                        {
+                            transforms.Add(sightHit.collider.gameObject.transform);
+                        }
+                    }
+                }// if hit.collider.gameObject.tag == sightCriteriaTag
+            }// foreach
+
+            return transforms.ToArray();
+        }
+
+        return null;
+    }
 }
