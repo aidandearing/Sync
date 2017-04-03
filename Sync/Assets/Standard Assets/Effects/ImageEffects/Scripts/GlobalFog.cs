@@ -20,12 +20,12 @@ namespace UnityStandardAssets.ImageEffects
 		public bool heightFog = true;
 		[Tooltip("Fog top Y coordinate")]
         public float height = 1.0f;
-        [Range(0.0000001f,10.0f)]
-        public float heightDensity = 2.0f;
+        public float heightDensity = 0.0000001f;
 		[Tooltip("Push fog away from the camera by this amount")]
         public float startDistance = 0.0f;
+        [Tooltip("Define the distance from the atmosphere the sun is")]
+        public float sunDistance = 100000;
         [Tooltip("Define radius of the atmosphere")]
-        [Range(0,10000000000)]
         public float atmosphericVolume = 1000;
         [Tooltip("The scattering factors for RGBA")]
         public Vector4 scatteringFactor = new Vector4(0.5f, 0.75f, 1.0f, 0);
@@ -33,6 +33,8 @@ namespace UnityStandardAssets.ImageEffects
         public float sunScatterFactor = 0.5f;
         [Tooltip("The strength the skybox has over the depth fog (0 for sky colour being fog colour, 1 for sky colour being sky colour)")]
         public float skyboxFactor = 0.25f;
+        public float horizonIntensity = 0.1f;
+        public float zenithIntensity = 2.0f;
         public Shader fogShader = null;
         private Material fogMaterial = null;
 
@@ -82,10 +84,14 @@ namespace UnityStandardAssets.ImageEffects
             fogMaterial.SetVector("_DistanceParams", new Vector4(-Mathf.Max(startDistance, 0.0f), excludeDepth, 0, 0));
             fogMaterial.SetFloat("_Volume", atmosphericVolume);
             fogMaterial.SetColor("_Sun", sun.color);
+            fogMaterial.SetFloat("_SunDistance", sunDistance);
             fogMaterial.SetVector("_SunDirection", sun.transform.forward);
             fogMaterial.SetVector("_Scattering", scatteringFactor);
             fogMaterial.SetFloat("_SkyboxExpression", skyboxFactor);
             fogMaterial.SetFloat("_SunScatterFactor", sunScatterFactor);
+            fogMaterial.SetFloat("_HorizonIntensity", horizonIntensity);
+            fogMaterial.SetFloat("_ZenithIntensity", zenithIntensity);
+            fogMaterial.SetVector("_ScatteringRayleigh", scatteringFactor);
 
             var sceneMode = RenderSettings.fogMode;
             var sceneDensity = RenderSettings.fogDensity;

@@ -13,6 +13,13 @@ public class PlayerController : Controller
     // Use this for initialization
     protected override void Start()
     {
+        for (int i = 0; i < 4; i++)
+        {
+            string key = Literals.Strings.Tags.Player + i;
+            if (!Blackboard.Global.ContainsKey(key))
+                Blackboard.Global.Add(key, new BlackboardValue() { Value = this });
+        }
+
         base.Start();
     }
 

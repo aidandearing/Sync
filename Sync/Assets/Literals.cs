@@ -56,6 +56,7 @@ public static class Literals
             public const string Floor = "floor";
             public const string Wall = "wall";
             public const string Player = "player";
+            public const string Cube = "cube";
             public const string NeroGraffitiController = "nero";
             public const string NeroGraffiti = "nero graffiti";
         }
