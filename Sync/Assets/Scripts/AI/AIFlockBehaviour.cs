@@ -24,6 +24,7 @@ public class AIFlockBehaviour : MonoBehaviour
     public float checkCooldown = 1.0f;
     private float checkCooldownCurrent = 1.0f;
     public float checkCooldownDelta = 0.5f;
+    public int layerMask;
 
     public List<Transform> flock = new List<Transform>();
 
@@ -55,7 +56,7 @@ public class AIFlockBehaviour : MonoBehaviour
 
             float maxDistance = Mathf.Max(Mathf.Max(alignmentDistance, cohesionDistance), seperationDistance);
 
-            RaycastHit[] hits = Physics.SphereCastAll(transform.position, maxDistance, transform.forward);
+            RaycastHit[] hits = Physics.SphereCastAll(transform.position, maxDistance, transform.forward, layerMask);
 
             foreach(RaycastHit hit in hits)
             {

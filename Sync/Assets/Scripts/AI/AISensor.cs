@@ -26,6 +26,13 @@ public abstract class AISensor : MonoBehaviour
         return senseCooldownCurrent <= 0;
     }
 
+    public void Sensed()
+    {
+        senseCooldownCurrent += UnityEngine.Random.Range(senseCooldown - senseCooldownDelta, senseCooldown + senseCooldownDelta);
+    }
+
+    public abstract bool CanSense(Transform transform);
+
     public abstract Transform Sense();
 
     public abstract Transform[] SenseAll();

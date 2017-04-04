@@ -22,25 +22,23 @@ public class CubeController : Controller
     public static float PlayerMemoryTime = 120.0f;
 
     public static float FormationSnapAngle = 10.0f;
-    public static float FormationGridSize = 3.0f;
+    public static float FormationSnapPosition = 1.0f;
     public static float FormationCheckRadius = 100.0f;
     public static float FormationCheckTime = 1.0f;
     public static float FormationCheckDelay = 10.0f;
     public static float FormationCheckDelayDelta = 2.5f;
     public static float FormationBreakChance = 0.01f;
-    public static int FormationLimit = 26;
-    public static float FormationSpeed = 5.0f;
     public static float FormationJoinSpeed = 7.5f;
 
     public static float LonerSpeedMin = 2.0f;
     public static float LonerSpeedMax = 10.0f;
 
-    public float formationCheckCurrent = 0.0f;
+    public float formationCheckCurrent;
     public Vector3 formationPosition = Vector3.zero;
     public bool willJoinFormation = true;
 
-    public List<CubeController> children = new List<CubeController>();
-    public CubeController parent;
+    public CubeFormation parentPrefab;
+    public CubeFormation parent;
 
     public AIEye eye;
     public AIFlockBehaviour flocking;
@@ -50,8 +48,6 @@ public class CubeController : Controller
 
     public enum State { Loner, Child, ParentedChild, Cluster, Wanderer, Attacker, Skulker, Orchestra };
     public State state = State.Wanderer;
-
-    new public BoxCollider collider;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -65,6 +61,10 @@ public class CubeController : Controller
         base.Start();
 
         FormationBreakCheck();
+
+        formationCheckCurrent += UnityEngine.Random.Range(FormationCheckDelay - FormationCheckDelayDelta, FormationCheckDelay + FormationCheckDelayDelta);
+
+        flocking.layerMask = LayerMask.GetMask(Literals.Strings.Physics.Layers.entities);
     }
 
     // Update is called once per frame
@@ -89,57 +89,14 @@ public class CubeController : Controller
         if (formationCheckCurrent > 0)
             formationCheckCurrent -= Time.fixedDeltaTime;
 
-        // This means it is a single unit, or it is acting as a cluster, either way, only those that are parentless should be updating
-        if (parent == null)
-        {
-            // This means it is a single unit
-            // Single units are loners, they will fly with cohesion, but their desired seperation is high, and their alignment low
-            if (children.Count < 1)
-            {
-                // Loner behaviour is done only for those that don't like to be in formation
-                if (!willJoinFormation)
-                {
-                    state = State.Loner;
-                }
-                // Otherwise they are wanderers
-                else
-                {
-                    state = State.Wanderer;
-                }
-            }
-            // This is a cluster
-            // Clusters have maximum cohesion, after the children make sure they reach their formation point, then become part of the hierarchy under their parent, as each child is a sub transform
-            // Therefore only the cluster leader needs to update movement logic
-            else
-            {
-                state = State.Cluster;
-            }
-        }
-        // This is a child
-        else
-        {
-            // This child is not parented yet
-            if (transform.parent != parent.transform)
-            {
-                state = State.Child;
-            }
-            // This child is parented
-            else
-            {
-                state = State.ParentedChild;
-            }
-        }
-
         switch (state)
         {
             case State.Loner: Loner(); break;
             case State.Child: Child(); break;
             case State.ParentedChild: ParentedChild(); break;
-            case State.Cluster: Cluster(); break;
             case State.Skulker: Skulker(); break;
             case State.Wanderer: Wanderer(); break;
             case State.Attacker: Attacker(); break;
-            case State.Orchestra: Orchestra(); break;
         }
 
         base.FixedUpdate();
@@ -179,7 +136,7 @@ public class CubeController : Controller
     private void Child()
     {
         // Children attempt to get to formation
-        
+
         // Possible states from Child
         // ParentedChild
 
@@ -188,9 +145,9 @@ public class CubeController : Controller
         Vector3 worldPosFormation = parent.transform.TransformPoint(formationPosition);
 
         // If the child is close enough to the formation point
-        if ((transform.position - worldPosFormation).magnitude < 1)
+        if ((transform.position - worldPosFormation).magnitude < FormationSnapPosition)
         {
-            // Snap them to it, and keep them here
+            // Snap them to the formation point, and keep them there
             rigidbody.MovePosition(worldPosFormation);
             // Start rotating them so they look the same way their parent does
             rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, Quaternion.LookRotation(parent.transform.forward), movement.speedTurn * Time.fixedDeltaTime));
@@ -233,37 +190,14 @@ public class CubeController : Controller
         rigidbody.MoveRotation(parent.transform.rotation);
     }
 
-    private void Cluster()
-    {
-        // This is a cluster
-        // Clusters have maximum cohesion, after the children make sure they reach their formation point, then become part of the hierarchy under their parent
-        // As each child is a sub transform only the cluster leader needs to update movement logic
-
-        // Possible states from Cluster
-        // Orchestra
-
-        movement.speedForward = FormationSpeed;
-
-        MovementActions.Fly(this, UnityEngine.Random.onUnitSphere);
-
-        // Clusters like to seek out players, and use orchestral pattern attacks to eliminate them
-    }
-
-    private void Orchestra()
-    {
-        // Orchestras are Clusters that are attacking
-        // Orchestras tell children to fire, in specific sequences.
-    }
-
     private void Wanderer()
     {
         // Wanderers can either find a formation to join
-        // Becoming either a child of another, or a cluster
+        // Becoming a child
         // Or if they spot the player, become an Attacker
 
         // Possible states from Wanderer
         // Child
-        // Cluster
         // Attacker
 
         // Child
@@ -271,12 +205,6 @@ public class CubeController : Controller
         if (parent != null)
         {
             state = State.Child;
-        }
-        // Cluster
-        // This wanderer has found others and put them in its formation
-        else if (children.Count > 0)
-        {
-            state = State.Cluster;
         }
         else
         {
@@ -297,7 +225,7 @@ public class CubeController : Controller
             }
             // Wanderer
             // Otherwise this wanderer should check if their are formations to join
-            // And move to a location within a specified distance of the 
+            // And wander around
             else
             {
                 FormationCheck();
@@ -326,13 +254,7 @@ public class CubeController : Controller
     //
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void SetFormationCollider()
-    {
-        collider.size = Vector3.one * GetFormationDimension() * FormationGridSize;
-        collider.center = collider.size / 2.0f - (Vector3.one * FormationGridSize / 2);
-    }
-
-    public void SetParent(CubeController parent)
+    public void SetParent(CubeFormation parent)
     {
         this.parent = parent;
 
@@ -347,72 +269,12 @@ public class CubeController : Controller
         }
     }
 
-    public void AddChild(CubeController child)
-    {
-        this.children.Add(child);
-        child.SetParent(this);
-
-        if (GetFormationDimension() > GetFormationDimension(children.Count - 1))
-        {
-            foreach (CubeController c in children)
-            {
-                c.SetFormationPoint();
-            }
-
-            SetFormationCollider();
-        }
-        else
-        {
-            child.SetFormationPoint();
-        }
-    }
-
-    public void RemoveChild(CubeController child)
-    {
-        this.children.Remove(child);
-        child.parent = null;
-
-        if (child.transform.parent = transform.parent)
-        {
-            child.transform.SetParent(null);
-        }
-
-        if (GetFormationDimension() < GetFormationDimension(children.Count + 1))
-        {
-            foreach (CubeController c in children)
-            {
-                c.SetFormationPoint();
-            }
-
-            SetFormationCollider();
-        }
-    }
-
-    public Vector3 GetFormationLocation(CubeController child)
-    {
-        int index = children.IndexOf(child) + 1;
-
-        int dimension = GetFormationDimension();
-
-        return new Vector3(((index / dimension) / dimension) % dimension,
-            (index / dimension) % dimension,
-            index % dimension) * FormationGridSize;
-    }
-
-    public int GetFormationDimension()
-    {
-        return Mathf.CeilToInt(Mathf.Pow(children.Count + 1, 0.333f));
-    }
-
-    public int GetFormationDimension(int count)
-    {
-        return Mathf.CeilToInt(Mathf.Pow(count, 0.333f));
-    }
-
     public void SetFormationPoint()
     {
         formationPosition = parent.GetFormationLocation(this);
         transform.SetParent(null);
+
+        state = State.Child;
     }
 
     /// <summary>
@@ -449,13 +311,15 @@ public class CubeController : Controller
                                 {
                                     if (cube.willJoinFormation)
                                     {
-                                        if (cube.children.Count > 0)
+                                        if (cube.parent != null)
                                         {
-                                            cube.AddChild(this);
+                                            cube.parent.AddChild(this);
                                         }
                                         else
                                         {
-                                            AddChild(cube);
+                                            parent = Instantiate(parentPrefab, transform.position, transform.rotation);
+                                            parent.AddChild(this);
+                                            parent.AddChild(cube);
                                         }
                                     }
                                 }// cube.parent != null
@@ -488,6 +352,8 @@ public class CubeController : Controller
                     transform.parent = null;
                     rigidbody.isKinematic = false;
                 }
+
+                state = State.Loner;
 
                 movement.speedForward = UnityEngine.Random.Range(LonerSpeedMin, LonerSpeedMax);
             }

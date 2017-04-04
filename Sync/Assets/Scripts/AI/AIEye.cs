@@ -10,10 +10,37 @@ public class AIEye : AISensor
     public float sightAngle = 180;
     public string sightCriteriaTag = Literals.Strings.Tags.Player;
 
+    public override bool CanSense(Transform transform)
+    {
+        // If they pass the tag criteria
+        if (transform.gameObject.tag == sightCriteriaTag)
+        {
+            float angle = Mathf.Sin(Mathf.Deg2Rad * sightAngle / 2);
+
+            // If they pass the dot check
+            if (Vector3.Dot(transform.transform.position, transform.position) > angle)
+            {
+                // Now we shoot a ray at them, and see if it hits them
+                RaycastHit sightHit;
+
+                Physics.Raycast(new Ray(transform.position, transform.transform.position), out sightHit);
+
+                if (sightHit.collider.gameObject.tag == sightCriteriaTag)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public override Transform Sense()
     {
         if (CanSense())
         {
+            Sensed();
+
             // Quickest way to do this is just to shoot a sphere cast, get all the hits, and then check their dot product against view angle, which makes a spherical sector of possible hits
             // then fire a ray at each one until one of them returns true for having the sight criteria tag
             // https://en.wikipedia.org/wiki/Spherical_sector
@@ -50,6 +77,8 @@ public class AIEye : AISensor
     {
         if (CanSense())
         {
+            Sensed();
+
             // Quickest way to do this is just to shoot a sphere cast, get all the hits, and then check their dot product against view angle, which makes a spherical sector of possible hits
             // then fire a ray at each one and add each that hits to a list
             // https://en.wikipedia.org/wiki/Spherical_sector

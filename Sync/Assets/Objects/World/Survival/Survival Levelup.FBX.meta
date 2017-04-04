@@ -1,0 +1,197 @@
+fileFormatVersion: 2
+guid: 7751f9a780a3f4e4b9b7749c9d64cf41
+timeCreated: 1491271296
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Monolith
+    100002: Monolith Eye
+    100004: Playable Floor
+    100006: Roof Spike 01
+    100008: Roof Spike 02
+    100010: Roof Spike 03
+    100012: Roof Spike 04
+    100014: Roof Spike 05
+    100016: Roof Spike 06
+    100018: Roof Spike 07
+    100020: Roof Spike 08
+    100022: Scene
+    100024: Scene Middle Floor
+    100026: Scene Upper Grass
+    100028: Scene Upper Wall
+    100030: Scene Wall
+    100032: //RootNode
+    100034: Tarp 00
+    100036: Tarp 01
+    100038: Tarp 02
+    100040: World Bottom
+    400000: Monolith
+    400002: Monolith Eye
+    400004: Playable Floor
+    400006: Roof Spike 01
+    400008: Roof Spike 02
+    400010: Roof Spike 03
+    400012: Roof Spike 04
+    400014: Roof Spike 05
+    400016: Roof Spike 06
+    400018: Roof Spike 07
+    400020: Roof Spike 08
+    400022: Scene
+    400024: Scene Middle Floor
+    400026: Scene Upper Grass
+    400028: Scene Upper Wall
+    400030: Scene Wall
+    400032: //RootNode
+    400034: Tarp 00
+    400036: Tarp 01
+    400038: Tarp 02
+    400040: World Bottom
+    2300000: Monolith
+    2300002: Monolith Eye
+    2300004: Playable Floor
+    2300006: Roof Spike 01
+    2300008: Roof Spike 02
+    2300010: Roof Spike 03
+    2300012: Roof Spike 04
+    2300014: Roof Spike 05
+    2300016: Roof Spike 06
+    2300018: Roof Spike 07
+    2300020: Roof Spike 08
+    2300022: Scene
+    2300024: Scene Middle Floor
+    2300026: Scene Upper Grass
+    2300028: Scene Upper Wall
+    2300030: Scene Wall
+    2300032: Tarp 00
+    2300034: Tarp 01
+    2300036: Tarp 02
+    2300038: World Bottom
+    3300000: Monolith
+    3300002: Monolith Eye
+    3300004: Playable Floor
+    3300006: Roof Spike 01
+    3300008: Roof Spike 02
+    3300010: Roof Spike 03
+    3300012: Roof Spike 04
+    3300014: Roof Spike 05
+    3300016: Roof Spike 06
+    3300018: Roof Spike 07
+    3300020: Roof Spike 08
+    3300022: Scene
+    3300024: Scene Middle Floor
+    3300026: Scene Upper Grass
+    3300028: Scene Upper Wall
+    3300030: Scene Wall
+    3300032: Tarp 00
+    3300034: Tarp 01
+    3300036: Tarp 02
+    3300038: World Bottom
+    4300000: Scene
+    4300002: Monolith
+    4300004: Playable Floor
+    4300006: Monolith Eye
+    4300008: Tarp 02
+    4300010: Tarp 01
+    4300012: Tarp 00
+    4300014: World Bottom
+    4300016: Roof Spike 01
+    4300018: Roof Spike 02
+    4300020: Roof Spike 03
+    4300022: Roof Spike 04
+    4300024: Roof Spike 05
+    4300026: Roof Spike 06
+    4300028: Roof Spike 07
+    4300030: Roof Spike 08
+    4300032: Scene Upper Wall
+    4300034: Scene Upper Grass
+    4300036: Scene Middle Floor
+    4300038: Scene Wall
+    6400000: Monolith
+    6400002: Monolith Eye
+    6400004: Playable Floor
+    6400006: Roof Spike 01
+    6400008: Roof Spike 02
+    6400010: Roof Spike 03
+    6400012: Roof Spike 04
+    6400014: Roof Spike 05
+    6400016: Roof Spike 06
+    6400018: Roof Spike 07
+    6400020: Roof Spike 08
+    6400022: Scene
+    6400024: Scene Middle Floor
+    6400026: Scene Upper Grass
+    6400028: Scene Upper Wall
+    6400030: Scene Wall
+    6400032: Tarp 00
+    6400034: Tarp 01
+    6400036: Tarp 02
+    6400038: World Bottom
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 0
+    normalImportMode: 1
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
