@@ -9,6 +9,9 @@ public class MonolithSpecialSynchronism : Synchronism
 {
     public MusicPlayer musicPlayer;
 
+    [Header("References")]
+    public Material materialEye;
+
     [Header("Delay")]
     public Synchronisations delaySynchronisation = Synchronisations.BAR_8;
     public Synchroniser delaySynchroniser;
@@ -53,6 +56,8 @@ public class MonolithSpecialSynchronism : Synchronism
 
         if (delayCurrent < delayBy)
             delaySpotlight.intensity = delaySpotlightIntensity.Evaluate((delaySynchroniser.Percent + delayCurrent) / delayBy);
+
+        materialEye.SetColor("_EmissionColor", delaySpotlight.color * delaySpotlight.intensity);
     }
 
     private void CallbackBoth()

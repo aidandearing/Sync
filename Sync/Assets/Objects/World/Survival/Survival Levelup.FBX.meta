@@ -26,6 +26,18 @@ ModelImporter:
     100036: Tarp 01
     100038: Tarp 02
     100040: World Bottom
+    100042: Playable
+    100044: Tarp 001
+    100046: Tarp 002
+    100048: Tarp 003
+    100050: Tarp 004
+    100052: World Grass Floor
+    100054: World Lower Floor
+    100056: World Lower Wall
+    100058: World Upper Wall
+    100060: World View Inset
+    100062: World View Wall
+    100064: World View Windows
     400000: Monolith
     400002: Monolith Eye
     400004: Playable Floor
@@ -47,6 +59,18 @@ ModelImporter:
     400036: Tarp 01
     400038: Tarp 02
     400040: World Bottom
+    400042: Playable
+    400044: Tarp 001
+    400046: Tarp 002
+    400048: Tarp 003
+    400050: Tarp 004
+    400052: World Grass Floor
+    400054: World Lower Floor
+    400056: World Lower Wall
+    400058: World Upper Wall
+    400060: World View Inset
+    400062: World View Wall
+    400064: World View Windows
     2300000: Monolith
     2300002: Monolith Eye
     2300004: Playable Floor
@@ -67,6 +91,18 @@ ModelImporter:
     2300034: Tarp 01
     2300036: Tarp 02
     2300038: World Bottom
+    2300040: Playable
+    2300042: Tarp 001
+    2300044: Tarp 002
+    2300046: Tarp 003
+    2300048: Tarp 004
+    2300050: World Grass Floor
+    2300052: World Lower Floor
+    2300054: World Lower Wall
+    2300056: World Upper Wall
+    2300058: World View Inset
+    2300060: World View Wall
+    2300062: World View Windows
     3300000: Monolith
     3300002: Monolith Eye
     3300004: Playable Floor
@@ -87,6 +123,18 @@ ModelImporter:
     3300034: Tarp 01
     3300036: Tarp 02
     3300038: World Bottom
+    3300040: Playable
+    3300042: Tarp 001
+    3300044: Tarp 002
+    3300046: Tarp 003
+    3300048: Tarp 004
+    3300050: World Grass Floor
+    3300052: World Lower Floor
+    3300054: World Lower Wall
+    3300056: World Upper Wall
+    3300058: World View Inset
+    3300060: World View Wall
+    3300062: World View Windows
     4300000: Scene
     4300002: Monolith
     4300004: Playable Floor
@@ -107,6 +155,18 @@ ModelImporter:
     4300034: Scene Upper Grass
     4300036: Scene Middle Floor
     4300038: Scene Wall
+    4300040: World View Inset
+    4300042: Tarp 001
+    4300044: Tarp 002
+    4300046: Tarp 003
+    4300048: Tarp 004
+    4300050: World View Windows
+    4300052: World Upper Wall
+    4300054: Playable
+    4300056: World Lower Wall
+    4300058: World View Wall
+    4300060: World Grass Floor
+    4300062: World Lower Floor
     6400000: Monolith
     6400002: Monolith Eye
     6400004: Playable Floor
@@ -127,6 +187,18 @@ ModelImporter:
     6400034: Tarp 01
     6400036: Tarp 02
     6400038: World Bottom
+    6400040: Playable
+    6400042: Tarp 001
+    6400044: Tarp 002
+    6400046: Tarp 003
+    6400048: Tarp 004
+    6400050: World Grass Floor
+    6400052: World Lower Floor
+    6400054: World Lower Wall
+    6400056: World Upper Wall
+    6400058: World View Inset
+    6400060: World View Wall
+    6400062: World View Windows
   materials:
     importMaterials: 1
     materialName: 0
