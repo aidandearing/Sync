@@ -142,28 +142,13 @@ public class OrbSynchronism : Synchronism
         }
     }
 
-    protected override void OnTimeBar8()
-    {
-
-    }
-
-    protected override void OnTimeBar4()
-    {
-
-    }
-
-    protected override void OnTimeBar2()
-    {
-
-    }
-
-    protected override void OnTimeBar()
+    protected void OnTimeBar()
     {
         //Metronome.Stop();
         Metronome.Play();
     }
 
-    protected override void OnTimeWhole()
+    protected void OnTimeWhole()
     {
         colours.SetColour();
 
@@ -183,30 +168,5 @@ public class OrbSynchronism : Synchronism
                 step++;
             }
         }
-    }
-
-    protected override void OnTimeHalf()
-    {
-
-    }
-
-    protected override void OnTimeQuarter()
-    {
-        
-    }
-
-    protected override void OnTimeEighth()
-    {
-
-    }
-
-    protected override void OnTimeSixteenth()
-    {
-
-    }
-
-    protected override void OnTimeThirtySecond()
-    {
-
     }
 }

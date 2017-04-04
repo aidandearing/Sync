@@ -27,6 +27,8 @@ public class EnvironmentWeatherSystem
     [Header("Euler Rotations")]
     public Vector3 day;
     public Vector3 night;
+    public bool useEulerArray = false;
+    public SequencerVector3 eulerArray;
     [Header("Transition")]
     [Range(0.0f, 1.0f)]
     public float transitionStart = 0.49f;
@@ -114,9 +116,21 @@ public class EnvironmentWeatherSystem
 
     private void EvaluateTimeOfDay(EnvironmentController controller, float evaluate)
     {
-        float range = (evaluate - transitionStart) / (transitionEnd - transitionStart);
+        float range = Mathf.Clamp((evaluate - transitionStart) / (transitionEnd - transitionStart),0,1);
 
-        controller.light.transform.rotation = Quaternion.Euler(Vector3.Lerp(night, day, range));
+        if (!useEulerArray)
+            controller.light.transform.rotation = Quaternion.Euler(Vector3.Lerp(night, day, range));
+        else
+        {
+            int length = eulerArray.objs.Length - 1;
+            int low = Mathf.FloorToInt(range * length);
+            int high = Mathf.Clamp(low + 1, 0, length);
+            float lowPercent = (low / (float)length);
+            float highPercent = (high / (float)length);
+            float localPercent = (range - lowPercent) / (highPercent - lowPercent);
+            controller.light.transform.rotation = Quaternion.Euler(Vector3.Lerp(eulerArray.Evaluate(lowPercent), eulerArray.Evaluate(highPercent), localPercent));
+        }
+
         RenderSettings.fogDensity = fogDensity.Evaluate(range);
         controller.cityLight.range = cityLightRange.Evaluate(range);
 

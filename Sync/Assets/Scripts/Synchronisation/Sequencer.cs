@@ -16,23 +16,9 @@ public class Sequencer<T>
     {
         return objs[(step++ % objs.Length)];
     }
-}
 
-[System.Serializable]
-[AddComponentMenu("Scripts/Synchronisation/Sequencer")]
-public class SequencerGameObjects
-{
-    Sequencer<GameObject> sequencer;
-
-    public GameObject[] objs;
-
-    public virtual GameObject Evaluate()
+    public virtual T Evaluate(float t)
     {
-        if (sequencer == null)
-        {
-            sequencer = new Sequencer<GameObject>(objs);
-        }
-
-        return sequencer.Evaluate();
+        return objs[(int)(t * (objs.Length - 1.0f))];
     }
 }
