@@ -5,17 +5,19 @@ using System.Text;
 using UnityEngine;
 
 [AddComponentMenu("Scripts/Synchronisation/Title Synchronism")]
-public class TitleSynchronism : Synchronism
+public class TitleSynchronism : MonoBehaviour
 {
+    public Synchronism synchronism = new Synchronism();
+
     public MusicPlayer musicPlayer;
 
-    protected override void Start()
+    void Start()
     {
-        Initialise();
+        synchronism.Initialise();
     }
 
-    protected override void Update()
+    void Update()
     {
-        base.Update();
+        synchronism.Update();
     }
 }

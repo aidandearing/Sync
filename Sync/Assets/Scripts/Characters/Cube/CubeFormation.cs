@@ -7,7 +7,7 @@ using UnityEngine;
 public class CubeFormation : Controller
 {
     public static float FormationGridSize = 3.0f;
-    public static int FormationLimit = 26;
+    public static int FormationLimit = 27;
     public static float FormationSpeed = 5.0f;
     public static float FormationTurnAngleMin = 45.0f;
     public static float FormationTurnAngleMax = 90.0f;
@@ -15,6 +15,8 @@ public class CubeFormation : Controller
     public static float FormationTurnDelay = 3;
     public static float FormationTurnDelayDelta = 2;
     public static float FormationGroundHeight = 10.0f;
+    public static float FormationGatheringRange = 30.0f;
+    public static float FormationGatheringHeight = 10.0f;
 
     public static float EyeDuration = 10.0f;
     public static float EyeDurationDelta = 5.0f;
@@ -25,8 +27,7 @@ public class CubeFormation : Controller
     private float formationTurnDelay;
     private Quaternion formationTurnDesired;
 
-    public CubeController eye;
-    private float eyeDuration;
+    public AISphereSensor sensor;
 
     public PlayerController target;
 
@@ -60,7 +61,7 @@ public class CubeFormation : Controller
             return;
 
         // Formations follow a seek and destroy principle
-        // They wander around in straight lines broken by turns of random degrees
+        // They wander around, a specified height above the ground, focusing on a gather point from the blackboard
         // Until they spot a target
         // Then they move in as quickly as they can
         // And they position themselves directly above the target
@@ -87,10 +88,10 @@ public class CubeFormation : Controller
             {
                 formationTurnDelay += UnityEngine.Random.Range(FormationTurnDelay - FormationTurnDelayDelta, FormationTurnDelay + FormationTurnDelayDelta);
 
-                float turnInverter = (UnityEngine.Random.value <= 0.5) ? -1 : 1;
-                float turnRad = Mathf.Deg2Rad * Mathf.Floor(UnityEngine.Random.Range(FormationTurnAngleMin, FormationTurnAngleMax) / FormationTurnAngleSnap) * FormationTurnAngleSnap * turnInverter;
-                turnRad += Mathf.Atan2(transform.forward.z, transform.forward.x);
-                formationTurnDesired = Quaternion.LookRotation(new Vector3(Mathf.Cos(turnRad), 0, Mathf.Sin(turnRad)));
+                Vector3 position = UnityEngine.Random.insideUnitCircle.normalized * FormationGatheringRange;
+                position = new Vector3(position.x, FormationGatheringHeight, position.y) + (Vector3)Blackboard.Global[Literals.Strings.Blackboard.Locations.CubeGatheringPointOne].Value;
+
+                formationTurnDesired = Quaternion.LookRotation(position - transform.position);
             }
 
             MovementActions.Fly(this, transform.forward);
@@ -100,21 +101,29 @@ public class CubeFormation : Controller
             // If eye sight is lost, the position the player was last scene at is stored, and the formation moves to that location
             // The position slowly expands to cover a large radius that the formation attempts to radially scan
 
-            if (eye != null)
-            {
-                Transform spottedTarget = eye.eye.Sense();
+            //if (eye != null)
+            //{
+            //    Transform spottedTarget = eye.eye.Sense();
+            //
+            //    if (spottedTarget != null)
+            //        target = spottedTarget.gameObject.GetComponent<PlayerController>();
+            //}
+            //else
+            //{
+            //    PickEye();
+            //}
 
-                if (spottedTarget != null)
-                    target = spottedTarget.gameObject.GetComponent<PlayerController>();
-            }
-            else
-            {
-                PickEye();
-            }
+            Transform t = sensor.Sense();
+
+            if (t != null)
+                target = t.gameObject.GetComponent<PlayerController>();
         }
         else
         {
-
+            MovementActions.Fly(this, transform.forward);
+            Vector3 position = target.transform.position + new Vector3(0, FormationGatheringHeight, 0);
+            formationTurnDesired = Quaternion.LookRotation(position - transform.position);
+            rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, formationTurnDesired, movement.speedTurn * Time.fixedDeltaTime));
         }
 
         base.FixedUpdate();
@@ -129,6 +138,7 @@ public class CubeFormation : Controller
         return transform.forward;
     }
 
+    /*
     private void PickEye()
     {
         // One cube from the forward layer is picked as the 'eye' of the formation
@@ -145,8 +155,8 @@ public class CubeFormation : Controller
             // The forward layer is +z
             // Given how the formation is constructed it is easy to get the indices of all the cubes in front
 
-            // It really isn't, as the formation is loose, and fills back to front, which means I have to determine which cubes are front most
-            // There should be a mathematical relation between the dimensions and the current number of cubes, such that the front most layer of cubes indices can be calculated
+            // It really isn't, as the formation is mathematically derived, which means I have to determine which cubes are front most
+            // There should be a relation between the dimensions and the current number of cubes, such that the front most layer of cubes indices can be calculated
             // Let me say all my knowns
             // I know the dimension, it is the ceiling of the cubed root of the number of cubes in formation
             // I know how many cubes are in formation
@@ -177,6 +187,7 @@ public class CubeFormation : Controller
             eye = children[indices[(int)(UnityEngine.Random.value * (indices.Count - 1.0f))]];
         }
     }
+    */
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -224,11 +235,11 @@ public class CubeFormation : Controller
             SetFormationCollider();
         }
 
-        if (child == eye)
-        {
-            eyeDuration = 0;
-            PickEye();
-        }
+        //if (child == eye)
+        //{
+        //    eyeDuration = 0;
+        //    PickEye();
+        //}
     }
 
     public Vector3 GetFormationLocation(CubeController child)

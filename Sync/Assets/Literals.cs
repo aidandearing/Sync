@@ -65,14 +65,15 @@ public static class Literals
         {
             public static class Layers
             {
+                public const string Default = "Default";
                 public const string Floors = "Floors";
-                public const string walls = "Walls";
-                public const string obstacles = "Obstacles";
-                public const string entities = "Entities";
-                public const string players = "Players";
-                public const string projectiles = "Projectiles";
-                public const string particles = "Particles";
-                public const string graffiti = "Graffiti";
+                public const string Walls = "Walls";
+                public const string Obstacles = "Obstacles";
+                public const string Entities = "Entities";
+                public const string Players = "Players";
+                public const string Projectiles = "Projectiles";
+                public const string Particles = "Particles";
+                public const string Graffiti = "Graffiti";
             }
         }
 
@@ -111,6 +112,11 @@ public static class Literals
                 public const string GlideDownToForward = "movementGlideDownToForward";
                 public const string ThrustSequencer = "movementThrustSequencer";
                 public const string ThrustCurve = "movementThrustCurve";
+            }
+
+            public static class Locations
+            {
+                public const string CubeGatheringPointOne = "locationsCubeGatherPointOne";
             }
         }
 

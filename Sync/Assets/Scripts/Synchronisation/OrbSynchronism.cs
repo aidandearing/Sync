@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 
 [AddComponentMenu("Scripts/Synchronisation/Orb Synchronism")]
-public class OrbSynchronism : Synchronism
+public class OrbSynchronism : MonoBehaviour
 {
+    public Synchronism synchronism = new Synchronism();
+
     public AudioSource Metronome;
     public Light GlobalLight;
     public ParticleSystem CameraFlashes;
@@ -42,9 +44,9 @@ public class OrbSynchronism : Synchronism
     private ParticleSystem.EmissionModule cameraFlashesEmitter;
 
     // Use this for initialization
-    protected override void Start()
+    void Start()
     {
-        Initialise();
+        synchronism.Initialise();
 
         colours.SetColour();
         Intensity = 0;
@@ -57,14 +59,12 @@ public class OrbSynchronism : Synchronism
         cameraFlashesEmitter = CameraFlashes.emission;
 
         Instantiate(StartChargeEffect, transform.position, new Quaternion());
-
-        base.Start();
     }
 
     // Update is called once per frame
-    protected override void Update()
+    void Update()
     {
-        base.Update();
+        synchronism.Update();
 
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
@@ -118,7 +118,7 @@ public class OrbSynchronism : Synchronism
         }
 
         // Lerp the colour of the light and the emitter layer of the shader
-        colour = colours.Evaluate(synchronisers[Synchronisations.WHOLE_NOTE].Percent);
+        colour = colours.Evaluate(synchronism.synchronisers[Synchronism.Synchronisations.WHOLE_NOTE].Percent);
 
         Renderer rend = GetComponent<Renderer>();
         rend.material.shader = Shader.Find("Standard");

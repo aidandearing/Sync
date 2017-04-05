@@ -36,6 +36,8 @@ public class CubeController : Controller
     public float formationCheckCurrent;
     public Vector3 formationPosition = Vector3.zero;
     public bool willJoinFormation = true;
+    public bool willLooseFormation = true;
+    public bool manuallyParented = false;
 
     public CubeFormation parentPrefab;
     public CubeFormation parent;
@@ -64,7 +66,7 @@ public class CubeController : Controller
 
         formationCheckCurrent += UnityEngine.Random.Range(FormationCheckDelay - FormationCheckDelayDelta, FormationCheckDelay + FormationCheckDelayDelta);
 
-        flocking.layerMask = LayerMask.GetMask(Literals.Strings.Physics.Layers.entities);
+        flocking.layerMask = LayerMask.GetMask(Literals.Strings.Physics.Layers.Entities);
     }
 
     // Update is called once per frame
@@ -88,6 +90,9 @@ public class CubeController : Controller
 
         if (formationCheckCurrent > 0)
             formationCheckCurrent -= Time.fixedDeltaTime;
+
+        if (manuallyParented)
+            formationPosition = parent.GetFormationLocation(this);
 
         switch (state)
         {
@@ -147,20 +152,23 @@ public class CubeController : Controller
         // If the child is close enough to the formation point
         if ((transform.position - worldPosFormation).magnitude < FormationSnapPosition)
         {
-            // Snap them to the formation point, and keep them there
-            rigidbody.MovePosition(worldPosFormation);
-            // Start rotating them so they look the same way their parent does
-            rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, Quaternion.LookRotation(parent.transform.forward), movement.speedTurn * Time.fixedDeltaTime));
-            // If they look within a threshold angle of the same way then snap their rotation
-            if (Vector3.Dot(transform.forward, parent.transform.forward) > Mathf.Sin(Mathf.Deg2Rad * FormationSnapAngle))
+            if (!willLooseFormation)
             {
-                // Snap rotation
-                rigidbody.MoveRotation(parent.transform.rotation);
-                // Make this child transform a child of parent transform (make sure they move together without me further having to waste time on calculating that myself)
-                transform.SetParent(parent.transform);
-                // And finally disable any capacity for them to recieve force, which disables any other attempts at moving them out of formation
-                //rigidbody.isKinematic = true;
-                state = State.ParentedChild;
+                // Snap them to the formation point, and keep them there
+                rigidbody.MovePosition(worldPosFormation);
+                // Start rotating them so they look the same way their parent does
+                rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, Quaternion.LookRotation(parent.transform.forward), movement.speedTurn * Time.fixedDeltaTime));
+                // If they look within a threshold angle of the same way then snap their rotation
+                if (Vector3.Dot(transform.forward, parent.transform.forward) > Mathf.Sin(Mathf.Deg2Rad * FormationSnapAngle))
+                {
+                    // Snap rotation
+                    rigidbody.MoveRotation(parent.transform.rotation);
+                    // Make this child transform a child of parent transform (make sure they move together without me further having to waste time on calculating that myself)
+                    transform.SetParent(parent.transform);
+                    // And finally disable any capacity for them to recieve force, which disables any other attempts at moving them out of formation
+                    //rigidbody.isKinematic = true;
+                    state = State.ParentedChild;
+                }
             }
         }
         // If they aren't move them towards it
@@ -181,13 +189,20 @@ public class CubeController : Controller
 
     private void ParentedChild()
     {
-        // This child is parented, and should have a chance of gaining independance
-        // Formation check automatically does this, for parented cubes
-        FormationCheck();
-        // Snap them to their formation position, and keep them there
-        rigidbody.MovePosition(parent.transform.TransformPoint(formationPosition));
-        // Snap rotation
-        rigidbody.MoveRotation(parent.transform.rotation);
+        if (!willLooseFormation)
+        {
+            // This child is parented, and should have a chance of gaining independance
+            // Formation check automatically does this, for parented cubes
+            FormationCheck();
+            // Snap them to their formation position, and keep them there
+            rigidbody.MovePosition(parent.transform.TransformPoint(formationPosition));
+            // Snap rotation
+            rigidbody.MoveRotation(parent.transform.rotation);
+        }
+        else
+        {
+            state = State.Child;
+        }
     }
 
     private void Wanderer()
@@ -265,7 +280,7 @@ public class CubeController : Controller
         else
         {
             flocking.enabled = true;
-            rigidbody.isKinematic = false;
+            //rigidbody.isKinematic = false;
         }
     }
 
@@ -291,7 +306,7 @@ public class CubeController : Controller
                 // If this cube isn't in a formation they should look for one
                 if (parent == null)
                 {
-                    RaycastHit[] hits = Physics.SphereCastAll(transform.position, FormationCheckRadius, transform.forward, LayerMask.GetMask(Literals.Strings.Physics.Layers.entities));
+                    RaycastHit[] hits = Physics.SphereCastAll(transform.position, FormationCheckRadius, transform.forward, LayerMask.GetMask(Literals.Strings.Physics.Layers.Entities));
 
                     foreach (RaycastHit hit in hits)
                     {
@@ -305,6 +320,7 @@ public class CubeController : Controller
                                 if (cube.parent != null)
                                 {
                                     cube.parent.AddChild(this);
+                                    break;
                                 }
                                 // This cube has found a cube it can form a formation with
                                 else
@@ -314,12 +330,14 @@ public class CubeController : Controller
                                         if (cube.parent != null)
                                         {
                                             cube.parent.AddChild(this);
+                                            break;
                                         }
                                         else
                                         {
                                             parent = Instantiate(parentPrefab, transform.position, transform.rotation);
                                             parent.AddChild(this);
                                             parent.AddChild(cube);
+                                            break;
                                         }
                                     }
                                 }// cube.parent != null
@@ -340,6 +358,8 @@ public class CubeController : Controller
 
     public void FormationBreakCheck()
     {
+        return;
+
         if (UnityEngine.Random.value < FormationBreakChance)
         {
             if (willJoinFormation)

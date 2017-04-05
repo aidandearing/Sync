@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[AddComponentMenu("Scripts/Synchronisation/Synchronism")]
-public class Synchronism : MonoBehaviour
+//[AddComponentMenu("Scripts/Synchronisation/Synchronism")]
+public class Synchronism
 {
     public enum Synchronisations { NONE, WHOLE_NOTE, HALF_NOTE, QUARTER_NOTE, EIGHTH_NOTE, SIXTEENTH_NOTE, THIRTYSECOND_NOTE, BAR, BAR_2, BAR_4, BAR_8 };
     public Dictionary<Synchronisations, Synchroniser> synchronisers = new Dictionary<Synchronisations, Synchroniser>();
@@ -15,15 +15,15 @@ public class Synchronism : MonoBehaviour
     public float Beats = 4;
     public float Bar = 4;
 
-    protected virtual void Initialise()
+    public void Initialise()
     {
-        double beatPerBar = Beats;
         double beat = 60.0f / BPM;
+        double bar = beat * Beats;
         
-        synchronisers.Add(Synchronisations.BAR_8, new Synchroniser(beatPerBar * beat * 8));
-        synchronisers.Add(Synchronisations.BAR_4, new Synchroniser(beatPerBar * beat * 4));
-        synchronisers.Add(Synchronisations.BAR_2, new Synchroniser(beatPerBar * beat * 2));
-        synchronisers.Add(Synchronisations.BAR, new Synchroniser(beatPerBar * beat));
+        synchronisers.Add(Synchronisations.BAR_8, new Synchroniser(bar * 8));
+        synchronisers.Add(Synchronisations.BAR_4, new Synchroniser(bar * 4));
+        synchronisers.Add(Synchronisations.BAR_2, new Synchroniser(bar * 2));
+        synchronisers.Add(Synchronisations.BAR, new Synchroniser(bar));
         synchronisers.Add(Synchronisations.WHOLE_NOTE, new Synchroniser(beat * 4));
         synchronisers.Add(Synchronisations.HALF_NOTE, new Synchroniser(beat * 2));
         synchronisers.Add(Synchronisations.QUARTER_NOTE, new Synchroniser(beat));
@@ -38,12 +38,12 @@ public class Synchronism : MonoBehaviour
             Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value = this;
     }
 
-    protected virtual void Start()
+    public void Start()
     {
         Initialise();
     }
 
-    protected virtual void Update()
+    public void Update()
     {
         // Updating all the note waves
         foreach (KeyValuePair<Synchronisations, Synchroniser> synchs in synchronisers)

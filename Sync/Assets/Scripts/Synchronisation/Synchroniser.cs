@@ -40,6 +40,9 @@ public class Synchroniser
         {
             timer -= goal;
 
+            if (goal > 0)
+                Debug.Log("Synchroniser :" + goal + " has triggered " + delegates.Count + " delegates");
+
             foreach (KeyValuePair<object, OnTime> callback in delegates)
             {
                 callback.Value.Invoke();
