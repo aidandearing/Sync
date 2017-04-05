@@ -87,6 +87,30 @@ public class AIFlockBehaviour : MonoBehaviour
 
         if (flock.Count > 0)
         {
+            List<Transform> nulls = new List<Transform>();
+
+            foreach(Transform t in flock)
+            {
+                if (!t)
+                {
+                    nulls.Add(t);
+                }
+            }
+
+            foreach(Transform t in nulls)
+            {
+                flock.Remove(t);
+
+                if (flockA.Contains(t))
+                    flockA.Remove(t);
+
+                if (flockC.Contains(t))
+                    flockC.Remove(t);
+
+                if (flockS.Contains(t))
+                    flockS.Remove(t);
+            }
+
             // Alignment Logic
             // Go through the flockA list, which contains all the flock transforms that are within the alignment distance
             // And calculate the average alignment of all flock members

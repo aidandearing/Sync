@@ -21,15 +21,48 @@ public class CubeFormation : Controller
     public static float EyeDuration = 10.0f;
     public static float EyeDurationDelta = 5.0f;
 
+    [Header("Synchronisation")]
+    public Synchronism.Synchronisations synchronisation = Synchronism.Synchronisations.BAR_2;
+    public Synchroniser synchroniser;
+
+    [Header("Formation")]
     new public BoxCollider collider;
     public List<CubeController> children = new List<CubeController>();
 
     private float formationTurnDelay;
     private Quaternion formationTurnDesired;
 
+    [Header("AI")]
     public AISphereSensor sensor;
 
+    [Header("Targeting")]
     public PlayerController target;
+
+    public void Initialise()
+    {
+        if (!isInitialised)
+        {
+            isInitialised = true;
+
+            Synchronism synch = ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value);
+            if (synch != null)
+            {
+                synchroniser = synch.synchronisers[synchronisation];
+                synchroniser.RegisterCallback(this, Callback);
+            }
+        }
+    }
+
+    public void Callback()
+    {
+        if (target != null)
+        {
+            if ((target.transform.position - transform.position).sqrMagnitude < 15 * 15)
+            {
+                children[Mathf.RoundToInt(UnityEngine.Random.value * (children.Count - 1))].Attack();
+            }
+        }
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -59,6 +92,12 @@ public class CubeFormation : Controller
     {
         if (!isLocalPlayer)
             return;
+
+        if (!isInitialised)
+            Initialise();
+
+        if (children.Count < 1)
+            Destroy(gameObject);
 
         // Formations follow a seek and destroy principle
         // They wander around, a specified height above the ground, focusing on a gather point from the blackboard
@@ -251,7 +290,7 @@ public class CubeFormation : Controller
         Vector3 location = new Vector3(((index / dimension) / dimension) % dimension,
             (index / dimension) % dimension,
             -index % dimension) * FormationGridSize;
-        return location - Vector3.one * dimension / 2;
+        return location - new Vector3(1, 1, -1) * dimension;
     }
 
     public int GetFormationDimension()

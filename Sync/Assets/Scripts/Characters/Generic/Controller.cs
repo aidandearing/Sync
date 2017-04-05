@@ -29,6 +29,7 @@ public class Controller : MonoBehaviour
     protected virtual void Start()
     {
         statistics[Literals.Strings.Blackboard.Movement.Count] = new Statistic() { Value = movement.count };
+        statistics["health"] = new Statistic() { Value = 100.0f };
 
         //if (Blackboard.Global.ContainsKey(Literals.Strings.Blackboard.Synchronisation.Synchroniser))
         //{
@@ -83,7 +84,10 @@ public class Controller : MonoBehaviour
             animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, onGround);
         }
 
-        HandleMovementInput();
+        if (transform != null)
+            HandleMovementInput();
+        else
+            Destroy(gameObject);
     }
 
     protected virtual void MovementActionPrimaryCallback()

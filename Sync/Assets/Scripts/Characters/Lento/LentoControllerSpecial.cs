@@ -1,0 +1,74 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+public class LentoControllerSpecial : PlayerController
+{
+    [Header("Lento Specifics")]
+    public RayQuery cameraRayQuery;
+
+    public Synchronism.Synchronisations attackSynchronisation = Synchronism.Synchronisations.QUARTER_NOTE;
+    public Synchroniser attackSynchroniser;
+    public SequencerGameObjects attackPrefabs;
+    public Transform attackNode;
+
+    public float attackTimestamp = 0.0f;
+
+    public void Initialise()
+    {
+        if (!isInitialised)
+        {
+            isInitialised = true;
+
+            Synchronism synch = ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value);
+            if (synch != null)
+            {
+                attackSynchroniser = synch.synchronisers[attackSynchronisation];
+                attackSynchroniser.RegisterCallback(this, CallbackAttack);
+            }
+        }
+    }
+
+    public void CallbackAttack()
+    {
+        if (Time.time - attackTimestamp < attackSynchroniser.Duration * 0.75f)
+        {
+            GameObject inst = attackPrefabs.Evaluate();
+
+            if (inst)
+            {
+                inst = Instantiate(inst, transform.position, new Quaternion());
+
+                CubeController target = null;
+                if (cameraRayQuery.rayHitLast.collider != null)
+                {
+                    if (cameraRayQuery.rayHitLast.collider.gameObject.tag == "cube")
+                    {
+                        target = cameraRayQuery.rayHitLast.collider.gameObject.GetComponent<CubeController>();
+                    }
+                }
+
+                inst.GetComponent<LentoLaserAttack>().Begin(target, attackNode, cameraRayQuery.rayHitLast, cameraRayQuery.ray.direction);
+            }
+        }
+    }
+
+    // Fixed Update is called once per physics step
+    protected override void FixedUpdate()
+    {
+        if (!isLocalPlayer)
+            return;
+
+        if (!isInitialised)
+            Initialise();
+
+        base.FixedUpdate();
+
+        if (Input.GetAxis(Literals.Strings.Input.Controller.TriggerRight) > 0)
+        {
+            attackTimestamp = Time.time;
+        }
+    }
+}

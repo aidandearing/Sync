@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class MonolithFormationSequence : MonoBehaviour
+public class MonolithFormationSequence : MonolithSequence
 {
     [Header("Synchronisation")]
     public Synchronism.Synchronisations synchronisation = Synchronism.Synchronisations.BAR_8;
@@ -34,25 +34,23 @@ public class MonolithFormationSequence : MonoBehaviour
     {
         if (!isInitialised)
         {
+            lineManager = Blackboard.Global["GROSS@MonolithSpecialSynchronism.Start:lineManager"].Value as LineRendererManager;
+            lineEndOriginals = Blackboard.Global["GROSS@MonolithSpecialSynchronism.Start:lineEndOriginals"].Value as Vector3[];
+
             Synchronism synch = ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value);
             if (synch != null)
             {
                 synchroniser = synch.synchronisers[synchronisation];
-                synchroniser.RegisterCallback(this, CallbackSynchronisation);
+                //synchroniser.RegisterCallback(this, CallbackSynchronisation);
 
                 spawningSynchroniser = synch.synchronisers[spawningSynchronisation];
                 spawningSynchroniser.RegisterCallback(this, CallbackSpawn);
+                CallbackSpawn();
 
                 lastPercent = synchroniser.Percent;
 
                 isInitialised = true;
             }
-        }
-
-        lineEndOriginals = new Vector3[lineManager.lines.Length];
-        for (int i = 0; i < lineManager.lines.Length; i++)
-        {
-            lineEndOriginals[i] = lineManager.lines[i].endPoint;
         }
     }
 
@@ -98,6 +96,11 @@ public class MonolithFormationSequence : MonoBehaviour
             Instantiate(spawningPrefab, formationPoint.position, new Quaternion());
             spawnDelayCurrent++;
         }
+    }
+
+    public override void End()
+    {
+        spawningSynchroniser.UnregisterCallback(this);
     }
 }
 

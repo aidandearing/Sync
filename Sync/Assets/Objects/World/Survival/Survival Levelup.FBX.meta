@@ -38,6 +38,11 @@ ModelImporter:
     100060: World View Inset
     100062: World View Wall
     100064: World View Windows
+    100066: Start Area Concrete Wall
+    100068: Start Area Floor Inner
+    100070: Start Area Glass Wall
+    100072: Start Area Grass Floor
+    100074: Start Area Tarmac Floor
     400000: Monolith
     400002: Monolith Eye
     400004: Playable Floor
@@ -71,6 +76,11 @@ ModelImporter:
     400060: World View Inset
     400062: World View Wall
     400064: World View Windows
+    400066: Start Area Concrete Wall
+    400068: Start Area Floor Inner
+    400070: Start Area Glass Wall
+    400072: Start Area Grass Floor
+    400074: Start Area Tarmac Floor
     2300000: Monolith
     2300002: Monolith Eye
     2300004: Playable Floor
@@ -103,6 +113,11 @@ ModelImporter:
     2300058: World View Inset
     2300060: World View Wall
     2300062: World View Windows
+    2300064: Start Area Concrete Wall
+    2300066: Start Area Floor Inner
+    2300068: Start Area Glass Wall
+    2300070: Start Area Grass Floor
+    2300072: Start Area Tarmac Floor
     3300000: Monolith
     3300002: Monolith Eye
     3300004: Playable Floor
@@ -135,6 +150,11 @@ ModelImporter:
     3300058: World View Inset
     3300060: World View Wall
     3300062: World View Windows
+    3300064: Start Area Concrete Wall
+    3300066: Start Area Floor Inner
+    3300068: Start Area Glass Wall
+    3300070: Start Area Grass Floor
+    3300072: Start Area Tarmac Floor
     4300000: Scene
     4300002: Monolith
     4300004: Playable Floor
@@ -167,6 +187,11 @@ ModelImporter:
     4300058: World View Wall
     4300060: World Grass Floor
     4300062: World Lower Floor
+    4300064: Start Area Concrete Wall
+    4300066: Start Area Floor Inner
+    4300068: Start Area Grass Floor
+    4300070: Start Area Tarmac Floor
+    4300072: Start Area Glass Wall
     6400000: Monolith
     6400002: Monolith Eye
     6400004: Playable Floor
@@ -199,6 +224,11 @@ ModelImporter:
     6400058: World View Inset
     6400060: World View Wall
     6400062: World View Windows
+    6400064: Start Area Concrete Wall
+    6400066: Start Area Floor Inner
+    6400068: Start Area Glass Wall
+    6400070: Start Area Grass Floor
+    6400072: Start Area Tarmac Floor
   materials:
     importMaterials: 1
     materialName: 0

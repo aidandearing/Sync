@@ -33,6 +33,15 @@ public class CubeController : Controller
     public static float LonerSpeedMin = 2.0f;
     public static float LonerSpeedMax = 10.0f;
 
+    [Header("Synchronisation")]
+    public Synchronism.Synchronisations synchronisation = Synchronism.Synchronisations.BAR_2;
+    public Synchroniser synchroniser;
+    public SequencerGameObjects prefabAttack;
+    public GameObject prefabDie;
+    public GameObject prefabFind;
+    //public GameObject prefabLose;
+
+    [Header("Formation")]
     public float formationCheckCurrent;
     public Vector3 formationPosition = Vector3.zero;
     public bool willJoinFormation = true;
@@ -42,14 +51,82 @@ public class CubeController : Controller
     public CubeFormation parentPrefab;
     public CubeFormation parent;
 
+    [Header("AI")]
     public AIEye eye;
+    public AISphereSensor sensor;
     public AIFlockBehaviour flocking;
 
+    [Header("Targeting")]
     public Transform[] targets;
     public PlayerController target;
 
-    public enum State { Loner, Child, ParentedChild, Cluster, Wanderer, Attacker, Skulker, Orchestra };
+    public float lifetime = 60.0f;
+    public float lifetimeCurrent = 0.0f;
+
+    public enum State { Loner, Child, ParentedChild, Wanderer, Attacker, Skulker, Die };
     public State state = State.Wanderer;
+    public State lastState = State.Wanderer;
+
+    public void Initialise()
+    {
+        if (!isInitialised)
+        {
+            isInitialised = true;
+
+            Synchronism synch = ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value);
+            if (synch != null)
+            {
+                synchroniser = synch.synchronisers[synchronisation];
+                synchroniser.RegisterCallback(this, Callback);
+            }
+        }
+    }
+
+    public void Attack()
+    {
+        Vector3 delta = target.transform.position - transform.position;
+
+        if (delta.sqrMagnitude < 100)
+        {
+            GameObject inst = prefabAttack.Evaluate();
+
+            if (inst)
+                Instantiate(inst, transform, false);
+        }
+    }
+
+    public void Callback()
+    {
+        if (state != lastState)
+        {
+            switch (state)
+            {
+                case State.Attacker:
+                    Instantiate(prefabFind, transform, false);
+                    break;
+                case State.Die:
+                    if (parent)
+                        parent.RemoveChild(this);
+
+                    Instantiate(prefabDie, transform.position, new Quaternion());
+                    synchroniser.UnregisterCallback(this);
+                    Destroy(this.gameObject);
+                    break;
+            }
+        }
+        else
+        {
+            if (state == State.Attacker)
+            {
+                if ((target.transform.position - transform.position).sqrMagnitude < 9)
+                {
+                    Attack();
+                }
+            }
+        }
+
+        lastState = state;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -81,8 +158,13 @@ public class CubeController : Controller
     // Fixed Update is called once per physics step
     protected override void FixedUpdate()
     {
+        lifetimeCurrent += Time.fixedDeltaTime;
+
         if (!isLocalPlayer)
             return;
+
+        if (!isInitialised)
+            Initialise();
 
         flocking.alignmentDistance = AlignmentDistanceDefault;
         flocking.cohesionDistance = CohesionDistanceDefault;
@@ -92,7 +174,10 @@ public class CubeController : Controller
             formationCheckCurrent -= Time.fixedDeltaTime;
 
         if (manuallyParented)
+        {
             formationPosition = parent.GetFormationLocation(this);
+            manuallyParented = false;
+        }
 
         switch (state)
         {
@@ -102,9 +187,15 @@ public class CubeController : Controller
             case State.Skulker: Skulker(); break;
             case State.Wanderer: Wanderer(); break;
             case State.Attacker: Attacker(); break;
+            default: state = State.Die; break;
         }
 
         base.FixedUpdate();
+
+        if ((float)statistics["health"].Value <= 0 || lifetimeCurrent >= lifetime)
+        {
+            state = State.Die;
+        }
     }
 
     protected override Vector3 HandleMovementInput()
@@ -217,7 +308,7 @@ public class CubeController : Controller
 
         // Child
         // This wanderer has been found by another and put in its formation
-        if (parent != null)
+        if (parent)
         {
             state = State.Child;
         }
@@ -244,6 +335,14 @@ public class CubeController : Controller
             else
             {
                 FormationCheck();
+
+                Transform t = sensor.Sense();
+
+                if (t != null)
+                {
+                    target = t.gameObject.GetComponent<PlayerController>();
+                    state = State.Attacker;
+                }
             }
         }
     }
@@ -253,9 +352,17 @@ public class CubeController : Controller
         // Seeker
         // First an attacking cube should home in on the player
         // Then when it gets close start attacking
-
-        // Attacker
-        // 
+        if (target != null)
+        {
+            MovementActions.Fly(this, transform.forward);
+            Vector3 position = target.transform.position + new Vector3(0, 10.0f, 0);
+            Quaternion look = Quaternion.LookRotation(position - transform.position);
+            rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, look, movement.speedTurn * Time.fixedDeltaTime));
+        }
+        else
+        {
+            state = State.Wanderer;
+        }
     }
 
     private void Skulker()

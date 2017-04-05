@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class MonolithSpawnSequence : MonoBehaviour
+public class MonolithSpawnSequence : MonolithSequence
 {
     [Header("Synchronisation")]
     public Synchronism.Synchronisations synchronisation = Synchronism.Synchronisations.BAR_8;
@@ -34,25 +34,23 @@ public class MonolithSpawnSequence : MonoBehaviour
     {
         if (!isInitialised)
         {
+            lineManager = Blackboard.Global["GROSS@MonolithSpecialSynchronism.Start:lineManager"].Value as LineRendererManager;
+            lineEndOriginals = Blackboard.Global["GROSS@MonolithSpecialSynchronism.Start:lineEndOriginals"].Value as Vector3[];
+
             Synchronism synch = ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value);
             if (synch != null)
             {
                 synchroniser = synch.synchronisers[synchronisation];
-                synchroniser.RegisterCallback(this, CallbackSynchronisation);
+                //synchroniser.RegisterCallback(this, CallbackSynchronisation);
 
                 spawningSynchroniser = synch.synchronisers[spawningSynchronisation];
                 spawningSynchroniser.RegisterCallback(this, CallbackSpawn);
+                CallbackSpawn();
 
                 lastPercent = synchroniser.Percent;
 
                 isInitialised = true;
             }
-        }
-
-        lineEndOriginals = new Vector3[lineManager.lines.Length];
-        for (int i = 0; i < lineManager.lines.Length; i++)
-        {
-            lineEndOriginals[i] = lineManager.lines[i].endPoint;
         }
     }
 
@@ -80,7 +78,7 @@ public class MonolithSpawnSequence : MonoBehaviour
             lineManager.lines[i].endPoint = point;
         }
 
-        Vector3 endPosition = new Vector3((index - 1) % 4 - 2, (index - 1) / 4, -6) * 5;
+        Vector3 endPosition = new Vector3((index - 1) % 4, (index - 1) / 4, 0) * 5 + new Vector3(-7.5f, 0, -30);
 
         if (spawningInstance != null)
         {
@@ -102,5 +100,10 @@ public class MonolithSpawnSequence : MonoBehaviour
             spawningInstance = Instantiate(spawningPrefab, transform.position, new Quaternion());
             index++;
         }
+    }
+
+    public override void End()
+    {
+        spawningSynchroniser.UnregisterCallback(this);
     }
 }

@@ -40,8 +40,23 @@ public class Synchroniser
         {
             timer -= goal;
 
-            if (goal > 0)
-                Debug.Log("Synchroniser :" + goal + " has triggered " + delegates.Count + " delegates");
+            //if (goal > 0)
+            //    Debug.Log("Synchroniser :" + goal + " has triggered " + delegates.Count + " delegates");
+
+            List<object> nullCalls = new List<object>();
+
+            foreach (KeyValuePair<object, OnTime> callback in delegates)
+            {
+                if (callback.Key == null)
+                {
+                    nullCalls.Add(callback.Key);
+                }
+            }
+
+            foreach (object o in nullCalls)
+            {
+                delegates.Remove(o);
+            }
 
             foreach (KeyValuePair<object, OnTime> callback in delegates)
             {

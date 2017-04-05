@@ -12,6 +12,7 @@ public class MonolithSpecialSynchronism : MonoBehaviour
 
     [Header("References")]
     public Material materialEye;
+    public LineRendererManager lineManager;
 
     [Header("Delay")]
     public Synchronism.Synchronisations delaySynchronisation = Synchronism.Synchronisations.BAR_8;
@@ -22,20 +23,21 @@ public class MonolithSpecialSynchronism : MonoBehaviour
     [Header("Delay Specifics")]
     public AnimationCurve delaySpotlightIntensity;
     public Light delaySpotlight;
-    public GameObject delaySequence;
-    public GameObject delayEndSequence;
 
     [Header("Sequencing")]
     public Synchronism.Synchronisations sequencerSynchronisation = Synchronism.Synchronisations.BAR_8;
     public Synchroniser sequencerSynchroniser;
-    public GameObject sequenceIntro;
-    public GameObject sequenceIdle;
-    public GameObject sequenceFormation;
-    public GameObject sequenceAttack;
-    public GameObject sequenceSpawn;
+    public MonolithSequence sequenceIntro;
+    public MonolithSequence sequenceIdle;
+    public MonolithSequence sequenceFormation;
+    public MonolithSequence sequenceAttack;
+    public MonolithSequence sequenceSpawn;
     public int sequenceIncrementation;
+    public MonolithSequence sequenceCurrent;
 
-    public List<GameObject> sequenceQueue;
+    public List<MonolithSequence> sequenceQueue;
+
+    private Vector3[] lineEndOriginals;
 
     void Start()
     {
@@ -43,11 +45,21 @@ public class MonolithSpecialSynchronism : MonoBehaviour
 
         // This establishes the focus point for all cubes made by this monolith
         Blackboard.Global.Add(Literals.Strings.Blackboard.Locations.CubeGatheringPointOne, new BlackboardValue() { Value = new Vector3(0, 0, 0) });
+        Blackboard.Global.Add("GROSS@MonolithSpecialSynchronism.Start:lineManager", new BlackboardValue() { Value = lineManager });
+
+        lineEndOriginals = new Vector3[lineManager.lines.Length];
+        for (int i = 0; i < lineManager.lines.Length; i++)
+        {
+            lineEndOriginals[i] = lineManager.lines[i].endPoint;
+        }
+
+        Blackboard.Global.Add("GROSS@MonolithSpecialSynchronism.Start:lineEndOriginals", new BlackboardValue() { Value = lineEndOriginals });
 
         if (delaySynchronisation == sequencerSynchronisation)
         {
             sequencerSynchroniser = delaySynchroniser = synchronism.synchronisers[delaySynchronisation];
             delaySynchroniser.RegisterCallback(this, CallbackBoth);
+            CallbackBoth();
         }
         else
         {
@@ -55,10 +67,8 @@ public class MonolithSpecialSynchronism : MonoBehaviour
             delaySynchroniser.RegisterCallback(this, CallbackDelay);
 
             sequencerSynchroniser = synchronism.synchronisers[sequencerSynchronisation];
-            sequencerSynchroniser.RegisterCallback(this, CallbackBoth);
+            sequencerSynchroniser.RegisterCallback(this, CallbackSequencer);
         }
-
-        Instantiate(delaySequence, transform, false);
     }
 
     void Update()
@@ -87,7 +97,6 @@ public class MonolithSpecialSynchronism : MonoBehaviour
         if (delayCurrent == delayBy)
         {
             delaySpotlight.intensity = delaySpotlightIntensity.Evaluate(1);
-            Instantiate(delayEndSequence, transform, false);
             delayCurrent++;
         }
     }
@@ -108,9 +117,10 @@ public class MonolithSpecialSynchronism : MonoBehaviour
                 // Lets try this:
                 // Difficulty defines pattern, at first the patterns are predictable, hard coded, but later, they become randomized parameterized sequences
 
-                // This is the first wave, it is a spawn wave
+                // This is the first wave, it is the intro, and then a spawn wave
                 if (sequenceIncrementation == 1)
                 {
+                    sequenceQueue.Add(sequenceIntro);
                     sequenceQueue.Add(sequenceSpawn);
                 }
                 // This is the second wave, it is an attack wave
@@ -138,7 +148,7 @@ public class MonolithSpecialSynchronism : MonoBehaviour
                     
                     for (int i = 0; i < sequences; i++)
                     {
-                        GameObject seq = sequenceAttack;
+                        MonolithSequence seq = sequenceAttack;
 
                         float r = UnityEngine.Random.value;
 
@@ -158,7 +168,10 @@ public class MonolithSpecialSynchronism : MonoBehaviour
                 sequenceQueue.Add(sequenceIdle);
             }
 
-            Instantiate(sequenceQueue[0], transform, false);
+            if (sequenceCurrent != null)
+                sequenceCurrent.End();
+
+            sequenceCurrent = Instantiate(sequenceQueue[0], transform, false);
             sequenceQueue.RemoveAt(0);
         }
     }
