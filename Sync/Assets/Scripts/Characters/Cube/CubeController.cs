@@ -84,15 +84,15 @@ public class CubeController : Controller
 
     public void Attack()
     {
-        Vector3 delta = target.transform.position - transform.position;
+        //Vector3 delta = target.transform.position - transform.position;
 
-        if (delta.sqrMagnitude < 100)
-        {
+        //if (delta.sqrMagnitude < 100)
+        //{
             GameObject inst = prefabAttack.Evaluate();
 
             if (inst)
                 Instantiate(inst, transform, false);
-        }
+        //}
     }
 
     public void Callback()
@@ -103,14 +103,13 @@ public class CubeController : Controller
             {
                 case State.Attacker:
                     Instantiate(prefabFind, transform, false);
+                    lastState = State.Attacker;
                     break;
                 case State.Die:
                     if (parent)
                         parent.RemoveChild(this);
 
                     Instantiate(prefabDie, transform.position, new Quaternion());
-                    synchroniser.UnregisterCallback(this);
-                    Destroy(this.gameObject);
                     break;
             }
         }
@@ -118,10 +117,18 @@ public class CubeController : Controller
         {
             if (state == State.Attacker)
             {
-                if ((target.transform.position - transform.position).sqrMagnitude < 9)
+                if ((target.transform.position - transform.position).sqrMagnitude < 200)
                 {
                     Attack();
                 }
+            }
+            else if (state == State.Die)
+            {
+                synchroniser.UnregisterCallback(this);
+                movement.actionPrimarySynchroniser.UnregisterCallback(this);
+                movement.actionSecondarySynchroniser.UnregisterCallback(this);
+
+                Destroy(this.gameObject);
             }
         }
 

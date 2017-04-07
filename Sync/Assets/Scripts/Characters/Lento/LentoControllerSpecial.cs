@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LentoControllerSpecial : PlayerController
 {
@@ -13,6 +14,8 @@ public class LentoControllerSpecial : PlayerController
     public Synchroniser attackSynchroniser;
     public SequencerGameObjects attackPrefabs;
     public Transform attackNode;
+
+    public static float timeAlive = 0;
 
     public float attackTimestamp = 0.0f;
 
@@ -66,9 +69,17 @@ public class LentoControllerSpecial : PlayerController
 
         base.FixedUpdate();
 
+        timeAlive += Time.fixedDeltaTime;
+
         if (Input.GetAxis(Literals.Strings.Input.Controller.TriggerRight) > 0)
         {
             attackTimestamp = Time.time;
+        }
+
+        if ((float)statistics["health"].Value <= 0)
+        {
+            AsyncOperation load = SceneManager.LoadSceneAsync("gameover", LoadSceneMode.Single);
+            load.allowSceneActivation = true;
         }
     }
 }
