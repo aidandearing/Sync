@@ -79,6 +79,7 @@ ModelImporter:
     100142: lento wand
     100144: lento barrier feed
     100146: lento barrier shield
+    100148: GeoSphere001
     400000: Bip001
     400002: Bip001 Footsteps
     400004: Bip001 Head
@@ -153,15 +154,19 @@ ModelImporter:
     400142: lento wand
     400144: lento barrier feed
     400146: lento barrier shield
+    400148: GeoSphere001
     2300000: lento barrier feed
     2300002: lento barrier shield
+    2300004: GeoSphere001
     3300000: lento barrier feed
     3300002: lento barrier shield
+    3300004: GeoSphere001
     4300000: lento wand
     4300002: lento
     4300004: lento barrier
     4300006: lento barrier feed
     4300008: lento barrier shield
+    4300010: GeoSphere001
     7400000: Lento Loop
     9500000: //RootNode
     13700000: lento
