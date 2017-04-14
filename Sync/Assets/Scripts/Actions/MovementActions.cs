@@ -26,18 +26,25 @@ public class MovementActions
         Fly
     }
 
-    public static void Action(Actions action, Controller self, Vector3 input)
+    public enum Move
+    {
+        None,
+        Move,
+        Move2
+    }
+
+    public static void Action(Actions action, Controller self, Vector3 input, Move move)
     {
         switch (action)
         {
             case Actions.MoveXZ360:
-                MoveXZ360(self, input);
+                MoveXZ360(self, input, move);
                 break;
             case Actions.Jump:
-                Jump(self, input);
+                Jump(self, input, move);
                 break;
             case Actions.Fly:
-                Fly(self, input);
+                Fly(self, input, move);
                 break;
         }
     }
@@ -47,19 +54,21 @@ public class MovementActions
     /// </summary>
     /// <param name="self">The Controller doing the moving</param>
     /// <param name="input">The input vector, each axis is treated as 0 no desire to move, to 1 complete desire to move</param>
-    public static void MoveXZ360(Controller self, Vector3 input)
+    public static void MoveXZ360(Controller self, Vector3 input, Move move)
     {
         // MoveXZ360 only works while on the ground
         if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround))
         {
+            string wantsToMove = (move == Move.Move) ? Literals.Strings.Parameters.Animation.WantsToMove : Literals.Strings.Parameters.Animation.WantsToMove2;
+            string isMoving = (move == Move.Move) ? Literals.Strings.Parameters.Animation.IsMoving : Literals.Strings.Parameters.Animation.IsMoving2;
             // Determine if input is being recieved this turn, if so that means the controller actually desires movement
             bool actuallyWantsToMove = (input.x != 0 || input.z != 0);
 
             // Ensure the animator knows the controller's desired state
-            self.animator.SetBool(Literals.Strings.Parameters.Animation.WantsToMove, actuallyWantsToMove);
+            self.animator.SetBool(wantsToMove, actuallyWantsToMove);
 
             // Only allow movement when the animator is moving
-            if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsMoving))
+            if (self.animator.GetBool(isMoving))
             {
                 // If the controller wants to move and is currently in the move animation then allow movement
                 if (actuallyWantsToMove)
@@ -113,9 +122,12 @@ public class MovementActions
         self.animator.SetFloat(Literals.Strings.Parameters.Animation.SpeedMove, self.rigidbody.velocity.magnitude);
     }
 
-    public static void Jump(Controller self, Vector3 input)
+    public static void Jump(Controller self, Vector3 input, Move move)
     {
         bool wantsToJump = false;
+
+        string wantsToMove = (move == Move.Move) ? Literals.Strings.Parameters.Animation.WantsToMove : Literals.Strings.Parameters.Animation.WantsToMove2;
+        string isMoving = (move == Move.Move) ? Literals.Strings.Parameters.Animation.IsMoving : Literals.Strings.Parameters.Animation.IsMoving2;
 
         if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround) || self.movement.countCurrent > 0)
         {
@@ -129,23 +141,23 @@ public class MovementActions
             {
                 //self.rigidbody.AddForce(movement, ForceMode.Impulse);
 
-                if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsJumping))
+                if (self.animator.GetBool(isMoving))
                 {
                     self.rigidbody.AddForce(movement, ForceMode.Impulse);
                 }
                 else
                 {
-                    self.animator.SetFloat(Literals.Strings.Parameters.Animation.JumpX, input.x);
-                    self.animator.SetFloat(Literals.Strings.Parameters.Animation.JumpY, input.y);
-                    self.animator.SetFloat(Literals.Strings.Parameters.Animation.JumpZ, input.z);
+                    //self.animator.SetFloat(Literals.Strings.Parameters.Animation.JumpX, input.x);
+                    //self.animator.SetFloat(Literals.Strings.Parameters.Animation.JumpY, input.y);
+                    //self.animator.SetFloat(Literals.Strings.Parameters.Animation.JumpZ, input.z);
                 }
             }
         }
 
-        self.animator.SetBool(Literals.Strings.Parameters.Animation.WantsToJump, wantsToJump);
+        self.animator.SetBool(wantsToMove, wantsToJump);
     }
 
-    public static void Fly(Controller self, Vector3 input)
+    public static void Fly(Controller self, Vector3 input, Move move)
     {
         if (input.sqrMagnitude > 0)
         {

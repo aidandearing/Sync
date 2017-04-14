@@ -92,12 +92,12 @@ public class Controller : MonoBehaviour
 
     protected virtual void MovementActionPrimaryCallback()
     {
-        MovementActions.Action(movement.actionPrimary, this, HandleMovementInput());
+        MovementActions.Action(movement.actionPrimary, this, HandleMovementInput(), MovementActions.Move.Move);
     }
 
     protected virtual void MovementActionSecondaryCallback()
     {
-        MovementActions.Action(movement.actionSecondary, this, HandleMovementInput());
+        MovementActions.Action(movement.actionSecondary, this, HandleMovementInput(), MovementActions.Move.Move2);
     }
 
     protected virtual Vector3 HandleMovementInput()

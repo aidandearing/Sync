@@ -274,7 +274,7 @@ public class CubeController : Controller
         {
             movement.speedForward = FormationJoinSpeed;
 
-            MovementActions.Fly(this, (worldPosFormation - transform.position).normalized);
+            MovementActions.Fly(this, (worldPosFormation - transform.position).normalized, MovementActions.Move.Move);
 
             Debug.DrawLine(worldPosFormation, transform.position);
             Debug.DrawRay(transform.position, (worldPosFormation - transform.position).normalized, new Color(1, 0, 1));
@@ -361,7 +361,7 @@ public class CubeController : Controller
         // Then when it gets close start attacking
         if (target != null)
         {
-            MovementActions.Fly(this, transform.forward);
+            MovementActions.Fly(this, transform.forward, MovementActions.Move.Move);
             Vector3 position = target.transform.position + new Vector3(0, 10.0f, 0);
             Quaternion look = Quaternion.LookRotation(position - transform.position);
             rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, look, movement.speedTurn * Time.fixedDeltaTime));

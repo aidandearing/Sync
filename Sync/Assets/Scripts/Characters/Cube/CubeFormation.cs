@@ -133,7 +133,7 @@ public class CubeFormation : Controller
                 formationTurnDesired = Quaternion.LookRotation(position - transform.position);
             }
 
-            MovementActions.Fly(this, transform.forward);
+            MovementActions.Fly(this, transform.forward, MovementActions.Move.Move);
             rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, formationTurnDesired, movement.speedTurn * Time.fixedDeltaTime));
 
             // Until a player is spotted, the formation wanders
@@ -159,7 +159,7 @@ public class CubeFormation : Controller
         }
         else
         {
-            MovementActions.Fly(this, transform.forward);
+            MovementActions.Fly(this, transform.forward, MovementActions.Move.Move);
             Vector3 position = target.transform.position + new Vector3(0, FormationGatheringHeight, 0);
             formationTurnDesired = Quaternion.LookRotation(position - transform.position);
             rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, formationTurnDesired, movement.speedTurn * Time.fixedDeltaTime));

@@ -130,14 +130,11 @@ public static class Literals
                 public const string PlaySplash = "playSplash";
                 public const string SpeedMove = "speedMove";
                 public const string CycleMove = "cycleMove";
-                public const string IsJumping = "isJumping";
-                public const string WantsToJump = "wantsToJump";
+                public const string IsMoving2 = "isMoving2";
+                public const string WantsToMove2 = "wantsToMove2";
                 public const string TouchedGround = "touchedGround";
                 public const string IsFalling = "isFalling";
                 public const string WantsToFall = "wantsToFall";
-                public const string JumpX = "jumpX";
-                public const string JumpY = "jumpY";
-                public const string JumpZ = "jumpZ";
             }
         }
     }

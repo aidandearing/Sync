@@ -30,6 +30,7 @@ public class TextColourSequencer : MonoBehaviour
                 sequencer.Initialise();
                 sequencer.callback = Callback;
                 Callback();
+                start = end;
                 isInitialised = true;
             }
         }

@@ -96,7 +96,7 @@ public class PlayerController : Controller
             input = movement.actionPrimaryLastInputVector;
         }
 
-        MovementActions.Action(movement.actionPrimary, this, input);
+        MovementActions.Action(movement.actionPrimary, this, input, MovementActions.Move.Move);
     }
 
     protected override void MovementActionSecondaryCallback()
@@ -108,6 +108,6 @@ public class PlayerController : Controller
             input = movement.actionSecondaryLastInputVector;
         }
 
-        MovementActions.Action(movement.actionSecondary, this, input);
+        MovementActions.Action(movement.actionSecondary, this, input, MovementActions.Move.Move2);
     }
 }
