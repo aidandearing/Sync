@@ -60,7 +60,7 @@ public class MonolithLaserAttack : MonoBehaviour
             if (hit.collider.gameObject == target.gameObject)
             {
                 if (durationCurrent < duration)
-                    target.statistics["health"].Value = (float)target.statistics["health"].Value - damagePerSecond * Time.deltaTime;
+                    target.controller.statistics["health"].Value = (float)target.controller.statistics["health"].Value - damagePerSecond * Time.deltaTime;
             }
         }
         else

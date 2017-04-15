@@ -4,14 +4,19 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : Controller
+public class PlayerController : MonoBehaviour
 {
+    // TODO REMOVE THIS WHEN BACK TO NETWORKING, and make this class a NetworkBehaviour
+    public bool isLocalPlayer = true;
+
+    [Header("Controller")]
+    public Controller controller;
     [Header("Camera")]
     new public Camera camera;
     public bool cameraOriented = true;
 
     // Use this for initialization
-    protected override void Start()
+    void Start()
     {
         for (int i = 0; i < 4; i++)
         {
@@ -19,29 +24,35 @@ public class PlayerController : Controller
             if (!Blackboard.Global.ContainsKey(key))
                 Blackboard.Global.Add(key, new BlackboardValue() { Value = this });
         }
-
-        base.Start();
     }
 
     // Update is called once per frame
-    protected override void Update()
+    void Update()
     {
         if (!isLocalPlayer)
             return;
 
-        base.Update();
+        if (controller.movement.actionPrimarySynchroniser == null)
+        {
+            if (Blackboard.Global.ContainsKey(Literals.Strings.Blackboard.Synchronisation.Synchroniser))
+            {
+                controller.movement.actionPrimarySynchroniser = (Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value as Synchronism).synchronisers[controller.movement.actionPrimarySynchronisation];
+                controller.movement.actionPrimarySynchroniser.RegisterCallback(this, MovementActionPrimaryCallback);
+
+                controller.movement.actionSecondarySynchroniser = (Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value as Synchronism).synchronisers[controller.movement.actionSecondarySynchronisation];
+                controller.movement.actionSecondarySynchroniser.RegisterCallback(this, MovementActionSecondaryCallback);
+            }
+        }
     }
 
     // Fixed Update is called once per physics step
-    protected override void FixedUpdate()
+    void FixedUpdate()
     {
         if (!isLocalPlayer)
             return;
-
-        base.FixedUpdate();
     }
 
-    protected override Vector3 HandleMovementInput()
+    Vector3 HandleMovementInput()
     {
         Vector3 v = new Vector3(Input.GetAxis(Literals.Strings.Input.Controller.StickLeftHorizontal), 
                 (Input.GetButton(Literals.Strings.Input.Controller.ButtonA) == true) ? 1 : 0, 
@@ -73,41 +84,41 @@ public class PlayerController : Controller
                 v.Set(v.x, ty, v.z);
             }
 
-            movement.actionPrimaryLastInputTime = Time.time;
-            movement.actionPrimaryLastInputVector = v;
+            controller.movement.actionPrimaryLastInputTime = Time.time;
+            controller.movement.actionPrimaryLastInputVector = v;
         }
 
         if (v.y > 0)
         {
-            movement.actionSecondaryLastInputTime = Time.time;
-            movement.actionSecondaryLastInputVector = v;
+            controller.movement.actionSecondaryLastInputTime = Time.time;
+            controller.movement.actionSecondaryLastInputVector = v;
         }
 
         return v;
     }
 
-    protected override void MovementActionPrimaryCallback()
+    void MovementActionPrimaryCallback()
     {
         Vector3 input = HandleMovementInput();
 
         // This checks to see if the time between an input was last recieved and if the time is shorter than a percentage of the synchronisers duration and this frame
-        if (Time.time - movement.actionPrimaryLastInputTime < movement.actionPrimarySynchroniser.Duration * MovementStatistics.FACTOR_OF_DURATION_AS_PADDING_ON_INPUT && input.sqrMagnitude < 1)
+        if (Time.time - controller.movement.actionPrimaryLastInputTime < controller.movement.actionPrimarySynchroniser.Duration * MovementStatistics.FACTOR_OF_DURATION_AS_PADDING_ON_INPUT && input.sqrMagnitude < 1)
         {
-            input = movement.actionPrimaryLastInputVector;
+            input = controller.movement.actionPrimaryLastInputVector;
         }
 
-        MovementActions.Action(movement.actionPrimary, this, input, MovementActions.Move.Move);
+        MovementActions.Action(controller.movement.actionPrimary, controller, input, MovementActions.Move.Move);
     }
 
-    protected override void MovementActionSecondaryCallback()
+    void MovementActionSecondaryCallback()
     {
         Vector3 input = HandleMovementInput();
 
-        if (Time.time - movement.actionSecondaryLastInputTime < movement.actionSecondarySynchroniser.Duration * MovementStatistics.FACTOR_OF_DURATION_AS_PADDING_ON_INPUT && input.y < 1)
+        if (Time.time - controller.movement.actionSecondaryLastInputTime < controller.movement.actionSecondarySynchroniser.Duration * MovementStatistics.FACTOR_OF_DURATION_AS_PADDING_ON_INPUT && input.y < 1)
         {
-            input = movement.actionSecondaryLastInputVector;
+            input = controller.movement.actionSecondaryLastInputVector;
         }
 
-        MovementActions.Action(movement.actionSecondary, this, input, MovementActions.Move.Move2);
+        MovementActions.Action(controller.movement.actionSecondary, controller, input, MovementActions.Move.Move2);
     }
 }

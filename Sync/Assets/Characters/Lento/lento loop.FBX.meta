@@ -167,6 +167,7 @@ ModelImporter:
     4300006: lento barrier feed
     4300008: lento barrier shield
     4300010: GeoSphere001
+    6400000: GeoSphere001
     7400000: Lento Loop
     9500000: //RootNode
     13700000: lento
@@ -459,7 +460,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0

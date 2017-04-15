@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class CubeFormation : Controller
+public class CubeFormation : MonoBehaviour
 {
+    // TODO REMOVE THIS WHEN BACK TO NETWORKING, and make this class a NetworkBehaviour
+    public bool isLocalPlayer = true;
+
     public static float FormationGridSize = 3.0f;
     public static int FormationLimit = 27;
     public static float FormationSpeed = 5.0f;
@@ -20,6 +23,9 @@ public class CubeFormation : Controller
 
     public static float EyeDuration = 10.0f;
     public static float EyeDurationDelta = 5.0f;
+
+    [Header("Controller")]
+    public Controller controller;
 
     [Header("Synchronisation")]
     public Synchronism.Synchronisations synchronisation = Synchronism.Synchronisations.BAR_2;
@@ -37,6 +43,8 @@ public class CubeFormation : Controller
 
     [Header("Targeting")]
     public PlayerController target;
+
+    public bool isInitialised = false;
 
     public void Initialise()
     {
@@ -71,24 +79,20 @@ public class CubeFormation : Controller
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Use this for initialization
-    protected override void Start()
+    void Start()
     {
-        base.Start();
-
-        movement.speedForward = FormationSpeed;
+        controller.movement.speedForward = FormationSpeed;
     }
 
     // Update is called once per frame
-    protected override void Update()
+    void Update()
     {
         if (!isLocalPlayer)
             return;
-
-        base.Update();
     }
 
     // Fixed Update is called once per physics step
-    protected override void FixedUpdate()
+    void FixedUpdate()
     {
         if (!isLocalPlayer)
             return;
@@ -111,12 +115,12 @@ public class CubeFormation : Controller
 
         if ((hit.point - transform.position).sqrMagnitude < FormationGroundHeight * FormationGroundHeight)
         {
-            rigidbody.AddForce(new Vector3(0, 1, 0), ForceMode.Force);
+            controller.rigidbody.AddForce(new Vector3(0, 1, 0), ForceMode.Force);
             //input += new Vector3(0, 1, 0);
         }
         else
         {
-            rigidbody.AddForce(new Vector3(0, -1, 0), ForceMode.Force);
+            controller.rigidbody.AddForce(new Vector3(0, -1, 0), ForceMode.Force);
         }
 
         if (target == null)
@@ -133,8 +137,8 @@ public class CubeFormation : Controller
                 formationTurnDesired = Quaternion.LookRotation(position - transform.position);
             }
 
-            MovementActions.Fly(this, transform.forward, MovementActions.Move.Move);
-            rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, formationTurnDesired, movement.speedTurn * Time.fixedDeltaTime));
+            MovementActions.Fly(controller, transform.forward, MovementActions.Move.Move);
+            controller.rigidbody.MoveRotation(Quaternion.RotateTowards(controller.rigidbody.rotation, formationTurnDesired, controller.movement.speedTurn * Time.fixedDeltaTime));
 
             // Until a player is spotted, the formation wanders
             // If eye sight is lost, the position the player was last scene at is stored, and the formation moves to that location
@@ -159,16 +163,14 @@ public class CubeFormation : Controller
         }
         else
         {
-            MovementActions.Fly(this, transform.forward, MovementActions.Move.Move);
+            MovementActions.Fly(controller, transform.forward, MovementActions.Move.Move);
             Vector3 position = target.transform.position + new Vector3(0, FormationGatheringHeight, 0);
             formationTurnDesired = Quaternion.LookRotation(position - transform.position);
-            rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, formationTurnDesired, movement.speedTurn * Time.fixedDeltaTime));
+            controller.rigidbody.MoveRotation(Quaternion.RotateTowards(controller.rigidbody.rotation, formationTurnDesired, controller.movement.speedTurn * Time.fixedDeltaTime));
         }
-
-        base.FixedUpdate();
     }
 
-    protected override Vector3 HandleMovementInput()
+    Vector3 HandleMovementInput()
     {
         //Vector3 input = UnityEngine.Random.insideUnitCircle.normalized;
         //input = new Vector3(input.x, 0, input.y);

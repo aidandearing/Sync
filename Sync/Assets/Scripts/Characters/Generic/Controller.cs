@@ -26,7 +26,7 @@ public class Controller : MonoBehaviour
     public bool isInitialised = false;
 
     // Use this for initialization
-    protected virtual void Start()
+    void Start()
     {
         statistics[Literals.Strings.Blackboard.Movement.Count] = new Statistic() { Value = movement.count };
         statistics["health"] = new Statistic() { Value = 100.0f };
@@ -42,23 +42,13 @@ public class Controller : MonoBehaviour
     }
 
     // Update is called once per frame
-    protected virtual void Update()
+    void Update()
     {
-        if (movement.actionPrimarySynchroniser == null)
-        {
-            if (Blackboard.Global.ContainsKey(Literals.Strings.Blackboard.Synchronisation.Synchroniser))
-            {
-                movement.actionPrimarySynchroniser = (Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value as Synchronism).synchronisers[movement.actionPrimarySynchronisation];
-                movement.actionPrimarySynchroniser.RegisterCallback(this, MovementActionPrimaryCallback);
-
-                movement.actionSecondarySynchroniser = (Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value as Synchronism).synchronisers[movement.actionSecondarySynchronisation];
-                movement.actionSecondarySynchroniser.RegisterCallback(this, MovementActionSecondaryCallback);
-            }
-        }
+        
     }
 
     // Update is called once per frame
-    protected virtual void FixedUpdate()
+    void FixedUpdate()
     {
         if (rigidbody.velocity.y < 0 && !animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround))
             animator.SetBool(Literals.Strings.Parameters.Animation.WantsToFall, true);
@@ -84,25 +74,10 @@ public class Controller : MonoBehaviour
             animator.SetBool(Literals.Strings.Parameters.Animation.IsOnGround, onGround);
         }
 
-        if (transform != null)
-            HandleMovementInput();
-        else
-            Destroy(gameObject);
-    }
-
-    protected virtual void MovementActionPrimaryCallback()
-    {
-        MovementActions.Action(movement.actionPrimary, this, HandleMovementInput(), MovementActions.Move.Move);
-    }
-
-    protected virtual void MovementActionSecondaryCallback()
-    {
-        MovementActions.Action(movement.actionSecondary, this, HandleMovementInput(), MovementActions.Move.Move2);
-    }
-
-    protected virtual Vector3 HandleMovementInput()
-    {
-        return Vector3.zero;
+        //if (transform != null)
+        //    HandleMovementInput();
+        //else
+        //    Destroy(gameObject);
     }
 
     //protected virtual void OnCollisionEnter(Collision collision)

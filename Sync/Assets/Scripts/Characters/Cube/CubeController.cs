@@ -5,8 +5,11 @@ using System.Text;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class CubeController : Controller
+public class CubeController : MonoBehaviour
 {
+    // TODO REMOVE THIS WHEN BACK TO NETWORKING, and make this class a NetworkBehaviour
+    public bool isLocalPlayer = true;
+
     public static float AlignmentDistanceDefault = 25.0f;
     public static float AlignmentDistanceChild = 0.0f;
     public static float AlignmentDistanceLoner = 25.0f;
@@ -32,6 +35,9 @@ public class CubeController : Controller
 
     public static float LonerSpeedMin = 2.0f;
     public static float LonerSpeedMax = 10.0f;
+
+    [Header("Controller")]
+    public Controller controller;
 
     [Header("Synchronisation")]
     public Synchronism.Synchronisations synchronisation = Synchronism.Synchronisations.BAR_2;
@@ -66,6 +72,8 @@ public class CubeController : Controller
     public enum State { Loner, Child, ParentedChild, Wanderer, Attacker, Skulker, Die };
     public State state = State.Wanderer;
     public State lastState = State.Wanderer;
+
+    public bool isInitialised;
 
     public void Initialise()
     {
@@ -125,8 +133,8 @@ public class CubeController : Controller
             else if (state == State.Die)
             {
                 synchroniser.UnregisterCallback(this);
-                movement.actionPrimarySynchroniser.UnregisterCallback(this);
-                movement.actionSecondarySynchroniser.UnregisterCallback(this);
+                controller.movement.actionPrimarySynchroniser.UnregisterCallback(this);
+                controller.movement.actionSecondarySynchroniser.UnregisterCallback(this);
 
                 Destroy(this.gameObject);
             }
@@ -142,10 +150,8 @@ public class CubeController : Controller
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Use this for initialization
-    protected override void Start()
+    void Start()
     {
-        base.Start();
-
         FormationBreakCheck();
 
         formationCheckCurrent += UnityEngine.Random.Range(FormationCheckDelay - FormationCheckDelayDelta, FormationCheckDelay + FormationCheckDelayDelta);
@@ -154,16 +160,14 @@ public class CubeController : Controller
     }
 
     // Update is called once per frame
-    protected override void Update()
+    void Update()
     {
         if (!isLocalPlayer)
             return;
-
-        base.Update();
     }
 
     // Fixed Update is called once per physics step
-    protected override void FixedUpdate()
+    void FixedUpdate()
     {
         lifetimeCurrent += Time.fixedDeltaTime;
 
@@ -197,15 +201,13 @@ public class CubeController : Controller
             default: state = State.Die; break;
         }
 
-        base.FixedUpdate();
-
-        if ((float)statistics["health"].Value <= 0 || lifetimeCurrent >= lifetime)
+        if ((float)controller.statistics["health"].Value <= 0 || lifetimeCurrent >= lifetime)
         {
             state = State.Die;
         }
     }
 
-    protected override Vector3 HandleMovementInput()
+    Vector3 HandleMovementInput()
     {
         //Vector3 input = UnityEngine.Random.insideUnitCircle.normalized;
         //input = new Vector3(input.x, 0, input.y);
@@ -253,14 +255,14 @@ public class CubeController : Controller
             if (!willLooseFormation)
             {
                 // Snap them to the formation point, and keep them there
-                rigidbody.MovePosition(worldPosFormation);
+                controller.rigidbody.MovePosition(worldPosFormation);
                 // Start rotating them so they look the same way their parent does
-                rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, Quaternion.LookRotation(parent.transform.forward), movement.speedTurn * Time.fixedDeltaTime));
+                controller.rigidbody.MoveRotation(Quaternion.RotateTowards(controller.rigidbody.rotation, Quaternion.LookRotation(parent.transform.forward), controller.movement.speedTurn * Time.fixedDeltaTime));
                 // If they look within a threshold angle of the same way then snap their rotation
                 if (Vector3.Dot(transform.forward, parent.transform.forward) > Mathf.Sin(Mathf.Deg2Rad * FormationSnapAngle))
                 {
                     // Snap rotation
-                    rigidbody.MoveRotation(parent.transform.rotation);
+                    controller.rigidbody.MoveRotation(parent.transform.rotation);
                     // Make this child transform a child of parent transform (make sure they move together without me further having to waste time on calculating that myself)
                     transform.SetParent(parent.transform);
                     // And finally disable any capacity for them to recieve force, which disables any other attempts at moving them out of formation
@@ -272,9 +274,9 @@ public class CubeController : Controller
         // If they aren't move them towards it
         else
         {
-            movement.speedForward = FormationJoinSpeed;
+            controller.movement.speedForward = FormationJoinSpeed;
 
-            MovementActions.Fly(this, (worldPosFormation - transform.position).normalized, MovementActions.Move.Move);
+            MovementActions.Fly(controller, (worldPosFormation - transform.position).normalized, MovementActions.Move.Move);
 
             Debug.DrawLine(worldPosFormation, transform.position);
             Debug.DrawRay(transform.position, (worldPosFormation - transform.position).normalized, new Color(1, 0, 1));
@@ -293,9 +295,9 @@ public class CubeController : Controller
             // Formation check automatically does this, for parented cubes
             FormationCheck();
             // Snap them to their formation position, and keep them there
-            rigidbody.MovePosition(parent.transform.TransformPoint(formationPosition));
+            controller.rigidbody.MovePosition(parent.transform.TransformPoint(formationPosition));
             // Snap rotation
-            rigidbody.MoveRotation(parent.transform.rotation);
+            controller.rigidbody.MoveRotation(parent.transform.rotation);
         }
         else
         {
@@ -361,10 +363,10 @@ public class CubeController : Controller
         // Then when it gets close start attacking
         if (target != null)
         {
-            MovementActions.Fly(this, transform.forward, MovementActions.Move.Move);
+            MovementActions.Fly(controller, transform.forward, MovementActions.Move.Move);
             Vector3 position = target.transform.position + new Vector3(0, 10.0f, 0);
             Quaternion look = Quaternion.LookRotation(position - transform.position);
-            rigidbody.MoveRotation(Quaternion.RotateTowards(rigidbody.rotation, look, movement.speedTurn * Time.fixedDeltaTime));
+            controller.rigidbody.MoveRotation(Quaternion.RotateTowards(controller.rigidbody.rotation, look, controller.movement.speedTurn * Time.fixedDeltaTime));
         }
         else
         {
@@ -484,12 +486,12 @@ public class CubeController : Controller
                 {
                     parent.RemoveChild(this);
                     transform.parent = null;
-                    rigidbody.isKinematic = false;
+                    controller.rigidbody.isKinematic = false;
                 }
 
                 state = State.Loner;
 
-                movement.speedForward = UnityEngine.Random.Range(LonerSpeedMin, LonerSpeedMax);
+                controller.movement.speedForward = UnityEngine.Random.Range(LonerSpeedMin, LonerSpeedMax);
             }
         }
     }

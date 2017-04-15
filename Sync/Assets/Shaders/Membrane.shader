@@ -1,4 +1,4 @@
-﻿Shader "Membrane/Simple"
+﻿Shader "Membrane/Distortion/Edge+Map"
 {
 	Properties
 	{
@@ -266,6 +266,6 @@
 			ENDCG
 		}
 
-		UsePass "Toon/Basic Outline/OUTLINE"
+		//UsePass "Toon/Basic Outline/OUTLINE"
 	}
 }

@@ -18,7 +18,7 @@ public class SequencerGradient
     [Header("Timing")]
     [SerializeField]
     public int delay = 0;
-    private int delayCurrent = 0;
+    [SerializeField]private int delayCurrent = 0;
     [SerializeField]
     public int duration = 4;
     private int durationCurrent = 0;

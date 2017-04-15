@@ -65,10 +65,26 @@ public class CloudSystem : MonoBehaviour
         // Quick decorator pass for some random cloud nodes along a ratio of the radius
         DecorateNode(node);
 
-        // Next let's generate one pole at a time
-        GeneratePole(node, new Vector3(0, 0, 1));
+        Vector3 location = Vector3.zero;// UnityEngine.Random.insideUnitSphere;
 
-        GeneratePole(node, new Vector3(0, 0, -1));
+        for (int i = 0; i < cloudSystemCascades; i++)
+        {
+            profile = i / cloudSystemCascades;
+            for (int j = 0; j < cloudSystemDensity; j++)
+            {
+                location = UnityEngine.Random.insideUnitSphere;
+                location.Set(location.x * cloudSystemHeight * 0.2f, location.y * cloudSystemHeight * 0.1f, location.z * cloudSystemHeight * 1.0f);
+
+                node = GenerateNode(profile);
+                node.transform.localScale *= (node.transform.localPosition - location).magnitude / (cloudSystemHeight);
+                node.transform.localPosition = location;
+            }
+        }
+
+        // Next let's generate one pole at a time
+        //GeneratePole(node, new Vector3(0, 0, 1));
+
+        //GeneratePole(node, new Vector3(0, 0, -1));
     }
 
     void DecorateNode(GameObject node)

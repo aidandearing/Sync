@@ -5,8 +5,14 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LentoControllerSpecial : PlayerController
+public class LentoControllerSpecial : MonoBehaviour
 {
+    // TODO REMOVE THIS WHEN BACK TO NETWORKING, and make this class a NetworkBehaviour
+    public bool isLocalPlayer = true;
+
+    [Header("Player")]
+    public PlayerController controller;
+
     [Header("Lento Specifics")]
     public RayQuery cameraRayQuery;
 
@@ -18,6 +24,8 @@ public class LentoControllerSpecial : PlayerController
     public static float timeAlive = 0;
 
     public float attackTimestamp = 0.0f;
+
+    public bool isInitialised = false;
 
     public void Initialise()
     {
@@ -59,15 +67,13 @@ public class LentoControllerSpecial : PlayerController
     }
 
     // Fixed Update is called once per physics step
-    protected override void FixedUpdate()
+    void FixedUpdate()
     {
         if (!isLocalPlayer)
             return;
 
         if (!isInitialised)
             Initialise();
-
-        base.FixedUpdate();
 
         timeAlive += Time.fixedDeltaTime;
 
@@ -76,7 +82,7 @@ public class LentoControllerSpecial : PlayerController
             attackTimestamp = Time.time;
         }
 
-        if ((float)statistics["health"].Value <= 0)
+        if ((float)controller.controller.statistics["health"].Value <= 0)
         {
             AsyncOperation load = SceneManager.LoadSceneAsync("gameover", LoadSceneMode.Single);
             load.allowSceneActivation = true;
