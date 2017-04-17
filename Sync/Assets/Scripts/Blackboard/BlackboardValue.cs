@@ -16,7 +16,7 @@ public class BlackboardValue
         {
             return type;
         }
-        private set
+        /*private*/ set
         {
             type = value;
         }

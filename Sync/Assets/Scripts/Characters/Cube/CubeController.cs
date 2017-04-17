@@ -88,6 +88,18 @@ public class CubeController : MonoBehaviour
                 synchroniser.RegisterCallback(this, Callback);
             }
         }
+
+        if (controller.movement.actionPrimarySynchroniser == null)
+        {
+            if (Blackboard.Global.ContainsKey(Literals.Strings.Blackboard.Synchronisation.Synchroniser))
+            {
+                controller.movement.actionPrimarySynchroniser = (Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value as Synchronism).synchronisers[controller.movement.actionPrimarySynchronisation];
+                controller.movement.actionPrimarySynchroniser.RegisterCallback(this, MovementActionPrimaryCallback);
+
+                controller.movement.actionSecondarySynchroniser = (Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value as Synchronism).synchronisers[controller.movement.actionSecondarySynchronisation];
+                controller.movement.actionSecondarySynchroniser.RegisterCallback(this, MovementActionSecondaryCallback);
+            }
+        }
     }
 
     public void Attack()
@@ -214,6 +226,16 @@ public class CubeController : MonoBehaviour
         //return input;
 
         return transform.forward;
+    }
+
+    void MovementActionPrimaryCallback()
+    {
+        MovementActions.Action(controller.movement.actionPrimary, controller, HandleMovementInput(), MovementActions.Move.Move);
+    }
+
+    void MovementActionSecondaryCallback()
+    {
+        //MovementActions.Action(controller.movement.actionPrimary, controller, HandleMovementInput(), MovementActions.Move.Move);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////

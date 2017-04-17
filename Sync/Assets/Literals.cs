@@ -49,6 +49,26 @@ public static class Literals
                 public const string TriggerRight = "Right Trigger";
                 public const string TriggerBoth = "Left Trigger Shared Axis";
             }
+
+            public static class Standard
+            {
+                public const string Interact = "Interact - Player ";
+                public const string Menu = "Menu - Player ";
+                public const string LookHorizontal = "Look Horizontal - Player ";
+                public const string LookVertical = "Look Vertical - Player ";
+                public const string MoveHorizontal = "Move Horizontal - Player ";
+                public const string MoveVertical = "Move Vertical - Player ";
+                public const string FlipSide = "Flip Side - Player ";
+                public const string MoveSpecial = "Special Move - Player ";
+                public const string Fire = "Fire - Player ";
+                public const string Grenade = "Grenade - Player ";
+                public const string Skill1 = "Skill 1 - Player ";
+                public const string Skill2 = "Skill 2 - Player ";
+                public const string Skill3 = "Skill 3 - Player ";
+                public const string Skill4 = "Skill 4 - Player ";
+                public const string LookMouseHorizontal = "Look Horizontal - Mouse";
+                public const string LookMouseVertical = "Look Vertical - Mouse";
+            }
         }
 
         public static class Tags
@@ -124,17 +144,44 @@ public static class Literals
         {
             public static class Animation
             {
-                public const string IsOnGround = "isOnGround";
-                public const string IsMoving = "isMoving";
-                public const string WantsToMove = "wantsToMove";
-                public const string PlaySplash = "playSplash";
-                public const string SpeedMove = "speedMove";
+                public static class Vector
+                {
+                    public static string Forward(int axis)
+                    {
+                        string s = "x";
+
+                        if (axis == 1)
+                            s = "y";
+                        else if (axis == 2)
+                            s = "z";
+
+                        return "vectorForward" + s;
+                    }
+                }
+
                 public const string CycleMove = "cycleMove";
-                public const string IsMoving2 = "isMoving2";
-                public const string WantsToMove2 = "wantsToMove2";
-                public const string TouchedGround = "touchedGround";
+                public const string IsCasting = "isCasting";
+                public const string IsCastLooping = "isCastLooping";
+                public const string IsCastingSkill = "isCastingSkill";
+                public const string IsAttacking = "isAttacking";
+                public const string IsAttackLooping = "isAttackLooping";
                 public const string IsFalling = "isFalling";
+                public const string IsMoving = "isMoving";
+                public const string IsMoving2 = "isMoving2";
+                public const string IsOnGround = "isOnGround";
+                public const string IsUsingGrenade = "isUsingGrenade";
+                public const string IsUsingGrenadeLooping = "isUsingGrenadeLooping";
+                public const string PlaySplash = "playSplash";
+                public const string SpeedAttack = "speedAttack";
+                public const string SpeedMove = "speedMove";
+                public const string TouchedGround = "touchedGround";
                 public const string WantsToFall = "wantsToFall";
+                public const string WantsToAttack = "wantsToAttack";
+                public const string WantsToCast = "wantsToCast";
+                public const string WantsToCastSkill = "wantsToCastSkill";
+                public const string WantsToMove = "wantsToMove";
+                public const string WantsToMove2 = "wantsToMove2";
+                public const string WantsToUseGrenade = "wantsToUseGrenade";
             }
         }
     }

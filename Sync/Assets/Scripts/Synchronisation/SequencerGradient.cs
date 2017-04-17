@@ -95,26 +95,31 @@ public class SequencerGradient
         {
             case Format.Linear:
                 durationCurrent = Math.Min(durationCurrent, duration);
+                if (callback != null)
+                    callback.Invoke();
                 break;
             case Format.Loop:
                 if (durationCurrent >= duration)
                 {
                     durationCurrent -= duration;
+                    if (callback != null)
+                        callback.Invoke();
                 }
                 break;
             case Format.PingPong:
                 if (durationCurrent >= duration * 2)
                 {
                     durationCurrent -= duration * 2;
+                    if (callback != null)
+                        callback.Invoke();
                 }
                 break;
             case Format.Random:
                 durationCurrent = UnityEngine.Random.Range(0, duration);
+                if (callback != null)
+                    callback.Invoke();
                 break;
         }
-
-        if (callback != null)
-            callback.Invoke();
     }
 
     ~SequencerGradient()

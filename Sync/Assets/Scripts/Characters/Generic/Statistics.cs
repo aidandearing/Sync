@@ -7,9 +7,23 @@ using UnityEngine;
 [Serializable]
 public class Statistics
 {
-    public BlackboardValue stats_editor;
+    public StatisticSerializable[] stats_editor = {
+        new StatisticSerializable() { name = "health", valueFloat = 100.0f, type = BlackboardValue.ValueType.Float },
+        new StatisticSerializable() { name = "healthMax", valueFloat = 100.0f, type = BlackboardValue.ValueType.Float },
+        new StatisticSerializable() { name = "healthRegeneration", valueFloat = 10.0f, type = BlackboardValue.ValueType.Float },
+        new StatisticSerializable() { name = "healthRegenerationDelay", valueFloat = 2.5f, type = BlackboardValue.ValueType.Float },
+        //new StatisticSerializable() { name = Literals.Strings.Blackboard.Movement. }
+    };
 
     private Blackboard statistics = new Blackboard();
+
+    public void Start()
+    {
+        foreach(StatisticSerializable stat in stats_editor)
+        {
+            statistics.Add(stat.name, stat.Dump());
+        }
+    }
 
     public bool ContainsKey(string key)
     {

@@ -281,6 +281,12 @@ public class CubeFormation : MonoBehaviour
         //    eyeDuration = 0;
         //    PickEye();
         //}
+
+        if (children.Count == 0)
+        {
+            synchroniser.UnregisterCallback(this);
+            Destroy(gameObject);
+        }
     }
 
     public Vector3 GetFormationLocation(CubeController child)

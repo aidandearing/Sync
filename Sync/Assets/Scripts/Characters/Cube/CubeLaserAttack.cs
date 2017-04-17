@@ -35,7 +35,7 @@ public class CubeLaserAttack : MonoBehaviour
         startEffect.transform.position = start;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (target == null)
             target = Blackboard.Global[Literals.Strings.Tags.Player + 1].Value as PlayerController;

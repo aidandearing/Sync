@@ -11,7 +11,8 @@ public class LentoControllerSpecial : MonoBehaviour
     public bool isLocalPlayer = true;
 
     [Header("Player")]
-    public PlayerController controller;
+    public Controller controller;
+    public PlayerController player;
 
     [Header("Lento Specifics")]
     public RayQuery cameraRayQuery;
@@ -38,6 +39,7 @@ public class LentoControllerSpecial : MonoBehaviour
             {
                 attackSynchroniser = synch.synchronisers[attackSynchronisation];
                 attackSynchroniser.RegisterCallback(this, CallbackAttack);
+                controller.animator.SetBool(Literals.Strings.Parameters.Animation.IsAttackLooping, true);
             }
         }
     }
@@ -48,9 +50,11 @@ public class LentoControllerSpecial : MonoBehaviour
         {
             GameObject inst = attackPrefabs.Evaluate();
 
+            controller.animator.SetBool(Literals.Strings.Parameters.Animation.WantsToAttack, true);
+
             if (inst)
             {
-                inst = Instantiate(inst, transform.position, new Quaternion());
+                inst = Instantiate(inst, attackNode.position, Quaternion.LookRotation(cameraRayQuery.rayHitLast.point - attackNode.position));
 
                 CubeController target = null;
                 if (cameraRayQuery.rayHitLast.collider != null)
@@ -61,8 +65,16 @@ public class LentoControllerSpecial : MonoBehaviour
                     }
                 }
 
-                inst.GetComponent<LentoLaserAttack>().Begin(target, attackNode, cameraRayQuery.rayHitLast, cameraRayQuery.ray.direction);
+                SynchronisedProjectileBehaviour proj = inst.GetComponent<SynchronisedProjectileBehaviour>();
+                proj.parent = controller;
+                proj.origin = attackNode.position;
+                proj.direction = cameraRayQuery.rayHitLast.point - attackNode.position;
+                //inst.GetComponent<LentoLaserAttack>().Begin(target, attackNode, cameraRayQuery.rayHitLast, cameraRayQuery.ray.direction);
             }
+        }
+        else
+        {
+            controller.animator.SetBool(Literals.Strings.Parameters.Animation.WantsToAttack, false);
         }
     }
 
@@ -77,15 +89,20 @@ public class LentoControllerSpecial : MonoBehaviour
 
         timeAlive += Time.fixedDeltaTime;
 
-        if (Input.GetAxis(Literals.Strings.Input.Controller.TriggerRight) > 0)
+        if (Input.GetAxis(Literals.Strings.Input.Standard.Fire + player.Player) > 0)
         {
             attackTimestamp = Time.time;
         }
 
-        if ((float)controller.controller.statistics["health"].Value <= 0)
-        {
-            AsyncOperation load = SceneManager.LoadSceneAsync("gameover", LoadSceneMode.Single);
-            load.allowSceneActivation = true;
-        }
+        //if ((float)controller.statistics["health"].Value <= 0)
+        //{
+        //    AsyncOperation load = SceneManager.LoadSceneAsync("gameover", LoadSceneMode.Single);
+        //    load.allowSceneActivation = true;
+        //}
+
+        // Set the forward vector of the general controller to the proper x and z components
+        // These are defined as the amount of camera forward as can be projected onto both the right and forward.
+        controller.animator.SetFloat(Literals.Strings.Parameters.Animation.Vector.Forward(0), Vector3.Dot(cameraRayQuery.ray.direction, transform.right));
+        controller.animator.SetFloat(Literals.Strings.Parameters.Animation.Vector.Forward(2), Vector3.Dot(cameraRayQuery.ray.direction, transform.forward));
     }
 }

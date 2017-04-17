@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-class StatisticModifier : BlackboardValue
+public class StatisticModifier : BlackboardValue
 {
     public enum Modifier { Add, Subtract, Multiply, Divide };
     public Modifier modifier = Modifier.Add;

@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     // TODO REMOVE THIS WHEN BACK TO NETWORKING, and make this class a NetworkBehaviour
     public bool isLocalPlayer = true;
 
+    public int Player = 1;
+
     [Header("Controller")]
     public Controller controller;
     [Header("Camera")]
@@ -54,9 +56,9 @@ public class PlayerController : MonoBehaviour
 
     Vector3 HandleMovementInput()
     {
-        Vector3 v = new Vector3(Input.GetAxis(Literals.Strings.Input.Controller.StickLeftHorizontal), 
-                (Input.GetButton(Literals.Strings.Input.Controller.ButtonA) == true) ? 1 : 0, 
-                -Input.GetAxis(Literals.Strings.Input.Controller.StickLeftVertical));
+        Vector3 v = new Vector3(Input.GetAxis(Literals.Strings.Input.Standard.MoveHorizontal+Player), 
+                (Input.GetButton(Literals.Strings.Input.Standard.MoveSpecial+Player) == true) ? 1 : 0, 
+                -Input.GetAxis(Literals.Strings.Input.Standard.MoveVertical+Player));
 
         if (v.x != 0 || v.z != 0)
         {
@@ -79,7 +81,7 @@ public class PlayerController : MonoBehaviour
                 float ty = v.y;
 
                 v = rotation * v;
-                v.Normalize();
+                //v.Normalize();
 
                 v.Set(v.x, ty, v.z);
             }

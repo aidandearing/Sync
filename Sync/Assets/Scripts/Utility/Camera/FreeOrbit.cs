@@ -9,6 +9,8 @@ public class FreeOrbit : MonoBehaviour
 {
     public static bool invertY = true;
 
+    public int Player = 1;
+
     public enum UpdateMode { Update, Fixed };
     public UpdateMode update;
 
@@ -65,7 +67,7 @@ public class FreeOrbit : MonoBehaviour
         switch (mode)
         {
             case Mode.Gamepad:
-                input = new Vector3(-Input.GetAxis(Literals.Strings.Input.Controller.StickRightHorizontal), Input.GetAxis(Literals.Strings.Input.Controller.StickRightVertical), 0);
+                input = new Vector3(-Input.GetAxis(Literals.Strings.Input.Standard.LookHorizontal+Player), Input.GetAxis(Literals.Strings.Input.Standard.LookVertical+Player), 0);
                 break;
             case Mode.Mouse:
                 input = Input.mousePosition - lastMousePosition;

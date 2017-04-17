@@ -17,6 +17,6 @@ public class GROSSRawImageHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        image.color = new Color(1, 1, 1, 1 - ((float)controller.controller.controller.statistics["health"].Value / 100.0f));
+        image.color = new Color(1, 1, 1, 1 - ((float)controller.controller.statistics["health"].Value / 100.0f));
     }
 }

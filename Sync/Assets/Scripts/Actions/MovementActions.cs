@@ -56,6 +56,8 @@ public class MovementActions
     /// <param name="input">The input vector, each axis is treated as 0 no desire to move, to 1 complete desire to move</param>
     public static void MoveXZ360(Controller self, Vector3 input, Move move)
     {
+        float speed = new Vector2(input.x, input.z).magnitude;
+
         // MoveXZ360 only works while on the ground
         if (self.animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround))
         {
@@ -75,7 +77,7 @@ public class MovementActions
                 {
                     // If not already moving at full speed begin moving at full speed
                     if (self.rigidbody.velocity.sqrMagnitude < self.movement.speedForward * self.movement.speedForward)
-                        self.rigidbody.AddForce(self.transform.forward * self.movement.speedForward * self.rigidbody.mass, ForceMode.Impulse);
+                        self.rigidbody.AddForce(self.transform.forward * self.movement.speedForward * speed * self.rigidbody.mass, ForceMode.Impulse);
                     // If moving at full speed continue to do so, but based on the forward
                     else
                         self.rigidbody.velocity = self.transform.forward * self.movement.speedForward;
@@ -101,7 +103,7 @@ public class MovementActions
             {
                 // If not already moving at full speed begin moving at full speed
                 if (self.rigidbody.velocity.sqrMagnitude < self.movement.speedForward * self.movement.speedForward)
-                    self.rigidbody.AddForce(self.transform.forward * self.movement.speedForward * self.rigidbody.mass, ForceMode.Impulse);
+                    self.rigidbody.AddForce(self.transform.forward * self.movement.speedForward * speed * self.rigidbody.mass, ForceMode.Impulse);
                 // If moving at full speed continue to do so, but based on the forward
                 //else
                 //    self.rigidbody.velocity = self.transform.forward * self.movement.speedForward;

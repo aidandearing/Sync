@@ -7,6 +7,8 @@ public class Controller : MonoBehaviour
     // TODO REMOVE THIS WHEN BACK TO NETWORKING, and make this class a NetworkBehaviour
     public bool isLocalPlayer = true;
 
+    public Faction faction;
+
     [Header("References")]
     new public Rigidbody rigidbody;
     public Transform root;
@@ -17,10 +19,6 @@ public class Controller : MonoBehaviour
 
     public bool checksForGround = true;
 
-    [SerializeField]
-    private string _faction;
-    public string Faction { get { return _faction; } set { _faction = value; } }
-
     private Ray rayGroundCheck = new Ray(Vector3.zero, new Vector3(0, -1, 0));
 
     public bool isInitialised = false;
@@ -29,7 +27,7 @@ public class Controller : MonoBehaviour
     void Start()
     {
         statistics[Literals.Strings.Blackboard.Movement.Count] = new Statistic() { Value = movement.count };
-        statistics["health"] = new Statistic() { Value = 100.0f };
+        statistics.Start();
 
         //if (Blackboard.Global.ContainsKey(Literals.Strings.Blackboard.Synchronisation.Synchroniser))
         //{
@@ -50,10 +48,13 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (rigidbody.velocity.y < 0 && !animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround))
-            animator.SetBool(Literals.Strings.Parameters.Animation.WantsToFall, true);
-        else
-            animator.SetBool(Literals.Strings.Parameters.Animation.WantsToFall, false);
+        if (animator != null)
+        {
+            if (rigidbody.velocity.y < 0 && !animator.GetBool(Literals.Strings.Parameters.Animation.IsOnGround))
+                animator.SetBool(Literals.Strings.Parameters.Animation.WantsToFall, true);
+            else
+                animator.SetBool(Literals.Strings.Parameters.Animation.WantsToFall, false);
+        }
 
         if (checksForGround)
         {

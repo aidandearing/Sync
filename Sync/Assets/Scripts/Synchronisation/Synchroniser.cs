@@ -7,6 +7,7 @@ public class Synchroniser
     public delegate void OnTime();
 
     private Dictionary<object, OnTime> delegates = new Dictionary<object, OnTime>();
+    private List<object> delegatesToRemove = new List<object>();
 
     private double timer;
     private double goal;
@@ -58,10 +59,24 @@ public class Synchroniser
                 delegates.Remove(o);
             }
 
+            foreach (object obj in delegatesToRemove)
+            {
+                delegates.Remove(obj);
+            }
+
+            delegatesToRemove = new List<object>();
+
             foreach (KeyValuePair<object, OnTime> callback in delegates)
             {
                 callback.Value.Invoke();
             }
+
+            foreach(object obj in delegatesToRemove)
+            {
+                delegates.Remove(obj);
+            }
+
+            delegatesToRemove = new List<object>();
         }
     }
 
@@ -72,7 +87,7 @@ public class Synchroniser
 
     public void UnregisterCallback(object owner)
     {
-        delegates.Remove(owner);
+        delegatesToRemove.Add(owner);
     }
 
     public void ChangeGoal(double newGoal)
