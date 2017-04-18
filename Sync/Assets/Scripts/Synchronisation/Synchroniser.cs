@@ -90,6 +90,11 @@ public class Synchroniser
         delegatesToRemove.Add(owner);
     }
 
+    public bool HasCallback(object owner)
+    {
+        return delegates.ContainsKey(owner);
+    }
+
     public void ChangeGoal(double newGoal)
     {
         goal = newGoal;

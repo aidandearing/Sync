@@ -65,9 +65,11 @@ public class CubeFormation : MonoBehaviour
     {
         if (target != null)
         {
-            if ((target.transform.position - transform.position).sqrMagnitude < 15 * 15)
+            if ((target.transform.position - transform.position).sqrMagnitude < 200 * 200)
             {
-                children[Mathf.RoundToInt(UnityEngine.Random.value * (children.Count - 1))].Attack();
+                int v = Mathf.RoundToInt(UnityEngine.Random.value * (children.Count - 1));
+                children[v].target = target;
+                children[v].Attack();
             }
         }
     }
@@ -138,23 +140,7 @@ public class CubeFormation : MonoBehaviour
             }
 
             MovementActions.Fly(controller, transform.forward, MovementActions.Move.Move);
-            controller.rigidbody.MoveRotation(Quaternion.RotateTowards(controller.rigidbody.rotation, formationTurnDesired, controller.movement.speedTurn * Time.fixedDeltaTime));
-
-            // Until a player is spotted, the formation wanders
-            // If eye sight is lost, the position the player was last scene at is stored, and the formation moves to that location
-            // The position slowly expands to cover a large radius that the formation attempts to radially scan
-
-            //if (eye != null)
-            //{
-            //    Transform spottedTarget = eye.eye.Sense();
-            //
-            //    if (spottedTarget != null)
-            //        target = spottedTarget.gameObject.GetComponent<PlayerController>();
-            //}
-            //else
-            //{
-            //    PickEye();
-            //}
+            controller.rigidbody.MoveRotation(Quaternion.RotateTowards(controller.rigidbody.rotation, formationTurnDesired, (float)controller.statistics[Literals.Strings.Blackboard.Movement.SpeedTurn].Value * Time.fixedDeltaTime));
 
             Transform t = sensor.Sense();
 

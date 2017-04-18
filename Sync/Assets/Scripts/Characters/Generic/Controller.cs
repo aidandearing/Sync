@@ -22,11 +22,12 @@ public class Controller : MonoBehaviour
     private Ray rayGroundCheck = new Ray(Vector3.zero, new Vector3(0, -1, 0));
 
     public bool isInitialised = false;
+    public bool onGround = false;
 
     // Use this for initialization
     void Start()
     {
-        statistics[Literals.Strings.Blackboard.Movement.Count] = new Statistic() { Value = movement.count };
+        //statistics[Literals.Strings.Blackboard.Movement.Count] = new Statistic() { Value = movement.count };
         statistics.Start();
 
         //if (Blackboard.Global.ContainsKey(Literals.Strings.Blackboard.Synchronisation.Synchroniser))
@@ -63,7 +64,7 @@ public class Controller : MonoBehaviour
 
             //Physics.Raycast(rayGroundCheck, movement.height, Literals.Integers.Physics.Layers.Floors)
             RaycastHit[] hits = Physics.RaycastAll(rayGroundCheck, movement.height);
-            bool onGround = false;
+            onGround = false;
 
             foreach(RaycastHit hit in hits)
             {

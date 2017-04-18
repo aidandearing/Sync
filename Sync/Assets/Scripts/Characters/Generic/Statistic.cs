@@ -57,6 +57,102 @@ public class Statistic : BlackboardValue
             base.Value = value;
         }
     }
+
+    public int Integer
+    {
+        get
+        {
+            return (int)Value;
+        }
+        set
+        {
+            Value = value;
+        }
+    }
+
+    public float Float
+    {
+        get
+        {
+            return (float)Value;
+        }
+        set
+        {
+            Value = value;
+        }
+    }
+
+    public double Double
+    {
+        get
+        {
+            return (double)Value;
+        }
+        set
+        {
+            Value = value;
+        }
+    }
+
+    public Vector2 Vector2
+    {
+        get
+        {
+            return (Vector2)Value;
+        }
+        set
+        {
+            Value = value;
+        }
+    }
+
+    public Vector3 Vector3
+    {
+        get
+        {
+            return (Vector3)Value;
+        }
+        set
+        {
+            Value = value;
+        }
+    }
+
+    public Vector4 Vector4
+    {
+        get
+        {
+            return (Vector4)Value;
+        }
+        set
+        {
+            Value = value;
+        }
+    }
+
+    public string String
+    {
+        get
+        {
+            return (string)Value;
+        }
+        set
+        {
+            Value = value;
+        }
+    }
+
+    public GameObject GameObject
+    {
+        get
+        {
+            return (GameObject)Value;
+        }
+        set
+        {
+            Value = value;
+        }
+    }
 }
 
 [Serializable]

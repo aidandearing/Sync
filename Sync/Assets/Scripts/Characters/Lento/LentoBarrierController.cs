@@ -17,6 +17,8 @@ public class LentoBarrierController : MonoBehaviour
     //public AnimationCurve perlinSpeedOverLife;
     public AnimationCurve cutoffOverLife;
     public AnimationCurve cutoffRangeOverLife;
+    public Gradient colourOverSustain;
+    public Gradient colourEdgeOverSustain;
     public AnimationCurve cutoffOverSustain;
     public AnimationCurve cutoffRangeOverSustain;
 
@@ -46,43 +48,42 @@ public class LentoBarrierController : MonoBehaviour
         {
             if (sustainDurationCurrent < sustainDuration)
                 sustainDurationCurrent += Time.deltaTime;
-            else
-            {
-                if (isRegenerating)
-                {
-                    if (health < healthMax)
-                        health += healthPerSecond * Time.deltaTime;
-                    else
-                    {
-                        health = healthMax;
-                        isRegenerating = false;
-                    }
-                }
-                else
-                {
-                    if (healthDelayCurrent < healthDelay)
-                    {
-                        healthDelayCurrent += Time.deltaTime;
-                    }
-                    else
-                    {
-                        isRegenerating = true;
-                    }
-                }
-            }
         }
         else if (sustainDurationCurrent > 0)
         {
             sustainDurationCurrent -= Time.deltaTime;
         }
 
+        if (isRegenerating)
+        {
+            if (health < healthMax)
+                health += healthPerSecond * Time.deltaTime;
+            else
+            {
+                health = healthMax;
+                isRegenerating = false;
+            }
+        }
+        else
+        {
+            if (healthDelayCurrent < healthDelay)
+            {
+                healthDelayCurrent += Time.deltaTime;
+            }
+            else
+            {
+                isRegenerating = true;
+            }
+        }
+
         float evaluate = health / healthMax;
         float evaluateSustain = sustainDurationCurrent / sustainDuration;
-        material.SetColor("_Colour", colourOverLife.Evaluate(evaluate));
-        material.SetColor("_ColourEdge", colourEdgeOverLife.Evaluate(evaluate));
+        float oneMinusSustain = 1 - evaluateSustain;
+        material.SetColor("_Colour", Color.Lerp(colourOverLife.Evaluate(evaluate), colourOverSustain.Evaluate(evaluateSustain), oneMinusSustain));
+        material.SetColor("_ColourEdge", Color.Lerp(colourEdgeOverLife.Evaluate(evaluate),colourEdgeOverSustain.Evaluate(evaluateSustain), oneMinusSustain));
         //material.SetFloat("_PSpeed", perlinSpeedOverLife.Evaluate(evaluate));
-        material.SetFloat("_Cutoff", Mathf.Min(cutoffOverLife.Evaluate(evaluate), cutoffOverSustain.Evaluate(evaluateSustain)));
-        material.SetFloat("_CutoffRange", Mathf.Min(cutoffRangeOverLife.Evaluate(evaluate), cutoffRangeOverSustain.Evaluate(evaluateSustain)));
+        material.SetFloat("_Cutoff", Mathf.Lerp(cutoffOverLife.Evaluate(evaluate), cutoffOverSustain.Evaluate(evaluateSustain), 1.0f - evaluateSustain));
+        material.SetFloat("_CutoffRange", Mathf.Lerp(cutoffRangeOverLife.Evaluate(evaluate), cutoffRangeOverSustain.Evaluate(evaluateSustain), 1.0f - evaluateSustain));
     }
 
     void OnTriggerEnter(Collider other)

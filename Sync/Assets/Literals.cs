@@ -118,9 +118,11 @@ public static class Literals
             {
                 public const string Input = "movementInputVector";
                 public const string CanWalkBackward = "movementCanWalkBackward";
+                public const string SpeedAll = "movementSpeedAll";
                 public const string SpeedForward = "movementSpeedForward";
                 public const string SpeedBackward = "movementSpeedBackward";
                 public const string SpeedSidestep = "movementSpeedSidestep";
+                public const string SpeedTurn = "movementSpeedTurn";
                 public const string Force = "movementForce";
                 public const string Vectoring = "movementVectoring";
                 public const string Count = "movementCount";

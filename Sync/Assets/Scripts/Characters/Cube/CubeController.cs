@@ -73,6 +73,15 @@ public class CubeController : MonoBehaviour
     public State state = State.Wanderer;
     public State lastState = State.Wanderer;
 
+    public static float FormationTurnDelay = 3;
+    public static float FormationTurnDelayDelta = 2;
+    public static float FormationGroundHeight = 10.0f;
+    public static float FormationGatheringRange = 30.0f;
+    public static float FormationGatheringHeight = 10.0f;
+
+    private float formationTurnDelay;
+    private Quaternion formationTurnDesired;
+
     public bool isInitialised;
 
     public void Initialise()
@@ -110,8 +119,13 @@ public class CubeController : MonoBehaviour
         //{
             GameObject inst = prefabAttack.Evaluate();
 
-            if (inst)
-                Instantiate(inst, transform, false);
+        if (inst)
+        {
+            SynchronisedProjectileBehaviour behave = Instantiate(inst, transform.position, new Quaternion()).GetComponent<SynchronisedProjectileBehaviour>();
+            behave.parent = controller;
+            behave.origin = transform.position;
+            behave.direction = (target.transform.position - transform.position).normalized;
+        }
         //}
     }
 
@@ -130,6 +144,10 @@ public class CubeController : MonoBehaviour
                         parent.RemoveChild(this);
 
                     Instantiate(prefabDie, transform.position, new Quaternion());
+                    synchroniser.UnregisterCallback(this);
+                    controller.movement.actionPrimarySynchroniser.UnregisterCallback(this);
+                    controller.movement.actionSecondarySynchroniser.UnregisterCallback(this);
+                    Destroy(this.gameObject);
                     break;
             }
         }
@@ -137,18 +155,10 @@ public class CubeController : MonoBehaviour
         {
             if (state == State.Attacker)
             {
-                if ((target.transform.position - transform.position).sqrMagnitude < 200)
+                if ((target.transform.position - transform.position).sqrMagnitude < 1000)
                 {
                     Attack();
                 }
-            }
-            else if (state == State.Die)
-            {
-                synchroniser.UnregisterCallback(this);
-                controller.movement.actionPrimarySynchroniser.UnregisterCallback(this);
-                controller.movement.actionSecondarySynchroniser.UnregisterCallback(this);
-
-                Destroy(this.gameObject);
             }
         }
 
@@ -202,6 +212,36 @@ public class CubeController : MonoBehaviour
             manuallyParented = false;
         }
 
+        if (target == null)
+        {
+            if (formationTurnDelay > 0)
+                formationTurnDelay -= Time.fixedDeltaTime;
+            else
+            {
+                formationTurnDelay += UnityEngine.Random.Range(FormationTurnDelay - FormationTurnDelayDelta, FormationTurnDelay + FormationTurnDelayDelta);
+
+                Vector3 position = UnityEngine.Random.insideUnitCircle.normalized * FormationGatheringRange;
+                position = new Vector3(position.x, FormationGatheringHeight, position.y) + (Vector3)Blackboard.Global[Literals.Strings.Blackboard.Locations.CubeGatheringPointOne].Value;
+
+                formationTurnDesired = Quaternion.LookRotation(position - transform.position);
+            }
+
+            MovementActions.Fly(controller, transform.forward, MovementActions.Move.Move);
+            controller.rigidbody.MoveRotation(Quaternion.RotateTowards(controller.rigidbody.rotation, formationTurnDesired, controller.movement.speedTurn * Time.fixedDeltaTime));
+
+            Transform t = sensor.Sense();
+
+            if (t != null)
+                target = t.gameObject.GetComponent<PlayerController>();
+        }
+        else
+        {
+            MovementActions.Fly(controller, transform.forward, MovementActions.Move.Move);
+            Vector3 position = target.transform.position + new Vector3(0, FormationGatheringHeight, 0);
+            formationTurnDesired = Quaternion.LookRotation(position - transform.position);
+            controller.rigidbody.MoveRotation(Quaternion.RotateTowards(controller.rigidbody.rotation, formationTurnDesired, controller.movement.speedTurn * Time.fixedDeltaTime));
+        }
+
         switch (state)
         {
             case State.Loner: Loner(); break;
@@ -238,6 +278,11 @@ public class CubeController : MonoBehaviour
         //MovementActions.Action(controller.movement.actionPrimary, controller, HandleMovementInput(), MovementActions.Move.Move);
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        MovementActions.Action(controller.movement.actionPrimary, controller, new Vector3(0,1,0), MovementActions.Move.Move);
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     //
     //  States
@@ -269,6 +314,13 @@ public class CubeController : MonoBehaviour
 
         // This child is not parented yet, and needs to get to the formation point
         // Calculate the formation point
+
+        if (parent == null)
+        {
+            state = State.Wanderer;
+            return;
+        }
+
         Vector3 worldPosFormation = parent.transform.TransformPoint(formationPosition);
 
         // If the child is close enough to the formation point

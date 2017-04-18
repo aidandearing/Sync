@@ -17,5 +17,10 @@ public class RayQuery : MonoBehaviour
         ray.direction = transform.forward;
 
         Physics.Raycast(ray, out rayHitLast, distance, LayerMask.GetMask(layerCriteria));
+
+        if (rayHitLast.collider == null)
+        {
+            rayHitLast.point = ray.origin + ray.direction * distance;
+        }
     }
 }

@@ -5,12 +5,20 @@ using UnityEngine;
 public class StateCycleSynchronisation : StateMachineBehaviour
 {
     public Synchronism.Synchronisations synchronisation = Synchronism.Synchronisations.QUARTER_NOTE;
+    public Synchroniser synchroniser;
+    public Animator animator;
     public string cycle = Literals.Strings.Parameters.Animation.CycleMove;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetFloat(cycle, (Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value as Synchronism).synchronisers[synchronisation].Percent);
+        synchroniser = ((Synchronism)Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value).synchronisers[synchronisation];
+        animator.SetFloat(cycle, synchroniser.Percent);
+
+        if (!synchroniser.HasCallback(this))
+            synchroniser.RegisterCallback(this, Callback);
+
+        this.animator = animator;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -20,9 +28,10 @@ public class StateCycleSynchronisation : StateMachineBehaviour
     //}
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-    //
-    //}
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        synchroniser.UnregisterCallback(this);
+    }
 
     // OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -33,4 +42,10 @@ public class StateCycleSynchronisation : StateMachineBehaviour
     //override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
     //
     //}
+
+    void Callback()
+    {
+        if (animator != null)
+            animator.SetFloat(cycle, synchroniser.Percent);
+    }
 }
