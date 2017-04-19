@@ -44,6 +44,14 @@ public class MonolithIdleSequence : MonolithSequence
         if (!isInitialised)
             Initialise();
 
+        if (lastPercent > synchroniser.Percent)
+            overLife = true;
+
+        lastPercent = synchroniser.Percent;
+
+        if (overLife)
+            return;
+
         Vector3 lineEndMult = new Vector3(lineEndXMultiplier.Evaluate(synchroniser.Percent),
             lineEndYMultiplier.Evaluate(synchroniser.Percent),
             lineEndZMultiplier.Evaluate(synchroniser.Percent));

@@ -9,8 +9,6 @@ public class MonolithFormationSequence : MonolithSequence
     [Header("Synchronisation")]
     public Synchronism.Synchronisations synchronisation = Synchronism.Synchronisations.BAR_8;
     public Synchroniser synchroniser;
-    public bool overLife;
-    private float lastPercent;
 
     [Header("Spawning")]
     public Synchronism.Synchronisations spawningSynchronisation = Synchronism.Synchronisations.QUARTER_NOTE;

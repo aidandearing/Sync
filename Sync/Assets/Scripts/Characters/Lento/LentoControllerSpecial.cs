@@ -27,6 +27,7 @@ public class LentoControllerSpecial : MonoBehaviour
     public float attackTimestamp = 0.0f;
 
     public bool isInitialised = false;
+    AsyncOperation load;
 
     public void Initialise()
     {
@@ -94,11 +95,11 @@ public class LentoControllerSpecial : MonoBehaviour
             attackTimestamp = Time.time;
         }
 
-        //if ((float)controller.statistics["health"].Value <= 0)
-        //{
-        //    AsyncOperation load = SceneManager.LoadSceneAsync("gameover", LoadSceneMode.Single);
-        //    load.allowSceneActivation = true;
-        //}
+        if ((float)controller.statistics["health"].Value <= 0 && load == null)
+        {
+            load = SceneManager.LoadSceneAsync("gameover", LoadSceneMode.Single);
+            load.allowSceneActivation = true;
+        }
 
         // Set the forward vector of the general controller to the proper x and z components
         // These are defined as the amount of camera forward as can be projected onto both the right and forward.

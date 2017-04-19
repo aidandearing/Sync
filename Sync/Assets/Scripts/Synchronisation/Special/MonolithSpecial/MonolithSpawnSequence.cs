@@ -9,8 +9,6 @@ public class MonolithSpawnSequence : MonolithSequence
     [Header("Synchronisation")]
     public Synchronism.Synchronisations synchronisation = Synchronism.Synchronisations.BAR_8;
     public Synchroniser synchroniser;
-    public bool overLife;
-    private float lastPercent;
 
     [Header("Spawning")]
     public Synchronism.Synchronisations spawningSynchronisation = Synchronism.Synchronisations.QUARTER_NOTE;
@@ -78,7 +76,7 @@ public class MonolithSpawnSequence : MonolithSequence
             lineManager.lines[i].endPoint = point;
         }
 
-        Vector3 endPosition = new Vector3((index - 1) % 4, (index - 1) / 4, 0) * 5 + new Vector3(-7.5f, 0, -30);
+        Vector3 endPosition = new Vector3((index - 1) % 4, (index - 1) / 4, 0) * 5 + new Vector3(-1.5f * 5, 0, -100);
 
         if (spawningInstance != null)
         {

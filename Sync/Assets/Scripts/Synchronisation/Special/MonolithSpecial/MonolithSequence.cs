@@ -6,5 +6,8 @@ using UnityEngine;
 
 public abstract class MonolithSequence : MonoBehaviour
 {
+    public bool overLife;
+    protected float lastPercent;
+
     public abstract void End();
 }

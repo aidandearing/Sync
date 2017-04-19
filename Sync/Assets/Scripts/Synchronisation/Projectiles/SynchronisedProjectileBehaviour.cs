@@ -25,12 +25,21 @@ public class SynchronisedProjectileBehaviour : MonoBehaviour
     public float radius = 0.1f;
     public float speed = 50.0f;
     public float gravity = 9.81f;
+
     [Flags]
     public enum CollidesWith { None = 0, Creator = 1, Allies = 2, Neutrals = 4, Enemies = 8, CreatorAllies = 3, CreatorNeutrals = 5, CreatorEnemies = 9, AlliesNeutrals = 6, AlliesEnemies = 10, NeutralsEnemies = 12, CreatorAlliesNeutrals = 7, CreatorAlliesEnemies = 11, CreatorNeutralsEnemies = 13, AlliesNeutralsEnemies = 14, CreatorAlliesNeutralsEnemies = 15 };
+    [Header("Collisions")]
     public CollidesWith collidesWith = CollidesWith.AlliesNeutralsEnemies;
     public bool diesOnCollision = true;
+    public int diesAfterCollisions = 1;
+    public int diesAfterCollisionsCurrent = 0;
     public CollidesWith diesWith = CollidesWith.AlliesNeutralsEnemies;
     public string[] layerMask;
+
+    [Header("Death")]
+    public bool isDead = false;
+    public float deathDelay = 2.0f;
+    public GameObject[] disableOnDeath;
 
     [Header("Properties")]
     public Property[] alliedProperties;
@@ -66,6 +75,12 @@ public class SynchronisedProjectileBehaviour : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isDead)
+        {
+
+            return;
+        }
+
         if (!isInitialised)
             Initialise();
 
@@ -75,6 +90,9 @@ public class SynchronisedProjectileBehaviour : MonoBehaviour
         RaycastHit[] hits = Physics.SphereCastAll(ray.origin + ray.direction * lastDistance, radius, ray.direction, maxDistance - lastDistance, LayerMask.GetMask(layerMask));
 
         Debug.DrawLine(ray.origin + ray.direction * lastDistance, ray.origin + ray.direction * maxDistance);
+
+        transform.position = origin + transform.forward * speed * p;
+        transform.rotation = Quaternion.LookRotation(direction);
 
         faction = parent.faction;
 
@@ -134,9 +152,6 @@ public class SynchronisedProjectileBehaviour : MonoBehaviour
         }
 
         lastDistance = maxDistance;
-
-        transform.position = origin + transform.forward * speed * p;
-        transform.rotation = Quaternion.LookRotation(direction);
     }
 
     void CallbackEnd()
@@ -153,12 +168,25 @@ public class SynchronisedProjectileBehaviour : MonoBehaviour
 
     public void End()
     {
-        synchroniser.UnregisterCallback(this);
-        Destroy(gameObject);
+        if (!isDead)
+        {
+            synchroniser.UnregisterCallback(this);
+
+            isDead = true;
+
+            foreach(GameObject disable in disableOnDeath)
+            {
+                disable.SetActive(false);
+            }
+
+            Destroy(gameObject, deathDelay);
+        }
     }
 
     void Trigger(Controller target)
     {
+        transform.position = rayHit.point;
+
         if (target != null)
         {
             if (target.faction.isHostile(parent.faction) && (collidesWith & CollidesWith.Enemies) != CollidesWith.None)
@@ -169,7 +197,12 @@ public class SynchronisedProjectileBehaviour : MonoBehaviour
                 }
 
                 if (diesOnCollision && (diesWith & CollidesWith.Enemies) != CollidesWith.None)
-                    End();
+                {
+                    diesAfterCollisionsCurrent++;
+
+                    if (diesAfterCollisionsCurrent > diesAfterCollisions)
+                        End();
+                }
             }
             else if (target.faction.isNeutrals(parent.faction) && (collidesWith & CollidesWith.Neutrals) != CollidesWith.None)
             {
@@ -179,7 +212,12 @@ public class SynchronisedProjectileBehaviour : MonoBehaviour
                 }
 
                 if (diesOnCollision && (diesWith & CollidesWith.Neutrals) != CollidesWith.None)
-                    End();
+                {
+                    diesAfterCollisionsCurrent++;
+
+                    if (diesAfterCollisionsCurrent > diesAfterCollisions)
+                        End();
+                }
             }
             else if (target.faction.isAllied(parent.faction) && (collidesWith & CollidesWith.Allies) != CollidesWith.None)
             {
@@ -189,15 +227,28 @@ public class SynchronisedProjectileBehaviour : MonoBehaviour
                 }
 
                 if (diesOnCollision && (diesWith & CollidesWith.Allies) != CollidesWith.None)
-                    End();
+                {
+                    diesAfterCollisionsCurrent++;
+
+                    if (diesAfterCollisionsCurrent > diesAfterCollisions)
+                        End();
+                }
             }
 
             if (diesOnCollision && (diesWith & CollidesWith.Creator) != CollidesWith.None)
-                End();
+            {
+                diesAfterCollisionsCurrent++;
+
+                if (diesAfterCollisionsCurrent > diesAfterCollisions)
+                    End();
+            }
         }
         else if (diesOnCollision)
         {
-            End();
+            diesAfterCollisionsCurrent++;
+
+            if (diesAfterCollisionsCurrent > diesAfterCollisions)
+                End();
         }
     }
 }
