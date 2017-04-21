@@ -174,7 +174,9 @@ public class SynchronisedProjectileBehaviour : MonoBehaviour
 
             isDead = true;
 
-            foreach(GameObject disable in disableOnDeath)
+            transform.position = rayHit.point;
+
+            foreach (GameObject disable in disableOnDeath)
             {
                 disable.SetActive(false);
             }
@@ -185,7 +187,7 @@ public class SynchronisedProjectileBehaviour : MonoBehaviour
 
     void Trigger(Controller target)
     {
-        transform.position = rayHit.point;
+        //transform.position = rayHit.point;
 
         if (target != null)
         {

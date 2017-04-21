@@ -10,7 +10,7 @@ public class GROSSTextSayTimeSurvive : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        text.text += Mathf.Floor(LentoControllerSpecial.timeAlive) + "s";
+        text.text += Mathf.Max(Mathf.Floor(PrismaticoControllerSpecial.timeAlive), Mathf.Floor(LentoControllerSpecial.timeAlive)) + "s";
     }
 
     // Update is called once per frame

@@ -5,7 +5,7 @@ using System.Text;
 
 public class Blackboard
 {
-    public static Dictionary<string, BlackboardValue> Global = new Dictionary<string, BlackboardValue>();
+    public static Blackboard Global = new Blackboard();
 
     private Dictionary<string, BlackboardValue> values = new Dictionary<string, BlackboardValue>();
 
@@ -16,7 +16,10 @@ public class Blackboard
 
     public void Add(string key, BlackboardValue value)
     {
-        values.Add(key, value);
+        if (values.ContainsKey(key))
+            values[key] = value;
+        else
+            values.Add(key, value);
     }
 
     public bool Remove(string key)

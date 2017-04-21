@@ -32,10 +32,10 @@ public class Synchronism
         synchronisers.Add(Synchronisations.THIRTYSECOND_NOTE, new Synchroniser(beat * 0.125));
         synchronisers.Add(Synchronisations.NONE, new Synchroniser(0));
 
-        if (!Blackboard.Global.ContainsKey(Literals.Strings.Blackboard.Synchronisation.Synchroniser))
+        //if (!Blackboard.Global.ContainsKey(Literals.Strings.Blackboard.Synchronisation.Synchroniser))
             Blackboard.Global.Add(Literals.Strings.Blackboard.Synchronisation.Synchroniser, new BlackboardValue() { Value = this });
-        else
-            Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value = this;
+        //else
+        //    Blackboard.Global[Literals.Strings.Blackboard.Synchronisation.Synchroniser].Value = this;
     }
 
     public void Start()

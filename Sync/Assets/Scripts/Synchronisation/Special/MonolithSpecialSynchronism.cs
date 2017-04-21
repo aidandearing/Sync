@@ -9,6 +9,7 @@ public class MonolithSpecialSynchronism : MonoBehaviour
 {
     public Synchronism synchronism = new Synchronism();
     public MusicPlayer musicPlayer;
+    public MenuSelectionController menu;
 
     [Header("References")]
     public Material materialEye;
@@ -75,6 +76,9 @@ public class MonolithSpecialSynchronism : MonoBehaviour
     {
         synchronism.Update();
 
+        if (!menu.isHidden)
+            return;
+
         if (delayCurrent < delayBy)
             delaySpotlight.intensity = delaySpotlightIntensity.Evaluate((delaySynchroniser.Percent + delayCurrent) / delayBy);
 
@@ -83,12 +87,18 @@ public class MonolithSpecialSynchronism : MonoBehaviour
 
     private void CallbackBoth()
     {
+        if (!menu.isHidden)
+            return;
+
         CallbackDelay();
         CallbackSequencer();
     }
 
     private void CallbackDelay()
     {
+        if (!menu.isHidden)
+            return;
+
         if (delayCurrent < delayBy)
         {
             delayCurrent++;
@@ -103,6 +113,9 @@ public class MonolithSpecialSynchronism : MonoBehaviour
 
     private void CallbackSequencer()
     {
+        if (!menu.isHidden)
+            return;
+
         if (delayCurrent >= delayBy)
         {
             if (sequenceQueue.Count == 0)

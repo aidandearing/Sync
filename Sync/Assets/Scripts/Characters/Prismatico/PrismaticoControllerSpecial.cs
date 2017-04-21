@@ -14,9 +14,12 @@ public class PrismaticoControllerSpecial : MonoBehaviour
     public Controller controller;
     public PlayerController player;
 
-    [Header("Lento Specifics")]
-    public RayQuery cameraRayQuery;
+    [Header("Prismatico Specifics")]
+    public Material[] materials;
+    new public Light light;
+    public Color colour;
 
+    [Header("Attack")]
     public Synchronism.Synchronisations attackSynchronisation = Synchronism.Synchronisations.QUARTER_NOTE;
     public Synchroniser attackSynchroniser;
     public SequencerGameObjects attackPrefabs;
@@ -41,6 +44,8 @@ public class PrismaticoControllerSpecial : MonoBehaviour
                 attackSynchroniser = synch.synchronisers[attackSynchronisation];
                 attackSynchroniser.RegisterCallback(this, CallbackAttack);
                 controller.animator.SetBool(Literals.Strings.Parameters.Animation.IsAttackLooping, false);
+                controller.animator.SetFloat(Literals.Strings.Parameters.Animation.SpeedAttack, 0.5f);
+                controller.animator.SetFloat(Literals.Strings.Parameters.Animation.SpeedMove, 0.5f);
             }
         }
     }
@@ -55,21 +60,22 @@ public class PrismaticoControllerSpecial : MonoBehaviour
 
             if (inst)
             {
-                inst = Instantiate(inst, attackNode.position, Quaternion.LookRotation(cameraRayQuery.rayHitLast.point - attackNode.position));
+                inst = Instantiate(inst, attackNode.position, Quaternion.LookRotation(player.cameraRayQuery.rayHitLast.point - attackNode.position));
 
                 CubeController target = null;
-                if (cameraRayQuery.rayHitLast.collider != null)
+                if (player.cameraRayQuery.rayHitLast.collider != null)
                 {
-                    if (cameraRayQuery.rayHitLast.collider.gameObject.tag == "cube")
+                    if (player.cameraRayQuery.rayHitLast.collider.gameObject.tag == "cube")
                     {
-                        target = cameraRayQuery.rayHitLast.collider.gameObject.GetComponent<CubeController>();
+                        target = player.cameraRayQuery.rayHitLast.collider.gameObject.GetComponent<CubeController>();
                     }
                 }
 
                 SynchronisedProjectileBehaviour proj = inst.GetComponent<SynchronisedProjectileBehaviour>();
+                PrismaticoProjectileController projPrism = inst.GetComponent<PrismaticoProjectileController>();
                 proj.parent = controller;
-                proj.origin = attackNode.position;
-                proj.direction = cameraRayQuery.rayHitLast.point - attackNode.position;
+                projPrism.prismatico = this;
+                projPrism.projectile = proj;
                 //inst.GetComponent<LentoLaserAttack>().Begin(target, attackNode, cameraRayQuery.rayHitLast, cameraRayQuery.ray.direction);
             }
         }
@@ -103,12 +109,17 @@ public class PrismaticoControllerSpecial : MonoBehaviour
 
         // Set the forward vector of the general controller to the proper x and z components
         // These are defined as the amount of camera forward as can be projected onto both the right and forward.
-        controller.animator.SetFloat(Literals.Strings.Parameters.Animation.Vector.Forward(0), Vector3.Dot(cameraRayQuery.ray.direction, transform.right));
-        controller.animator.SetFloat(Literals.Strings.Parameters.Animation.Vector.Forward(2), Vector3.Dot(cameraRayQuery.ray.direction, transform.forward));
+        controller.animator.SetFloat(Literals.Strings.Parameters.Animation.Vector.Forward(0), Vector3.Dot(player.cameraRayQuery.ray.direction, transform.right));
+        controller.animator.SetFloat(Literals.Strings.Parameters.Animation.Vector.Forward(2), Vector3.Dot(player.cameraRayQuery.ray.direction, transform.forward));
     }
 
     void LateUpdate()
     {
         controller.animator.SetBool(Literals.Strings.Parameters.Animation.WantsToAttack, false);
+    }
+
+    ~PrismaticoControllerSpecial()
+    {
+        attackSynchroniser.UnregisterCallback(this);
     }
 }

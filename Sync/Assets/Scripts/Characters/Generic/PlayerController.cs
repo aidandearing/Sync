@@ -13,8 +13,10 @@ public class PlayerController : MonoBehaviour
 
     [Header("Controller")]
     public Controller controller;
+
     [Header("Camera")]
     new public Camera camera;
+    public RayQuery cameraRayQuery;
     public bool cameraOriented = true;
 
     // Use this for initialization

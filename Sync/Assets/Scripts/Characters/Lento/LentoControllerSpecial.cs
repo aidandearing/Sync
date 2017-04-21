@@ -14,9 +14,7 @@ public class LentoControllerSpecial : MonoBehaviour
     public Controller controller;
     public PlayerController player;
 
-    [Header("Lento Specifics")]
-    public RayQuery cameraRayQuery;
-
+    [Header("Attacking")]
     public Synchronism.Synchronisations attackSynchronisation = Synchronism.Synchronisations.QUARTER_NOTE;
     public Synchroniser attackSynchroniser;
     public SequencerGameObjects attackPrefabs;
@@ -55,21 +53,21 @@ public class LentoControllerSpecial : MonoBehaviour
 
             if (inst)
             {
-                inst = Instantiate(inst, attackNode.position, Quaternion.LookRotation(cameraRayQuery.rayHitLast.point - attackNode.position));
+                inst = Instantiate(inst, attackNode.position, Quaternion.LookRotation(player.cameraRayQuery.rayHitLast.point - attackNode.position));
 
                 CubeController target = null;
-                if (cameraRayQuery.rayHitLast.collider != null)
+                if (player.cameraRayQuery.rayHitLast.collider != null)
                 {
-                    if (cameraRayQuery.rayHitLast.collider.gameObject.tag == "cube")
+                    if (player.cameraRayQuery.rayHitLast.collider.gameObject.tag == "cube")
                     {
-                        target = cameraRayQuery.rayHitLast.collider.gameObject.GetComponent<CubeController>();
+                        target = player.cameraRayQuery.rayHitLast.collider.gameObject.GetComponent<CubeController>();
                     }
                 }
 
                 SynchronisedProjectileBehaviour proj = inst.GetComponent<SynchronisedProjectileBehaviour>();
                 proj.parent = controller;
                 proj.origin = attackNode.position;
-                proj.direction = cameraRayQuery.rayHitLast.point - attackNode.position;
+                proj.direction = player.cameraRayQuery.rayHitLast.point - attackNode.position;
                 //inst.GetComponent<LentoLaserAttack>().Begin(target, attackNode, cameraRayQuery.rayHitLast, cameraRayQuery.ray.direction);
             }
         }
@@ -103,7 +101,7 @@ public class LentoControllerSpecial : MonoBehaviour
 
         // Set the forward vector of the general controller to the proper x and z components
         // These are defined as the amount of camera forward as can be projected onto both the right and forward.
-        controller.animator.SetFloat(Literals.Strings.Parameters.Animation.Vector.Forward(0), Vector3.Dot(cameraRayQuery.ray.direction, transform.right));
-        controller.animator.SetFloat(Literals.Strings.Parameters.Animation.Vector.Forward(2), Vector3.Dot(cameraRayQuery.ray.direction, transform.forward));
+        controller.animator.SetFloat(Literals.Strings.Parameters.Animation.Vector.Forward(0), Vector3.Dot(player.cameraRayQuery.ray.direction, transform.right));
+        controller.animator.SetFloat(Literals.Strings.Parameters.Animation.Vector.Forward(2), Vector3.Dot(player.cameraRayQuery.ray.direction, transform.forward));
     }
 }
