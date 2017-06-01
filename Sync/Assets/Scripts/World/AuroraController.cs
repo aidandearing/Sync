@@ -15,9 +15,9 @@ public class AuroraController : MonoBehaviour
     {
         List<Vector3> vectors = new List<Vector3>();
 
-        float theta = Mathf.PI * 2 / (line.numPositions - 1);
+        float theta = Mathf.PI * 2 / (line.positionCount - 1);
 
-        for (int i = 0; i < line.numPositions; i++)
+        for (int i = 0; i < line.positionCount; i++)
         {
             float x = Mathf.Cos(theta * i) * offset.x;
             float z = Mathf.Sin(theta * i) * offset.x;

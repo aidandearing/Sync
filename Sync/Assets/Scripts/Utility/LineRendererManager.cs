@@ -31,7 +31,7 @@ public class LineRendererManager : MonoBehaviour
             renderer.widthCurve = width;
             renderer.widthMultiplier = widthMultiplier;
 
-            renderer.numPositions = segments;
+            renderer.positionCount = segments;
 
             for (int i = 0; i < segments; i++)
             {
